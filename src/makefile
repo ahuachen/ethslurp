@@ -16,8 +16,10 @@ all:
 	make ship
 
 ship: ethslurp
-	strip ethslurp
-	cp -p ethslurp $(SHIP)/$(SHIP_EXE)
+	@strip ethslurp
+	@cp -p ethslurp $(SHIP)/$(SHIP_EXE)
+	@rm ethslurp
+	@echo "ethslurp built into $(SHIP)/$(SHIP_EXE)"
 
 ethslurp: $(OBJS) $(LIBS)
 	g++ -o ethslurp $(OBJS) $(LIBS)

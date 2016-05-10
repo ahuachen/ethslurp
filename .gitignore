@@ -4,8 +4,9 @@
 *.o
 *.obj
 
-# Xcode projects
+# Mac junk
 *.xcodeproj
+.DS_Store
 
 # Precompiled Headers
 *.gch

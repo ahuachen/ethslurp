@@ -7,12 +7,13 @@
 //---------------------------------------------------------------------------------------------------
 CParams paramsEthSlurp[] =
 {
-	CParams("~addr",      	"the ethereum address of the account or contract you wish to read"                                      ),
-	CParams( "-nobackup",		"do not save a timestamped backup file of the previous data file (data will be backed up by default)"   ),
-	CParams( "-pretty", 	    "output data to screen in human readable format and quit"                                               ),
-	CParams( "-slurp",      	"pull fresh data from the blockchain"                                                                   ),
-	CParams( "-write:fmt", 	"write the data in various formats (.txt only for now) with optional (on by default) backup"            ),
-	CParams( "",               "Fetches data off the Ethereum block chain for an arbitrary account or smart contract.\nOptionally prettyPrints or stores the data in various formats.\n" ),
+	CParams("~addr",		"the ethereum address of the account or contract you wish to read"                                      ),
+	CParams( "-nobackup",	"do not save a timestamped backup file of the previous data file (data will be backed up by default)"   ),
+	CParams( "-pretty",		"output data to screen in human readable format and quit"                                               ),
+	CParams( "-slurp",      "pull fresh data from the blockchain"                                                                   ),
+	CParams( "-last",		"read from the last (most recently read) address"                                                       ),
+//	CParams( "-write:fmt",	"write the data in various formats (.txt only for now) with optional (on by default) backup"            ),
+	CParams( "",			"Fetches data off the Ethereum block chain for an arbitrary account or smart contract.\nOptionally prettyPrints or stores the data in various formats.\n" ),
 };
 SFInt32 nParamsEthSlurp = sizeof(paramsEthSlurp) / sizeof(CParams);
 
@@ -29,54 +30,44 @@ extern SFString homeFolder(void);
 SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 {
 	SFString addr;
-    SFBool slurp = FALSE, prettyPrint=FALSE, save=TRUE, backup=TRUE;
+    SFBool slurp = FALSE, prettyPrint=FALSE, readLast=FALSE, backup=TRUE;
     for (int i=1;i<nArgs;i++)
     {
-		if (args[i] == "-n" || args[i] == "-nobackup")
+		if (args[i] == "-l" || args[i] == "-last")
+		{
+			readLast = TRUE;
+			
+		} else if (args[i] == "-n" || args[i] == "-nobackup")
 		{
 			backup = FALSE;
 
 		} else if (args[i] == "-p" || args[i] == "-pretty"  || args[i] == "-prettyPrint")
 		{
 			prettyPrint = TRUE;
-//			SFString cmd =
-//			SFString data hostName = SFos::doCommand("hostname").Substitute(".home",EMPTY).Substitute(".local",EMPTY).Substitute(".fios-router",EMPTY);
-
-		} else if (args[i] == "-p" || args[i] == "-params")
-		{
-//			noParams = FALSE;
 
 		} else if (args[i] == "-s" || args[i] == "-save")
 		{
-//			toFile = TRUE;
 			slurp = TRUE;
-
-		} else if (args[i].startsWith("-l"))
-		{
-			SFString arg = args[i];
-			arg.Replace("-level", EMPTY);
-			arg.Replace("-l", EMPTY);
-//			maxLevel = atoi((const char*)arg)+1;
-
-		} else if (args[i] == "-a" || args[i] == "-addr")
-		{
-			if (i==(nArgs-1))
-				return usage(args[0], "You must supply an address with the -a argument");
-			addr = args[i+1];
 
 		} else
 		{
 			addr = args[i];
-//			pushOnList(0, args[i]);
 		}
     }
+
+	if (addr.IsEmpty() && readLast)
+		addr = asciiFileToString(PATH_TO_ETH_SLURP+"lastRead.dat").Substitute("\n",EMPTY);
+
 	if (addr.IsEmpty())
 	{
-		return usage(args[0], "You must supply an Ethereum account or contract address...");
-	} else
-	{
-		outScreen << "Slurping " << addr << "\n";
+		SFString msg = "You must supply an Ethereum account or contract address. ";
+		if (!readLast)
+			msg += "Use -l flag to read the most recently read address.";
+		return usage(args[0], msg);
 	}
+
+	outScreen << "Slurping " << addr << "\n";
+	stringToAsciiFile(PATH_TO_ETH_SLURP+"lastRead.dat", addr);
 
 	if (!establish_folders())
 	{
