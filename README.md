@@ -1,15 +1,15 @@
 # ethslurp
 Take a drink from the block chain
 
-#### $> ethslurp
+#### ethslurp
 
       Usage:   ethslurp [-n|-p|-s|-wf|-t|-v|-h] addr
 
 Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally prettyPrints or stores the data in various formats.
 
-  #### Where:
+#### Where:
 
-  	addr                   the ethereum address of the account or contract you wish to read
+  	addr                 the ethereum address of the account or contract you wish to read
   	-n  (or -nobackup)   do not save a timestamped backup file of the previous data file
   	-p  (or -pretty)     output data to screen in human readable format and quit
   	-s  (or -slurp)      pull fresh data from the blockchain
