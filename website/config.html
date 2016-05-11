@@ -33,32 +33,17 @@
     <div class="container">
       <section id="main_content">
 
-<h3>Installing and building the software</h3>
+<p>Return to the <a href=documentation.html>documentation</a> page.
 
-    <p>At the top if this and every page are links to download
-        the source code for this project. The package will
-        unpack itself into a folder. In that folder, you will find
-        a file called INSTALL. Follow the simple instructions
-        in that file to build 'ethslurp.'
+<h3>Introduction</h3>
 
-<h3>Command line</h3>
+    <p>The following information documents ethslup's configuration
+        file. Most of ethslurp's options are available through
+        the cli. The few feature which do not fit into the cli
+        are provided through a configuration file.
 
-<pre><code><h3> Usage:   ethslurp [-b|-p|-s|-v|-h] addr
+<h3>Configuration file</h3>
 
- Fetches data off the Ethereum block chain for an
- arbitrary account or smart contract. Optionally
- formats to output to your specification.
-
- Where:
-   addr	the address of the account or contract to slurp
-   -b	save a date stamped backup of the previous slurp
-   -p	pretty print the output json file
-   -s	slurp fresh data from the blockchain
-   -v	debug level: -v0 no debug output, -v3 most
-   -h	display this help screen
-</code></pre>
-
-<h3>Running the software the first time</h3>
     <p>The first time you run ethslurp, it will ask you for an
         API key from <a href=http://etherscan.io/apis>http://etherscan.io/apis</a>
         website. We do this because if we used our own API key for all

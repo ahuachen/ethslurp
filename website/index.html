@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <title>Ethslurp by Great-Hill-Corporation</title>
+    <title>Ethslurp - Drink the Blockchain</title>
     <script src=utils.js></script>
   </head>
 
@@ -33,58 +33,67 @@
     <div class="container">
       <section id="main_content">
 
-<h3>Welcome to EthSlurp.</h3>
+<h3>Welcome to EthSlurp</h3>
 
-    <p>Given the address of any Ethereum account or smart contract 'ethslurp' returns a list
-        of all transactions either to or from that account. For example,
+    <p>'slurp' the Ethereum blockchain extracting incoming and/or
+        outgoing transactions from a given address. With our flexible templating
+        language, you can format the output however you wish.
+        For example,
 
-    <pre>ethslurp 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</pre>
+    <pre><big> ethslurp 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</big></pre>
 
-    <p>returns all transactions to and from "The DAO." Try it out.<p>You will notice that the
-        format of the returned data is difficult to read. Use the -p option to pretty print the output.
-        Try this:
+    <p>returns all transactions both into and out of the "The DAO." If you
+        run the above command, you will notice that output is very
+        difficult to read. Use the -p option to pretty print the
+        output.
 
-    <pre>ethslurp -p 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</pre>
+        <pre><big> ethslurp -p 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</big></pre>
 
     There are many other options detailed in the <a href=documentation.html>documentation</a>.<p>
 
-<h3>What Can I Use It For</h3>
+<h3>What can I do with EthSlurp</h3>
 
-    <p>Let's say you're a gambler and want to participate in an Ethereum
-        gambling website. The website claims to pay out 99% of incoming
-        revenue. Use 'ethslurp' with the -ti (total income) and the -te
-        (total expended) options to check up on them.
+    <!-- p>Let's say you're an Ethereum gambler, and you want to bet on a
+        gambling website. The website provides an address, the source code,
+        and claims to pay out 99%. Like most people, you don't read source. Use
+        'ethslurp' to check that the code actually does what it says it does. -->
 
-    <p>Another use might be to keep track of your own smart contract. You can get
-        a report on all the gas spent by your contract, all its income, and any
-        expenditures. Wouldn't it be nice to know if the contract was making money?
+    <p>Let's say you run a smart contract. How do you account for it?
+        With 'ethslurp' you can create the information you need for
+        a profit and loss statement. You can even provide a time span.
+        Furhtermore, you can use the price feed (-pf) option to generate
+        your report in any fiat currency you want. Wouldn't it be nice
+        to know if your contracts are making any money?
 
-    <p>The best use we've found for 'ethslurp' is to run in the background of our
-        website in order to prepare block chain data customized to our needs. We
-        run the <a href=daoreporter.com>DAO Reporter</a> website where we present
-        personalized tracking of your ether's interactions with various contracts
-        and other accounts. Pay us a visit.
+    <p>We use a version of this software as the back-end of our website
+        <a href=http://daoreporter.com>DAO Reporter</a>. Of course, there are
+        many other uses for the software. If you think of a novel use,
+        please join us on our slack and let us know.
 
 <h3>Building the software</h3>
 
-    <p>We do not provide binaries (mostly because we don't know how). You have to download the source
-        code and compile it. Don't worry--it's easy. Information on building is provided on the 
+    <p>We do not provide binaries (mostly because we don't know how). You must
+        download the source code and compile it yourself. Don't worry--it's easy.
+        Information on how to build the software is provided on the
         <a href=documentation.html>documentation</a> page.
 
-    <p>We also don't know how to make a full-fledged package and there are a few
-        dependencies which may not resolve. Please email use with questions:
-        <a href="mailto:ethslurp@greathill.com">ethslurp@greathill.com</a></p>
+    <p>We also don't know how to make a full-fledged package, and there are a few
+        dependencies which may not resolve. Please join our git account and
+        help us out. Email use with questions:
+        <a href="mailto:info@ethslurp.com">info@ethslurp.com</a></p>
 
-<h3>Cautions and Warnings</h3>
+<h3>Cautions and warnings</h3>
 
-    <p>This software is pre-beta. We are working on making it as robust as possible. Please
-        use at your own risk. This software is provided as is and released into the public
-        domain by Great Hill Corporation.</p>
+    <p>This software is pre-beta. We are working on making it as robust as
+        possible, but it's in an early phase. Please use it at your own risk.
+        The software is provided as is, and is hereby released into the public
+        domain.</p>
 
-<h3>Support / Contact Us</h3>
+<h3>Support / contact us</h3>
 
-    <p>Having trouble? Check out our <a href="documentation.html">documentation</a> or
-        <a href="contact.html">contact support</a> and we’ll help you sort it out.</p>
+    <p>Having trouble? Check out our <a href="documentation.html">documentation</a>,
+        join our slack, or <a href="contact.html">contact support</a> and we’ll
+        help you sort it out.</p>
 
        </section>
     </div>
