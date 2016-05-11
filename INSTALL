@@ -1,0 +1,10 @@
+First download the software and unzip it.
+
+Then switch into the src folder
+
+and type 'make'
+
+This should build the software and create a file called 'ethslurp'
+
+You may run ethslurp by typing ./ethslurp on the command line
+

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Ethslurp by Great-Hill-Corporation</title>
+    <script src=utils.js></script>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>ethslurp</h1>
+        <h2>Drink from the block chain</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/Great-Hill-Corporation/ethslurp/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/Great-Hill-Corporation/ethslurp/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/Great-Hill-Corporation/ethslurp" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+      <div class="container">
+        <script>Menu("Documentation");</script>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+
+<h3>Installing and Building the Software:</h3>
+<p>At the top if this and every page are links to download the source code for the software to
+your local machine. When you unpack that file, you will see a file called INSTALL. Follow the
+simple instructions in that file to build and install ethslurp.
+
+<h3>Command line:</h3>
+
+<pre><code><h3>ethslurp
+
+Usage:   ethslurp [-b|-p|-s|-v|-h] addr
+
+Fetches data off the Ethereum block chain for an 
+arbitrary account or smart contract. Optionally 
+prettyPrints or stores the data in various formats.
+
+Where:
+
+addr	the address of the account or contract to slurp
+ -b	save a date stamped backup of the previous slurp
+ -p	pretty print the output json file
+ -s	pull fresh data from the blockchain
+ -v	debug level: -v0 no debug output, -v3 most
+ -h	display this help screen
+</code></pre>
+
+<h3>Running the software the first time:</h3>
+<p>The first time you run ethslurp, it will ask you for an API key from http://etherscan.io/apis website.
+We do this because if we used our own API key for all installed versions of this software, the
+number of requests to ehterscan.io would exceed the limit of api calls per second. If each user
+supplies their own API key, this problem is alliviated.
+
+<h3>Cached data:</h3>
+<p>Ethslurp pulls data from the block chain under two conditions. (1) if you supply the
+'-p' flag, and (2) if the last time you pulled data for the given slurp is older than
+five minutes. At all other times, ethslurp pulls the data from a local cache. We do this
+to minimize the number of times we hit the etherscan.io apis.
+
+<h3>Planned Improvements:</h3>
+We are working on reading directly from the Ethereum block chain databases. When that feature
+is completed we can eliminte the need to call into etherscan.io's web api. This will greatly
+improve the speed of the software and also remove the five minute caching requirement. Additionally
+you will no longer need an etherscan.io API key.
+  </div>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>
+
+
