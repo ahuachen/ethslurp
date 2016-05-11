@@ -32,57 +32,61 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>
-<a id="welcome-to-ethslurp" class="anchor" href="#welcome-to-ethslurp" aria-hidden="true">
-<span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to EthSlurp.</h3>
 
-<p>Ethslurp allows you to generate pretty-printed JSON 'slurps' of the blockchain, 
-reporting on transactions either 'sent' or 'received' or 'both' from particular Ethereum 
-addresses. For example, you may show all interactions with a particular smart contract or 
-DAO. Prove to yourself that the gambling site you're betting on is being as honest as they 
-claim to be. Using other command line programs you can easily sum up and analyze incoming 
-and outgoing ether into an address.</p>
+<h3>Welcome to EthSlurp.</h3>
 
-<h3>
-<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true">
-<span aria-hidden="true" class="octicon octicon-link"></span></a>How it Works</h3>
+    <p>Given the address of any Ethereum account or smart contract 'ethslurp' returns a list
+        of all transactions either to or from that account. For example,
 
-<p>The software currently works by using the etherscan.io web API. In future versions, 
-we hope to read directly from the block chain databases stored on a running node. If 
-you know how to do this, and you wish to help us out, please join. Because we use 
-etherscan.io's web interface, and there are limits on that interface, you must register 
-for an API key yourself. The first time you run our software, it will ask you for that 
-API key. Note: if we didn't do this and all installation of Ethslurp use our API key, 
-it would quickly exceed the etherscan.io API five requests per second limit.</p>
+    <pre>ethslurp 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</pre>
 
-<h3>
-<a id="building-the-software" class="anchor" href="#building-the-software" aria-hidden="true">
-<span aria-hidden="true" class="octicon octicon-link"></span></a>Building the software</h3>
+    <p>returns all transactions to and from "The DAO." Try it out.<p>You will notice that the
+        format of the returned data is difficult to read. Use the -p option to pretty print the output.
+        Try this:
 
-<p>We do not provide binaries. What you will be downloading is the source code, which should 
-compile on most systems. We don't know how to make a full-fledged package and there are a few 
-dependencies which may not resolve. Please email use with questions: 
-<a href="mailto:ethslurp@greathill.com">ethslurp@greathill.com</a></p>
+    <pre>ethslurp -p 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</pre>
 
-<h3>
-<a id="cautions-and-warnings" class="anchor" href="#cautions-and-warnings" aria-hidden="true">
-<span aria-hidden="true" class="octicon octicon-link"></span></a>Cautions and Warnings</h3>
+    There are many other options detailed in the <a href=documentation.html>documentation</a>.<p>
 
-<p>This software is pre-beta. We are working on making it as robust as possible. Please use 
-at your own risk. This software is provided as is and released into the public domain by 
-Great Hill Corporation.</p>
+<h3>What Can I Use It For</h3>
 
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true">
-<span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
+    <p>Let's say you're a gambler and want to participate in an Ethereum
+        gambling website. The website claims to pay out 99% of incoming
+        revenue. Use 'ethslurp' with the -ti (total income) and the -te
+        (total expended) options to check up on them.
 
-<p>Having trouble? Check out our <a href="documentation.html">documentation</a> or 
-<a href="contact.html">contact support</a> and we’ll help you sort it out.</p>
-      </section>
+    <p>Another use might be to keep track of your own smart contract. You can get
+        a report on all the gas spent by your contract, all its income, and any
+        expenditures. Wouldn't it be nice to know if the contract was making money?
+
+    <p>The best use we've found for 'ethslurp' is to run in the background of our
+        website in order to prepare block chain data customized to our needs. We
+        run the <a href=daoreporter.com>DAO Reporter</a> website where we present
+        personalized tracking of your ether's interactions with various contracts
+        and other accounts. Pay us a visit.
+
+<h3>Building the software</h3>
+
+    <p>We do not provide binaries (mostly because we don't know how). You have to download the source
+        code and compile it. Don't worry--it's easy. Information on building is provided on the 
+        <a href=documentation.html>documentation</a> page.
+
+    <p>We also don't know how to make a full-fledged package and there are a few
+        dependencies which may not resolve. Please email use with questions:
+        <a href="mailto:ethslurp@greathill.com">ethslurp@greathill.com</a></p>
+
+<h3>Cautions and Warnings</h3>
+
+    <p>This software is pre-beta. We are working on making it as robust as possible. Please
+        use at your own risk. This software is provided as is and released into the public
+        domain by Great Hill Corporation.</p>
+
+<h3>Support / Contact Us</h3>
+
+    <p>Having trouble? Check out our <a href="documentation.html">documentation</a> or
+        <a href="contact.html">contact support</a> and we’ll help you sort it out.</p>
+
+       </section>
     </div>
-
-    
-  </body>
+ </body>
 </html>
-
-
