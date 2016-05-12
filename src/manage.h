@@ -5,6 +5,7 @@
  --------------------------------------------------------------------------------*/
 
 #include "utillib/utillib.h"
+#include "transaction.h"
 
 //--------------------------------------------------------------------------------
 typedef SFInt32 (*CMDFUNC)  (SFInt32 nArgs, const SFString *args);

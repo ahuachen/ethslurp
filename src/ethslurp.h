@@ -6,26 +6,10 @@
 
 #include "manage.h"
 
-class BlockData
+//---------------------------------------------------------------------------------------------------
+inline SFBool isInternal(const SFString& field)
 {
-public:
-	SFString blockHash;
-	SFString blockNumber;
-	SFString contractAddress;
-	SFString cumulativeGasUsed;
-	SFString from;
-	SFString gas;
-	SFString gasPrice;
-	SFString gasUsed;
-	SFString hash;
-	SFString input;
-	SFString nonce;
-	SFString timeStamp;
-	SFString to;
-	SFString transactionIndex;
-	SFString value;
-	BlockData(void) {}
-	BlockData(const SFString& str);
-};
+	return field == "schema" || field == "deleted" || field == "handle" || (testOnly && field == "confirmations");
+}
 
 #endif

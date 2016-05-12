@@ -26,31 +26,112 @@
         </section>
       </div>
       <div class="container">
-        <script>Menu("Documentation");</script>
+        <script>Menu("Config");</script><br><script>DocMenu("config file");</script><p>
       </div>
     </header>
 
     <div class="container">
       <section id="main_content">
 
-<p>Return to the <a href=documentation.html>documentation</a> page.
-
 <h3>Introduction</h3>
 
-    <p>The following information documents ethslup's configuration
-        file. Most of ethslurp's options are available through
-        the cli. The few feature which do not fit into the cli
-        are provided through a configuration file.
+    <p>Many of ethslurp's options are available through
+        the command line interface (cli). Other features,
+        which do not fit easily into the cli, are accessible
+        through a configuration file which is documented
+        here. The file is called ethslurp.conf and is stored
+        in ethslurp's cache folder.
 
-<h3>Configuration file</h3>
+<h3>EthSlurp's cache folder and the config file</h3>
 
-    <p>The first time you run ethslurp, it will ask you for an
-        API key from <a href=http://etherscan.io/apis>http://etherscan.io/apis</a>
-        website. We do this because if we used our own API key for all
-        installed versions of this software, the number of requests
-        to ehterscan.io would exceed the limit of api calls per
-        second. If each user supplies their own API key, this
-        problem is alliviated.
+    <p>Each time the program slurps block chain data, it stores that
+        data in a binary format in a folder under the end user's
+        $HOME folder called ~/.ethslurp. We store the configuration
+        file (ethslurp.conf) in this same folder.
+
+    <p>Configuration items are stored in the ethslurp.conf file on a
+        single line (or, if more than one line, the line ends with
+        the continuation mark ('\'). Additionally, configuration
+        items are stored under an appropriate group header. The
+        group header stands on its own line and is surrounded by
+        square brackets:
+
+<pre><code> #--------------------------------------------------------------
+ # Contents of ethslurp.conf (lines starting with # are comments)
+ #--------------------------------------------------------------
+ [GROUP_HEADER_1]
+ config_item1=A value stored on a single line
+ config_item2=A series of values stored on multiple lines \
+    any continued line of which ends with a backslash.
+
+ [GROUP_HEADER_2]
+ other_item=Another item
+</code></pre>
+
+        <p>Individual configuration items are detailed below.
+
+<h3>Configuration items</h3>
+        <p><h6 style="display:inline">[SETTINGS] api_key</h6>:
+            This value is required in the current version of
+            ethslurp because we use the etherscan.io apis. Each
+            user must have thier own individual api key. We need
+            to do this this because if every user used our api
+            key, we would go over the per second limit on api
+            calls pretty quickly. The software will not work
+            until you provide your own key. In the future, we
+            will read the block chain data directly from the
+            block chain databases which will obviate the need
+            for this parameter.
+
+        <p><h6 style="display:inline">[SETTINGS] reset_rate</h6>:
+            By default ethslurp will only pull data from the
+            block chain once every five minutes. This pararameter
+            allows you to change the frequancy of update. The value
+            is in seconds (therefore it defaults to 300). The
+            lower limit on this value is 60 seconds (see above).
+
+        <p><h6 style="display:inline">[EXPORT] fmt</h6>:
+            By default the results of the slurp are not formatted.
+            In the special case of the -p (pretty print) command
+            line option the results of the slurp are presented in
+            a pretty print manner making them easier to read. You
+            may, however, wish to have the data presented in numerous
+            ways including tab seperated text files and/or comma
+            seperated values that can be opened in MS Excel. This
+            parameter allows you to control the format of the
+            exported data. It is further detailed <a href="export.html">here</a>.
+
+        <p><h6 style="display:inline">[SETTINGS] api_key</h6>: This value
+        is required in the current version of the software because
+        we use the etherscan.io apis. Each user of the software must
+        have thier own individual api key. We did this because
+        if every user was using our api key, we would go over
+        the per second limit on api calls. The software will note
+        work unless you get your own key. In the future, we will
+        try to read directly from the block chain data which will
+        obviate the need for this parameter.
+
+                This value
+        is required in the current version of the software because
+        we use the etherscan.io apis. Each user of the software must
+        have thier own individual api key. We did this because
+        if every user was using our api key, we would go over
+        the per second limit on api calls. The software will note
+        work unless you get your own key. In the future, we will
+        try to read directly from the block chain data which will
+        obviate the need for this parameter.
+
+                stored under a group header [EXAMPLE].
+        The format of this fileEach configuration item is stored on a single line in this file
+        (or the line ends with a continuation mark '\'). theadThe transactions that Ethslurp reads from the block chain
+        are written back to your hard drive in a format that makes
+        using the data easier. This data is stored in a cache file
+        in the user's home folder called ~/.ethslurp/slurps. Also
+        in the ~/.ethslurp file you will find a configuration file
+        called ~/.ethslurp/ethslurp.conf. In this file we store
+        various bits of useful information. You may open this file
+        with any text editor. The file's format is very obvious, therefore
+        we document only the options available below:
 
 <h3>Cached data</h3>
     <p>Ethslurp pulls data from the block chain under three conditions:

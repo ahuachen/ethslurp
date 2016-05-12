@@ -7,13 +7,19 @@
 //---------------------------------------------------------------------------------------------------
 CParams paramsEthSlurp[] =
 {
-	CParams("~addr",		"the ethereum address of the account or contract you wish to read"                                      ),
-	CParams( "-nobackup",	"do not save a timestamped backup file of the previous data file (data will be backed up by default)"   ),
-	CParams( "-pretty",		"output data to screen in human readable format and quit"                                               ),
-	CParams( "-slurp",      "pull fresh data from the blockchain"                                                                   ),
-	CParams( "-last",		"read from the last (most recently read) address"                                                       ),
-//	CParams( "-write:fmt",	"write the data in various formats (.txt only for now) with optional (on by default) backup"            ),
-	CParams( "",			"Fetches data off the Ethereum block chain for an arbitrary account or smart contract.\nOptionally prettyPrints or stores the data in various formats.\n" ),
+	CParams("~addr",		"the address of the account or contract to slurp"                      ),
+	CParams("-income",		"include income transactions only"                                     ),
+	CParams("-expense",		"include expenditures transaction only"                                ),
+	CParams("-date",		"specify a start date or date range"                                   ),
+//	CParams("-feed",		"specify a price feed (for example US dollars)"                        ),
+	CParams("-last",		"re-display the last slurp without providing address"                  ),
+//	CParams("-most",		"export only the most interesting data fields"                         ),
+	CParams("-slurp",		"force a slurp from the blockchain (ignore cache)"                     ),
+	CParams("-prettyPrint",	"pretty print the output optionally ':txt', ':csv', otherwise ':json'" ),
+//	CParams("-open",		"open the results in its associated editor"                            ),
+//	CParams("-backup",		"save a date stamped backup of the previous slurp"                     ),
+	CParams("-clear",		"clear all cached slurps"                                              ),
+	CParams( "",			"Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally formats the output to your specification.\n" ),
 };
 SFInt32 nParamsEthSlurp = sizeof(paramsEthSlurp) / sizeof(CParams);
 
@@ -27,37 +33,110 @@ extern SFBool   establish_folders(void);
 extern SFString homeFolder(void);
 
 //---------------------------------------------------------------------------------------------------
+SFString getDisplayFormat(SFBool prettyPrint)
+{
+	const CFieldList *fields = GETRUNTIME_CLASS(CTransaction)->m_FieldList;
+
+	SFString ret;
+	LISTPOS lPos = fields->GetFirstItem();
+	while (lPos)
+	{
+		SFString field = fields->GetNextItem(lPos)->getFieldName();
+		if (!isInternal(field))
+		{
+			if (!ret.IsEmpty())
+				ret += ",";
+			ret += "\"" + field + "\":\"[{" + toUpper(field) + "}]\"";
+		}
+	}
+	if (prettyPrint)
+	{
+		ret.Replace("\"","            \"");
+		ret.ReplaceAll("\",\"","\",            \"");
+		ret.ReplaceAll("}]\",", "}]\",\n");
+		ret.ReplaceAll(":",": ");
+		ret += "\n";
+	}
+	return "\n        {\n" + ret + "        },";
+}
+
+//---------------------------------------------------------------------------------------------------
 SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 {
 	SFString addr;
-    SFBool slurp = FALSE, prettyPrint=FALSE, readLast=FALSE, backup=TRUE;
+    SFBool slurp = FALSE, prettyPrint=FALSE, readLast=FALSE, backup=FALSE, incomeOnly=FALSE, expenseOnly=FALSE, openFile=FALSE;
     for (int i=1;i<nArgs;i++)
     {
-		if (args[i] == "-l" || args[i] == "-last")
+		if (args[i] == "-i" || args[i] == "-income")
+		{
+			incomeOnly = TRUE;
+
+		} else if (args[i] == "-e" || args[i] == "-expense")
+		{
+			expenseOnly = TRUE;
+
+		} else if (args[i] == "-d" || args[i] == "-date")
+		{
+			// date stuff
+			return usage(args[0], "date command not implemented");
+			
+		} else if (args[i] == "-f" || args[i] == "-feed")
+		{
+			// feed stuff
+			return usage(args[0], "price feed command not implemented");
+			
+		} else if (args[i] == "-l" || args[i] == "-last")
 		{
 			readLast = TRUE;
 			
-		} else if (args[i] == "-n" || args[i] == "-nobackup")
+		} else if (args[i] == "-m" || args[i] == "-most")
 		{
-			backup = FALSE;
-
+			// most command stuff
+			return usage(args[0], "most command not implemented");
+			
+		} else if (args[i] == "-s" || args[i] == "-slurp")
+		{
+			slurp = TRUE;
+			
 		} else if (args[i] == "-p" || args[i] == "-pretty"  || args[i] == "-prettyPrint")
 		{
 			prettyPrint = TRUE;
 
-		} else if (args[i] == "-s" || args[i] == "-save")
+		} else if (args[i] == "-t" || args[i] == "-totals")
 		{
-			slurp = TRUE;
+			// totals command stuff
+			return usage(args[0], "totals commands not implemented");
+
+		} else if (args[i] == "-o" || args[i] == "-open")
+		{
+			// open command stuff
+			openFile = TRUE;
+			return usage(args[0], "open command not implemented");
+
+		} else if (args[i] == "-b" || args[i] == "-backup")
+		{
+			backup = TRUE;
+			return usage(args[0], "backup command not implemented");
+			
+		} else if (args[i] == "-c" || args[i] == "-clear")
+		{
+			SFString unused1, unused2;
+			SFos::removeFolder(PATH_TO_SLURPS, unused1, unused2, TRUE);
+			establish_folders();
+			outScreen << "Cache files were cleared\n";
+			exit(1);
 
 		} else
 		{
+			if (args[i][0] == '-')
+				return usage(args[0], "Invalid option " + args[i]);
 			addr = args[i];
 		}
     }
 
 	if (addr.IsEmpty() && readLast)
 		addr = asciiFileToString(PATH_TO_ETH_SLURP+"lastRead.dat").Substitute("\n",EMPTY);
-
+	addr.MakeLower();
 	if (addr.IsEmpty())
 	{
 		SFString msg = "You must supply an Ethereum account or contract address. ";
@@ -81,73 +160,59 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 		contents = urlToString(url);
 		stringToAsciiFile(PATH_TO_SLURPS+addr+".txt", contents);
 	}
-	if (prettyPrint)
-		system((const char*)"cat " + PATH_TO_SLURPS+addr+".txt | python -m json.tool");
-	else
-		outScreen << contents;
-	outScreen << "\n";
-	/*
-	if (!visitQueue.Peek())
-		usage(args[0],"Specify a URL to get results");
 
-	SFString path = "/Users/jrush/source/EthSlurp/";
-	while (visitQueue.Peek())
+	SFInt32 nTrans = countOf('}', contents);
+	CTransaction *transactions = new CTransaction[nTrans];
+	SFInt32 of = nTrans; nTrans=0;
+	int cnt=5;
+	while (!contents.IsEmpty())
 	{
-		CWebPage *item = visitQueue.Pop();
-		if (verbose)
-			outErr << "popping: " << unencode(item->url) << SFString(' ', 100 - item->url.GetLength()) << "\r";
-		if (item->level+1 < maxLevel)
+		SFString trans = nextTokenClear(contents, '}');
+		CTransaction *cur = &transactions[nTrans];
+		cur->parseJson(trans);
+
+		if (incomeOnly && cur->to != addr)
 		{
-			SFString contents = urlToString(unencode(item->url));
-			if (toFile)
-				stringToAsciiFile(path + makeValidName_noDash(item->url)+".htm", contents);
-			SFString start    = item->url;
-			start.Replace("http://", EMPTY);
-			if (start.startsWith("/"))
-				start = start.Mid(1,start.Find("/"));
-			start = nextToken(start, '/');
-			if (stayOnSite && CWebPage::root.IsEmpty())
-				CWebPage::root = encode("http://" + start + "/");
-			contents.ReplaceAll("href", "\nhref");
-			while (!contents.IsEmpty())
-			{
-				SFString line = nextTokenClear(contents, '\n');
-				if (!extract || line.Contains("href="))
-				{
-					if (extract)
-					{
-						line = Strip(line.Mid(line.Find("href=")+5),'\"');
-						if (line.startsWith("/"))
-							line = "http://" + start + line;
-						line = nextTokenClear(line, '>');
-						line = nextTokenClear(line, '\"');
-						line = nextTokenClear(line, '\t');
-						line = nextTokenClear(line, '\n');
-						line = encode(line);
-					}
+			if (verbose)
+				outScreen << cur->Format("rejecting expentature transaction [{HASH}]\n");
 
-					if (!extract || line.Contains(start))
-					{
-						if (noParams)
-							line = nextTokenClear(line, '?');
-						SFBool ret = pushOnList(item->level+1, line);
-						if (ret && verbose)
-							outErr << "pushing: " << line << SFString(' ', 100 - line.GetLength()) << "\r";
-					}
-				}
-			}
+		} else if (expenseOnly && cur->from != addr)
+		{
+			if (verbose)
+				outScreen << cur->Format("rejecting income transaction [{HASH}]\n");
+
+		} else
+		{
+			nTrans++;
+			if (!(nTrans%(5+cnt))) { outScreen << "importing record " << nTrans+1 << " of " << of << "\r"; outScreen.Flush(); }
+			cnt--;
+			if (cnt==0) cnt=5;
 		}
-    }
-	outScreen << "found " << visitedList.GetCount() << " items" << SFString(' ', 90) << "\n";
-
-	LISTPOS lPos = visitedList.GetHeadPosition();
-	while (lPos)
-	{
-		CWebPage *item = visitedList.GetNext(lPos);
-		outScreen << unencode(item->url) << "\n";
-		delete item;
 	}
-*/
+	nTrans--;
+	outScreen << "importing record " << of << " of " << of << "\n";  outScreen.Flush(); // trans #" << transactions[nTrans-100].hash << "\n";
+
+	SFBool json = TRUE;
+	if (prettyPrint)
+	{
+		if (json)
+			outScreen << "{\n    \"message\": \"OK\",\n    \"result\": [";
+		SFString fmt = getDisplayFormat(prettyPrint);
+		for (int i=0;i<nTrans;i++)
+			outScreen << transactions[i].Format(fmt);
+		if (json)
+			outScreen << "\n    ],\n    \"status\": \"1\"\n}\n";
+	} else
+	{
+		SFString fmt = getDisplayFormat(FALSE);
+		for (int i=0;i<nTrans;i++)
+			outScreen << transactions[i].Format(fmt);
+//		outScreen << asciiFileToString(PATH_TO_SLURPS+addr+".txt");
+	}
+	outScreen << "\n";
+
+	delete [] transactions;
+
 	return RETURN_OK;/* all done */
 }
 
@@ -172,7 +237,8 @@ SFBool establish_folders(void)
 	SFBool exists = SFos::folderExists(PATH_TO_SLURPS);
 	if (!exists)
 	{
-		SFos::mkdir(PATH_TO_ETH_SLURP);
+		if (!SFos::folderExists(PATH_TO_ETH_SLURP))
+			SFos::mkdir(PATH_TO_ETH_SLURP);
 		SFos::mkdir(PATH_TO_SLURPS);
 		return SFos::folderExists(PATH_TO_SLURPS);
 	}

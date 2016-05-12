@@ -1,0 +1,19 @@
+
+  price feed command not implemented
+
+  Usage:   ethslurp [-c|-d|-e|-i|-l|-p|-s|-t|-v|-h] addr
+  Purpose: Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally formats the output to your specification.
+           
+  Where:
+	addr                 the address of the account or contract to slurp (required)
+	-c  (or -clear)      clear all cached slurps
+	-d  (or -date)       specify a start date or date range
+	-e  (or -expense)    include expenditures transaction only
+	-i  (or -income)     include income transactions only
+	-l  (or -last)       re-display the last slurp without providing address
+	-p  (or -prettyPrint)pretty print the output optionally ':txt', ':csv', otherwise ':json'
+	-s  (or -slurp)      force a slurp from the blockchain (ignore cache)
+	-t  (or -test)       generate intermediary files but do not execute the commands
+	-v  (or -verbose)    set verbose level. Follow with a number to set level (-v0 for silent)
+	-h  (or -help)       display this help screen
+

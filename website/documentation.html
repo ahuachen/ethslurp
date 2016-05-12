@@ -26,7 +26,7 @@
         </section>
       </div>
       <div class="container">
-        <script>Menu("Documentation");</script>
+        <script>Menu("Documentation");</script><br><script>DocMenu("index");</script>
       </div>
     </header>
 
@@ -41,19 +41,27 @@
         a file called INSTALL. Follow the simple instructions
         in that file to build 'ethslurp.'
 
-<h3>Command line</h3>
+<h3>Usage:</h3>
 
-<pre><code><h3> Usage:   ethslurp [-b|-p|-s|-v|-h] addr
+<pre><code><h3>
+ ethslurp [-i|-e|-d|-f|-l|-m|-s|-p:fmt|-t|-o|-b|-c|-v|-h] addr
 
  Fetches data off the Ethereum block chain for an
  arbitrary account or smart contract. Optionally
- formats to output to your specification.
+ formats the output to your specification.
 
  Where:
    addr	the address of the account or contract to slurp
+   -i	include income transactions only
+   -e	include expenditures transaction only
+   -d	specify a start date or date range<!--   -f	specify a price feed (for example US dollars) -->
+   -l	re-display the last slurp without providing address<!--   -m	export only the most interesting data fields -->
+   -s	force a slurp from the blockchain (ignore cache)
+   -p	pretty print the output
+          optionally ':txt', ':csv', otherwise ':json'<!--   -t	report only totals -->
+   -o	open the results in its associated editor
    -b	save a date stamped backup of the previous slurp
-   -p	pretty print the output json file
-   -s	slurp fresh data from the blockchain
+   -c	clear all cached slurps
    -v	debug level: -v0 no debug output, -v3 most
    -h	display this help screen
 </code></pre>
@@ -69,9 +77,10 @@
 
 <h3>Cached data</h3>
     <p>Ethslurp pulls data from the block chain under three conditions:
-        (1) the first time you slurp an address, (2) once every five
-        minutes, and (3) if you supply the '-s' flag. At all other
-        times, ethslurp pulls the data from a locally stored cache.
+        (1) the first time you slurp an address, (2) on subsequent
+        slurps of the same address if the previous slurp is older than
+        five minutes, and (3) if you supply the '-s' flag. At all other
+        times, ethslurp pulls its data from a locally stored cache.
         This is necessary to minimize the number of times the program
         hits the etherscan.io apis. You may change the refresh rate
         in a <a href=config.html>configuration file</a>.

@@ -14,6 +14,8 @@ SFInt32 nFuncs = sizeof(funcs) / sizeof(CCmdFunction);
 //--------------------------------------------------------------------------------
 int main(int argc, const char * argv[])
 {
+	CTransaction::registerClass();
+
 	//
 	// Invoked with 'manage cmdName args'
 	//

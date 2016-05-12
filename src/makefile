@@ -1,17 +1,20 @@
 OBJS = \
 ethslurp.o \
-manage.o
+manage.o \
+transaction.o \
+transaction_custom.o
 
-CPPFLAGS=-I.
+CPPFLAGS=-I. -I./utillib -I./people
 CFLAGS=-Wall -O2 -DLINUX
 
 SHIP=/Users/jrush/source
 SHIP_EXE=ethslurp
 GOLD=/Users/jrush/source
 
-LIBS= utillib/utillib.a /usr/lib/libcurl.dylib
+LIBS= people/peoplelib.a utillib/utillib.a /usr/lib/libcurl.dylib
 
 all:
+	cd people; make; cd
 	cd utillib; make; cd ..
 	make ship
 
@@ -28,10 +31,11 @@ ethslurp: $(OBJS) $(LIBS)
 	g++ $(CPPFLAGS) $(CFLAGS) -c $<
 
 cleanall:
+	cd people; make clean; cd ..
 	cd utillib; make clean; cd ..
 	make clean
 
 clean:
-	rm -f $(OBJS)
-	rm -f *.cgi
-	rm -f *~
+	@rm -f $(OBJS)
+	@rm -f *.cgi
+	@rm -f *~
