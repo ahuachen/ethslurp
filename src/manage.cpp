@@ -27,11 +27,11 @@ int main(int argc, const char * argv[])
 	if (!cmdFunc)
 	{
 		// The command was not found. Report and quit.
-		outScreen << "\n";
-		outScreen << " Usage: manage [ ";
+		outErr << "\n";
+		outErr << " Usage: manage [ ";
 		for (int i=0;i<nFuncs;i++)
-			outScreen << funcs[i].functionName << (i < nFuncs-1 ? " | " : "");
-		outScreen << " ]\nCompiled: " + SFString(__DATE__) + " : " + SFString(__TIME__) + "\n\n";
+			outErr << funcs[i].functionName << (i < nFuncs-1 ? " | " : "");
+		outErr << " ]\nCompiled: " + SFString(__DATE__) + " : " + SFString(__TIME__) + "\n\n";
 		return 0;
 	}
 
@@ -77,13 +77,13 @@ int usage(const SFString& cmd, const SFString& errMsg)
 	if (cmdFunc)
 	{
 		qsort(cmdFunc->params, cmdFunc->nParams, sizeof(CParams), sortCommand);
-		outScreen << "\n" << (!errMsg.IsEmpty() ? "  " + errMsg + "\n\n" : "");
-		outScreen << "  Usage:   " + cmd + " " << cmdFunc->options() << "\n";
-		outScreen << cmdFunc->purpose();
-		outScreen << cmdFunc->descriptions() << "\n";
+		outErr << "\n" << (!errMsg.IsEmpty() ? "  " + errMsg + "\n\n" : "");
+		outErr << "  Usage:   " + cmd + " " << cmdFunc->options() << "\n";
+		outErr << cmdFunc->purpose();
+		outErr << cmdFunc->descriptions() << "\n";
 	} else
 	{
-		outScreen << "Command '" << cmd << "' not found.\n";
+		outErr << "Command '" << cmd << "' not found.\n";
 	}
 
 	return RETURN_FAIL;
@@ -208,5 +208,6 @@ SFBool verbose  = FALSE;
 SFBool testOnly = FALSE;
 
 //--------------------------------------------------------------------------------
-CFileExportContext  outScreen;
-CErrorExportContext outErr;
+CFileExportContext   outScreen;
+CErrorExportContext  outErr_internal;
+CFileExportContext&  outErr = outErr_internal;

@@ -6,10 +6,4 @@
 
 #include "manage.h"
 
-//---------------------------------------------------------------------------------------------------
-inline SFBool isInternal(const SFString& field)
-{
-	return field == "schema" || field == "deleted" || field == "handle" || (testOnly && field == "confirmations");
-}
-
 #endif

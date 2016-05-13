@@ -3,58 +3,52 @@ echo "Running ethslurp test suite..."
 echo
 
 echo "	test1: default behaviour should show help"
+rm -f ~/.ethslurp/config.dat
 ethslurp -t >proposed/test1.txt
-#sleep 1s
 
 echo "	test2: slurp on known dead account"
 ethslurp -t 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test2.txt
+cat ~/.ethslurp/config.dat >>proposed/test1.txt
 sleep 1s
 
 echo "	test3: test last visited flag"
 ethslurp -t -l >proposed/test3.txt
-#sleep 1s
 
 echo "	test4: test prettyPrint flag"
-ethslurp -t -l -p >proposed/test4.txt
+ethslurp -t -l -f >proposed/test4.txt ; ./strip_confirms 4;
 sleep 1s
 
-echo "	test5: test tab delimited flag (not implemented)"
-ethslurp -t -l -p:txt >proposed/test5.txt
-#sleep 1s
+echo "	test5: test tab delimited flag"
+ethslurp -t -v -l -f:txt >proposed/test5.txt
 
-echo "	test6: test comma seperated value flag (not implemented)"
-ethslurp -t -l -p:csv >proposed/test6.txt
+echo "	test6: test comma seperated value flag"
+ethslurp -t -v -l -f:csv >proposed/test6.csv
+
+echo "	test7: test html flag"
+ethslurp -t -v -l -f:html >proposed/test7.html
 sleep 1s
 
-echo "	test7: extract income records only"
-ethslurp -t -v -i -p 0x682e426ea761db77bacd5acdce33ca122175daea >proposed/test7.txt
-#sleep 1s
+echo "	test8: extract income records only"
+ethslurp -t -v -i -f 0x682e426ea761db77bacd5acdce33ca122175daea >proposed/test8.txt
 
-echo "	test8: extract expense records only"
-ethslurp -t -v -e -p 0x682e426ea761db77bacd5acdce33ca122175daea >proposed/test8.txt
+echo "	test9: extract expense records only"
+ethslurp -t -v -e -f 0x682e426ea761db77bacd5acdce33ca122175daea >proposed/test9.txt
 sleep 1s
 
-echo "	test9: test date option (not implemented)"
-ethslurp -t -d -l -p 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test9.txt
-#sleep 1s
-
-echo "	test10: test feed option (not implemented)"
-ethslurp -t -f -l -p >proposed/test10.txt
-sleep 1s
+echo "	test10: test date option (not implemented)"
+ethslurp -t -d -l -f 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test10.txt
 
 echo "	test11: test open option (not implemented)"
-ethslurp -t -o -l -p >proposed/test11.txt
-#sleep 1s
+ethslurp -t -o -l -f >proposed/test11.txt
 
 echo "	test12: test backup option (not implemented)"
-ethslurp -t -b -l -p >proposed/test12.txt
+ethslurp -t -b -l -f >proposed/test12.txt
 sleep 1s
 
 echo "	test14: test cache clear option"
 ls ~/.ethslurp/slurps  >proposed/test14.txt
-ethslurp -t -c           >>proposed/test14.txt
+ethslurp -t -c        >>proposed/test14.txt
 ls ~/.ethslurp/slurps >>proposed/test14.txt
-#sleep 1s
 
 # now diff to see if anything changed
 echo

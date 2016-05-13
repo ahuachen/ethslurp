@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <title>Ethslurp - Drink the Blockchain</title>
+    <title>EthSlurp - Drink the Blockchain</title>
     <script src=utils.js></script>
   </head>
 
@@ -16,8 +16,8 @@
 
     <header>
       <div class="container">
-        <h1>ethslurp</h1>
-        <h2>Drink from the block chain</h2>
+        <h1>EthSlurp</h1>
+        <h2>Drink the block chain</h2>
 
         <section id="downloads">
           <a href="https://github.com/Great-Hill-Corporation/ethslurp/zipball/master" class="btn">Download as .zip</a>
@@ -26,7 +26,7 @@
         </section>
       </div>
       <div class="container">
-        <script>Menu("Config");</script><br><script>DocMenu("config file");</script><p>
+        <script>Menu("Config");</script><br><script>DocMenu("config file");</script>
       </div>
     </header>
 
@@ -35,12 +35,12 @@
 
 <h3>Introduction</h3>
 
-    <p>Many of ethslurp's options are available through
+    <p>Many of EthSlurp's options are available through
         the command line interface (cli). Other features,
         which do not fit easily into the cli, are accessible
         through a configuration file which is documented
         here. The file is called ethslurp.conf and is stored
-        in ethslurp's cache folder.
+        in EthSlurp's cache folder.
 
 <h3>EthSlurp's cache folder and the config file</h3>
 
@@ -73,7 +73,7 @@
 <h3>Configuration items</h3>
         <p><h6 style="display:inline">[SETTINGS] api_key</h6>:
             This value is required in the current version of
-            ethslurp because we use the etherscan.io apis. Each
+            EthSlurp because we use the etherscan.io apis. Each
             user must have thier own individual api key. We need
             to do this this because if every user used our api
             key, we would go over the per second limit on api
@@ -84,7 +84,7 @@
             for this parameter.
 
         <p><h6 style="display:inline">[SETTINGS] reset_rate</h6>:
-            By default ethslurp will only pull data from the
+            By default EthSlurp will only pull data from the
             block chain once every five minutes. This pararameter
             allows you to change the frequancy of update. The value
             is in seconds (therefore it defaults to 300). The
@@ -123,7 +123,7 @@
 
                 stored under a group header [EXAMPLE].
         The format of this fileEach configuration item is stored on a single line in this file
-        (or the line ends with a continuation mark '\'). theadThe transactions that Ethslurp reads from the block chain
+        (or the line ends with a continuation mark '\'). theadThe transactions that EthSlurp reads from the block chain
         are written back to your hard drive in a format that makes
         using the data easier. This data is stored in a cache file
         in the user's home folder called ~/.ethslurp/slurps. Also
@@ -134,10 +134,10 @@
         we document only the options available below:
 
 <h3>Cached data</h3>
-    <p>Ethslurp pulls data from the block chain under three conditions:
+    <p>EthSlurp pulls data from the block chain under three conditions:
         (1) the first time you slurp an address, (2) once every five
         minutes, and (3) if you supply the '-s' flag. At all other
-        times, ethslurp pulls the data from a locally stored cache.
+        times, EthSlurp pulls the data from a locally stored cache.
         This is necessary to minimize the number of times the program
         hits the etherscan.io apis. You may change the refresh rate
         in a <a href=config.html>configuration file</a>.

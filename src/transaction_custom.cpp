@@ -5,6 +5,7 @@
  *
  *------------------------------------------------------------------------*/
 
+#include "utillib.h"
 #include "transaction.h"
 
 // EXISTING_CODE

@@ -8,8 +8,6 @@
 
 #include "dates.h"
 #include "sfos.h"
-#include "string_table.h"
-#include "aes_encrypt.h"
 
 //---------------------------------------------------------------------------------------
 const SFTime latestDate   = SFTime(2200, 12, 31, 23, 59, 59);
@@ -639,22 +637,22 @@ SFString getViewTypeString(SFInt32 vt)
 	if (!viewTypesOK)
 	{
 		viewTypes[VT_FIRST]        = EMPTY;
-		viewTypes[VT_DAYLIST]      = LoadStringGH("Day List View");
-		viewTypes[VT_DAYGRID]      = LoadStringGH("Day Grid View");
-		viewTypes[VT_DAYPLANNER]   = LoadStringGH("Day Planner View");
-		viewTypes[VT_DAYREPORT]    = LoadStringGH("Day Report View");
-		viewTypes[VT_WEEKLIST]     = LoadStringGH("Week List View");
-		viewTypes[VT_WEEKGRID]     = LoadStringGH("Week Grid View");
-		viewTypes[VT_WEEKPLANNER]  = LoadStringGH("Week Planner View");
-		viewTypes[VT_WEEKREPORT]   = LoadStringGH("Week Report View");
-		viewTypes[VT_MONTHLIST]    = LoadStringGH("Month List View");
-		viewTypes[VT_MONTHGRID]    = LoadStringGH("Month Grid View");
-		viewTypes[VT_MONTHPLANNER] = LoadStringGH("Month Planner View");
-		viewTypes[VT_MONTHREPORT]  = LoadStringGH("Month Report View");
-		viewTypes[VT_YEARLIST]     = LoadStringGH("Year List View");
-		viewTypes[VT_YEARGRID]     = LoadStringGH("Year Grid View");
-		viewTypes[VT_YEARPLANNER]  = LoadStringGH("Year Planner View");
-		viewTypes[VT_YEARREPORT]   = LoadStringGH("Year Report View");
+		viewTypes[VT_DAYLIST]      = ("Day List View");
+		viewTypes[VT_DAYGRID]      = ("Day Grid View");
+		viewTypes[VT_DAYPLANNER]   = ("Day Planner View");
+		viewTypes[VT_DAYREPORT]    = ("Day Report View");
+		viewTypes[VT_WEEKLIST]     = ("Week List View");
+		viewTypes[VT_WEEKGRID]     = ("Week Grid View");
+		viewTypes[VT_WEEKPLANNER]  = ("Week Planner View");
+		viewTypes[VT_WEEKREPORT]   = ("Week Report View");
+		viewTypes[VT_MONTHLIST]    = ("Month List View");
+		viewTypes[VT_MONTHGRID]    = ("Month Grid View");
+		viewTypes[VT_MONTHPLANNER] = ("Month Planner View");
+		viewTypes[VT_MONTHREPORT]  = ("Month Report View");
+		viewTypes[VT_YEARLIST]     = ("Year List View");
+		viewTypes[VT_YEARGRID]     = ("Year Grid View");
+		viewTypes[VT_YEARPLANNER]  = ("Year Planner View");
+		viewTypes[VT_YEARREPORT]   = ("Year Report View");
 		viewTypesOK = TRUE;
 	};
 
@@ -796,150 +794,3 @@ SFTime snagDate(const SFString& dStr, const SFTime& def)
 
 	return SFTime(y,m,d,h,mn,s);
 }
-
-//---------------------------------------------------------------------------------------
-SFString unRotateStr(const SFString& iiIn, SFInt32 timeout, SFInt32 serr, SFBool oldVersion)
-{
-	SFString ii = iiIn;
-if (!oldVersion)
-{
-	serr=1;
-	// This thing must come in encrypted and it must have a cookie key set
-	if (ii.Left(4) != "!zzE" || (serr < 1 || serr > 4))
-		return ii;
-	ii = hard_decrypt(iiIn, serr);
-}
-	if (ii.IsEmpty())
-		return ii;
-	
-	SFString in = ii;
-	SFString ret;
-	SFInt32 len = atoi(in);
-	if (!len)
-		return "";
-	len -= 12;
-
-	SFInt32 f = in.Find("x0");
-	ASSERT(f!=-1);
-	in = in.Mid(f+1);
-	int i=0;
-	int cnt=1;
-	for (i=0;i<len;i++)
-	{
-		ASSERT(cnt < in.GetLength());
-		ret += in[cnt];
-		cnt += 2;
-	}
-	ret.Reverse();
-
-	SFString str  = ret;
-
-	SFInt32 find = ret.Find("|");
-	if (find != -1)
-	{
-		str  = ret.Left(find);
-		SFInt32  secsThen = atoi((const char *)ret.Mid(find+1));
-		SFInt32  secsNow  = atoi((const char *)Now().Format(FMT_SECSTODAY));
-		if (secsThen > secsNow)
-			secsNow += (24 * 60 * 60); // login spanned midnight
-		
-#ifdef _DEBUG
-		if (FALSE)
-#else
-		// If this command is timeout minutes old or older then fail
-		if (secsNow - secsThen > (timeout * 60)) 
-#endif
-			return "";
-	}
-	return str;
-}
-
-//---------------------------------------------------------------------------------------
-// serr is French for 'key'
-SFString rotateStr(const SFString& input, SFBool timed, SFInt32 serr, SFBool oldVersion)
-{
-	serr=1;
-
-	ASSERT(input.Find("|") == -1);
-
-	SFString in = input;
-	if (timed)  // do we want this to ever timeout?
-		in += ("|" + Now().Format(FMT_SECSTODAY));
-
-	int len  = (int)in.GetLength();
-	SFString ret = asString(len+12) + "x0";
-	int i=0;
-	for (i=len-1;i>=0;i--)
-	{
-		SFString s = in[i];
-		SFInt32 ch = 'a' + (RandomValue(0, 250)%25);
-		if (RandomValue(0,10) % 2)
-			ch = toupper((char)ch);
-		s += SFString((char)ch);
-		ret += s;
-	}
-
-	if (oldVersion || serr < 1 || serr > 4)
-		return ret;
-	return hard_encrypt(ret, serr); // french for key
-}
-
-//-----------------------------------------------------------------------------------------
-class CFileDater
-{
-public:
-	SFTime   fileDate;
-	SFString fileName;
-	SFString ignore;
-	CFileDater(void) { fileDate = earliestDate; }
-};
-
-//-----------------------------------------------------------------------------------------
-extern SFBool dateTheFile(SFString& fileName, void *data);
-SFBool dateTheFile(SFString& fileName, void *data)
-{
-	CFileDater *fd = (CFileDater*)data;
-	SFTime fD = SFos::fileLastModifyDate(fileName);
-	if (fD > fd->fileDate)
-	{
-		if (!fileName.endsWith(fd->ignore))
-		{
-		fd->fileDate = fD;
-		fd->fileName = fileName;
-	}
-	}
-	return TRUE;
-}
-
-#include "paths.h"
-//-----------------------------------------------------------------------------------------
-extern SFTime newestFileDateInFolder(const SFString& path, SFString *whichFilePtr, const SFString& ignore);
-SFTime newestFileDateInFolder(const SFString& path, SFString *whichFilePtr, const SFString& ignore)
-{
-	CFileDater fd;
-	fd.ignore = ignore;
-	forAllItemsInFolder(path, dateTheFile,  &fd, F_DEFAULT|F_FULL_PATHS);
-	if (whichFilePtr)
-		*whichFilePtr = fd.fileName;
-	return fd.fileDate;
-}
-
-/*
-//-----------------------------------------------------------------------------------------
-void checkFolderDate(const SFString& path, const SFString& folderIn, const SFString& fileIn)
-{
-	SFString folder = path + folderIn;
-	SFString file   = path + fileIn;
-	SFString newestFile;
-	
-	SFTime newestPDF = newestFileDateInFolder(folder, &newestFile, fileIn);
-	SFTime fileDate  = SFos::fileLastModifyDate(file);
-	if (newestPDF < fileDate)
-	{
-		CStringExportContext check;
-		check << "\tFile date:\t"   << fileDate.Format(FMT_DEFAULT)  << " (" << file.Substitute(path, "./")       << ")\n";
-		check << "\tFolder date:\t" << newestPDF.Format(FMT_DEFAULT) << " (" << newestFile.Substitute(path, "./") << ")\n";
-		reportIt(check, "Folder is out of date...");
-	}
-}
-*/

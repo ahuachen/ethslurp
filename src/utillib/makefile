@@ -3,49 +3,26 @@ cflags=-Wall -O2 -DLINUX
 product=utillib.a
 
 src= \
-aes_encrypt.cpp \
 attribute.cpp \
 basenode.cpp \
-cgilib.cpp \
-colors.cpp \
-colortable.cpp \
 config.cpp \
 curl_code.cpp \
 database.cpp \
 dates.cpp \
-dateselect.cpp \
+editableobject.cpp \
 editableobjectbase.cpp \
-element.cpp \
 exportcontext.cpp \
 fielddata.cpp \
 fieldlist.cpp \
-html.cpp \
-importcontext.cpp \
-jpg.cpp \
-list.cpp \
-mail.cpp \
-parser.cpp \
-paths.cpp \
-permission.cpp \
-point.cpp \
-rect.cpp \
 runtimeclass.cpp \
 sfarchive.cpp \
 sfdate.cpp \
-sffile.cpp \
-sffolder.cpp \
 sfos.cpp \
 sfstring.cpp \
 sftime.cpp \
 sftimeofday.cpp \
 sftimespan.cpp \
-string_table.cpp \
-units.cpp \
-version.cpp \
-visitor.cpp
-
-#matrix.cpp \
-#vector.cpp \
+version.cpp
 
 #-------------------------------------------------
 # probably don't have to change below this line

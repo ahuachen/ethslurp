@@ -4,7 +4,7 @@
  * Copyright 2013 - Great Hill Corporation.
  --------------------------------------------------------------------------------*/
 
-#include "utillib/utillib.h"
+#include "utillib.h"
 #include "transaction.h"
 
 //--------------------------------------------------------------------------------
@@ -58,8 +58,8 @@ int           sortCommand (const void *c1, const void *c2);
 //--------------------------------------------------------------------------------
 extern SFBool verbose;
 extern SFBool testOnly;
-extern CFileExportContext  outScreen;
-extern CErrorExportContext outErr;
+extern CFileExportContext   outScreen;
+extern CFileExportContext& outErr;
 
 //--------------------------------------------------------------------------------
 // Return codes for functions

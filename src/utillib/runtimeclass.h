@@ -73,7 +73,7 @@ public:
 		}
 };
 
-#define asHTML() getRuntimeClass()->getHTML(getString("subCmd"), getSimpleServer()->isLoggedIn())
+#define asHTML() getRuntimeClass()->getHTML(getString("subCmd"), FALSE); //getSimpleServer()->isLoggedIn())
 
 //------------------------------------------------------------
 #define GETRUNTIME_CLASS(CLASS_NAME) \

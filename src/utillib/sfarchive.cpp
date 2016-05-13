@@ -65,20 +65,6 @@ SFArchive& SFArchive::operator<<(const SFAttribute& attr)
 	return *this;
 }
 
-SFArchive& SFArchive::operator<<(const CDoublePoint& pt)
-{
-	if (isWriting())
-		*m_writeFile << pt << m_fieldEnd;
-	return *this;
-}
-
-SFArchive& SFArchive::operator<<(const CDoubleRect& rect)
-{
-	if (isWriting())
-		*m_writeFile << rect << m_fieldEnd;
-	return *this;
-}
-
 ///////////////////////////////////////////////////////////////////
 SFArchive& SFArchive::operator>>(char& c)
 {
@@ -133,20 +119,6 @@ SFArchive& SFArchive::operator>>(SFAttribute& attr)
 {
 	if (isReading())
 		*m_readFile >> attr;
-	return *this;
-}
-
-SFArchive& SFArchive::operator>>(CDoublePoint& pt)
-{
-	if (isReading())
-		*m_readFile >> pt;
-	return *this;
-}
-
-SFArchive& SFArchive::operator>>(CDoubleRect& rect)
-{
-	if (isReading())
-		*m_readFile >> rect;
 	return *this;
 }
 

@@ -4,7 +4,8 @@
  * All Rights Reserved
  *
  *------------------------------------------------------------------------*/
-#include "peopledatabase.h"
+#include "utillib.h"
+#include "fielddata.h"
 #include "editableobject.h"
 
 //---------------------------------------------------------------------------------------------
@@ -19,8 +20,8 @@ CServerBase::CServerBase(void)
 //---------------------------------------------------------------------------
 void CServerBase::establishCookie(void)
 {
-	if (m_theCookie == "not-set")
-		m_theCookie = cgi_uCookie();
+//	if (m_theCookie == "not-set")
+//		m_theCookie = cgi_uCookie();
 }
 
 //---------------------------------------------------------------------------
@@ -187,6 +188,6 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 //---------------------------------------------------------------------------
 SFString CServerBase::getStringBase(const SFString& fieldName, const SFString& defVal) const
 {
-    return getString_unSafe(fieldName, defVal);
+    return ""; //getString_unSafe(fieldName, defVal);
 }
 

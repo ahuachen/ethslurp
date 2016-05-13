@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <title>Ethslurp - Drink the Blockchain</title>
+    <title>EthSlurp - Drink the Blockchain</title>
     <script src=utils.js></script>
   </head>
 
@@ -16,8 +16,8 @@
 
     <header>
       <div class="container">
-        <h1>ethslurp</h1>
-        <h2>Drink from the block chain</h2>
+        <h1>EthSlurp</h1>
+        <h2>Drink the block chain</h2>
 
         <section id="downloads">
           <a href="https://github.com/Great-Hill-Corporation/ethslurp/zipball/master" class="btn">Download as .zip</a>
@@ -39,7 +39,7 @@
         the source code for this project. The package will
         unpack itself into a folder. In that folder, you will find
         a file called INSTALL. Follow the simple instructions
-        in that file to build 'ethslurp.'
+        in that file to build EthSlurp.
 
 <h3>Usage:</h3>
 
@@ -54,7 +54,7 @@
    addr	the address of the account or contract to slurp
    -i	include income transactions only
    -e	include expenditures transaction only
-   -d	specify a start date or date range<!--   -f	specify a price feed (for example US dollars) -->
+   -d	specify a start date or date range
    -l	re-display the last slurp without providing address<!--   -m	export only the most interesting data fields -->
    -s	force a slurp from the blockchain (ignore cache)
    -p	pretty print the output
@@ -67,7 +67,7 @@
 </code></pre>
 
 <h3>Running the software the first time</h3>
-    <p>The first time you run ethslurp, it will ask you for an
+    <p>The first time you run EthSlurp, it will ask you for an
         API key from <a href=http://etherscan.io/apis>http://etherscan.io/apis</a>
         website. We do this because if we used our own API key for all
         installed versions of this software, the number of requests
@@ -76,11 +76,11 @@
         problem is alliviated.
 
 <h3>Cached data</h3>
-    <p>Ethslurp pulls data from the block chain under three conditions:
+    <p>EthSlurp pulls data from the block chain under three conditions:
         (1) the first time you slurp an address, (2) on subsequent
         slurps of the same address if the previous slurp is older than
         five minutes, and (3) if you supply the '-s' flag. At all other
-        times, ethslurp pulls its data from a locally stored cache.
+        times, EthSlurp pulls its data from a locally stored cache.
         This is necessary to minimize the number of times the program
         hits the etherscan.io apis. You may change the refresh rate
         in a <a href=config.html>configuration file</a>.

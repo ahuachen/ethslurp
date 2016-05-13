@@ -1,8 +1,8 @@
 #ifndef _TRANSACTION_H_
 #define _TRANSACTION_H_
 
-//---------------------------------------------------------------------------
-#include "peoplelib.h"
+#include "utillib.h"
+#include "editableobject.h"
 
 //--------------------------------------------------------------------------
 class CTransaction;

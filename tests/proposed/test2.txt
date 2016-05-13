@@ -1,4 +1,6 @@
 Slurping 0x713b73c3994442b533e6a083ec968e40606810ec
+Checking cache...
+Address cache not found. Reading from block chain...
 importing record 9 of 17importing record 15 of 17importing record 17 of 17
 
         {

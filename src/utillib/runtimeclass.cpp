@@ -125,54 +125,27 @@ CBuiltIn::CBuiltIn(ghRuntimeClass *pClass, const SFString& className, SFInt32 si
 	pClass->m_CreateFunc    = createFunc;
 }
 
-//-----------------------------------------------------------------------------------------
-SFString ghRuntimeClass::getHTML(const SFString& subCmd, SFBool isLoggedIn) const
+#include "basenode.h"
+//--------------------------------------------------------------------------------
+SFString nextChunk_common(const SFString& fieldIn, const SFString& cmd, const CBaseNode *node)
 {
-	CStringExportContext ctx;
-	{CTable table(ctx, "width=100% cellspacing=5");
-		{CRow row(ctx, " bgcolor=tan");
-			{CColumn col(ctx, "colspan=2");
-				ctx << getClassNamePtr();
-			}
-		}
-		LISTPOS lPos = GetFieldList()->GetFirstItem();
-		while (lPos)
-		{
-			CFieldData *field = GetFieldList()->GetNextItem(lPos);
-			SFString fn = toUpper(field->getFieldName());
-			ctx << "[";
-			{CRow row(ctx, "");
-				{CColumn col(ctx);
-					ctx << "{p:" << fn << "}:";
-				}
-				ctx << "][";
-				{CColumn col(ctx, "align=right valign=top");
-					if (field->getFieldType() & TS_ARRAY)
-					{
-						if (!(subCmd%"add" || subCmd%"edit"))
-							ctx << "{" << fn << "}";
-						else
-							ctx << "{NULL}Not editable";
-						
-					} else if (field->getFieldType() & TS_LABEL)
-					{
-						ctx << "{" << fn << "}";
-						
-					} else
-					{
-						ctx << "{";
-						if (subCmd%"add" || subCmd%"edit")
-							ctx << "f:";
-						ctx << fn << "}";
-					}
-				}
-			}
-			ctx << "]";
-		}
+	SFString className = node->getRuntimeClass()->getClassNamePtr();
+	switch (tolower(fieldIn[0]))
+	{
+			if ( fieldIn % "deleted" ) return asString(node->isDeleted());;
+			break;
+		case 'h':
+			if ( fieldIn % "handle" ) return asString(node->getHandle());
+			break;
+		case 'n':
+			if ( fieldIn % "null" ) return "<x>";
+			break;
+		case 's':
+			if ( fieldIn % "schema" ) return asString(node->getSchema());
+			break;
+		default:
+			break;
 	}
-
-	if (isLoggedIn)
-		ctx.str.Replace("{HANDLE}", "{HANDLE}][ {EDIT}][ {DELETE}");
-
-	return ctx.str;
+	
+	return EMPTY;
 }

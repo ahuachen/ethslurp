@@ -4,17 +4,16 @@ manage.o \
 transaction.o \
 transaction_custom.o
 
-CPPFLAGS=-I. -I./utillib -I./people
+CPPFLAGS=-I. -I./utillib
 CFLAGS=-Wall -O2 -DLINUX
 
 SHIP=/Users/jrush/source
 SHIP_EXE=ethslurp
 GOLD=/Users/jrush/source
 
-LIBS= people/peoplelib.a utillib/utillib.a /usr/lib/libcurl.dylib
+LIBS= utillib/utillib.a /usr/lib/libcurl.dylib
 
 all:
-	cd people; make; cd
 	cd utillib; make; cd ..
 	make ship
 

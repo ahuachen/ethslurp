@@ -1145,8 +1145,6 @@ inline SFInt32 stringFromBinaryBuffer(char *s, SFString& ret)
 	return sizeof(SFInt32) + len;
 }
 
-#include "string_table.h"
-
 #define STRIP_DROP(sss) ((sss % LoadStringGH("No Value") || sss % "select...") ? EMPTY : sss);
 #define truncPad(str, size) (size == BAD_NUMBER ? str : padRight(str.Left(size), size))
 

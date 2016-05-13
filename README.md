@@ -1,5 +1,5 @@
 # ethslurp
-Take a drink from the block chain
+Drink the block chain
 
 #### ethslurp
 

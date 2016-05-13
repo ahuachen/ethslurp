@@ -30,7 +30,7 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 	const CTransaction *tra = tr->getDataPtr();
 
 	// Give common (edit, delete, etc.) code a chance to override
-	SFString ret = nextChunk_common(fieldIn, getString("cmd"), tra);
+	SFString ret = nextChunk_common(fieldIn, EMPTY, tra);
 	if (!ret.IsEmpty())
 		return ret;
 	

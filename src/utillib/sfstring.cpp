@@ -1047,69 +1047,6 @@ SFString snagField(const SFString& in, const SFString& field, const SFString& de
 	return ret;
 }
 
-//---------------------------------------------------------------------------------------
-SFString snagEmail(const SFString& email)
-{
-	if (!IsValidEmail(email))
-		return EMPTY;
-	return "<a href=mailto:" + email + ">" + email + "</a>";
-}
-
-//---------------------------------------------------------------------------------------
-SFString snagURL(const SFString& url)
-{
-	if (!isURL(url))
-		return EMPTY;
-	return "<a target=top href=" + url + ">" + url + "</a>";
-}
-
-//---------------------------------------------------------------------------------------
-static SFBool isURL_base(const SFString& test, SFBool testRel=FALSE)
-{
-	if (test.Find("://")!=-1)
-		return TRUE;
-	if (testRel && test.GetLength() && (test[0] == '.' || test[0] == '/'))
-		return TRUE;
-	return FALSE;
-}
-
-//---------------------------------------------------------------------------------------
-SFBool isURL(const SFString& test)
-{
-	return isURL_base(test, TRUE);
-}
-
-//---------------------------------------------------------------------------------------
-SFBool isAbsolutePath(const SFString& test)
-{
-	if (test.IsEmpty())
-		return FALSE;
-
-	// string either starts with a '/' or.... (mostly linux)
-	if (test[0] == '/' || test[0] == '\\')
-		return TRUE;
-
-    if (test.GetLength() < 2)
-        return FALSE;
-
-	// it starts with a drive letter then a colon (mostly windows)
-	return (test[1] == ':');
-}
-
-//---------------------------------------------------------------------------------------
-SFBool isRelativePath(const SFString& test)
-{
-	return (!isAbsolutePath(test));
-}
-
-//---------------------------------------------------------------------------------------
-SFString toRelativePath(const SFString& root, const SFString& path)
-{
-	SFString ret = path;
-	ret.Replace(root, "./");
-	return ret;
-}
-
 const char* CHR_VALID_NAME  = "\t\n\r()<>[]{}`\\|; " "'!$^*~@" "?&#+%" ",:/=\"";
 const char* CHR_ALLOW_URL   =                              "@" "?&#+%" ",:/=\"";
 const char* CHR_ALLOW_EMAIL =                        "'!$^*~@" "?&#+%";
@@ -1132,44 +1069,6 @@ SFString makeValidName_noDash(const SFString& inOut)
 {
 	SFString out = makeValidName(inOut);
 	out.ReplaceAll("-", "_");
-	return out;
-}
-
-//---------------------------------------------------------------------------------------
-SFString markURLs(const SFString& input)
-{
-	SFString in = input;
-
-	SFString repStr = CHR_VALID_NAME;
-	repStr.ReplaceAny(CHR_ALLOW_URL, EMPTY);
-	in.ReplaceAll("</",   "_");
-	in.ReplaceAny(repStr, "_");
-
-	SFString list;
-	while (!in.IsEmpty())
-	{
-		SFString part = nextTokenClear(in, '_');
-
-		if (isURL_base(part) && !list.Contains(part))
-			list += (part + "|");
-
-		if (IsValidEmail(part) && !list.Contains(part))
-			list += (part + "|");
-	}
-	if (list.IsEmpty())
-		return input;
-
-	SFString out = input;
-	while (!list.IsEmpty())
-	{
-		SFString part = nextTokenClear(list, '|');
-		if (isURL_base(part))
-			out.ReplaceAll(part, snagURL  (part));
-		if (IsValidEmail(part))
-			out.ReplaceAll(part, snagEmail(part));
-		list.ReplaceAll(part + "|", EMPTY);
-	}
-
 	return out;
 }
 

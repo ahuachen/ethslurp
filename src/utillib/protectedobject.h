@@ -71,9 +71,9 @@ private:
 //			m_name       = EMPTY;
 //			m_group      = EMPTY;
 //			m_objectid   = EMPTY;
-			m_defPerm    = PERMISSION_VIEW;
-			m_minPerm    = PERMISSION_NONE;
-			m_fallBack   = PERMISSION_VIEW;
+			m_defPerm    = 0;
+			m_minPerm    = 0;
+			m_fallBack   = 0;
 			m_deleted    = FALSE;
 			m_hidden     = FALSE;
 		}

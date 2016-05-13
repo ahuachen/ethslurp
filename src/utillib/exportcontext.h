@@ -7,12 +7,9 @@
  *
  *------------------------------------------------------------------------*/
 
-#include "colortable.h"
 #include "attribute.h"
 #include "sfstring.h"
 #include "sftime.h"
-#include "point.h"
-#include "rect.h"
 
 class CExportContext
 {
@@ -35,8 +32,6 @@ public:
 	virtual CExportContext& operator<<(const SFString& str);
 	virtual CExportContext& operator<<(const SFTime& tm);
 	virtual CExportContext& operator<<(const SFAttribute& attr);
-	virtual CExportContext& operator<<(const CDoublePoint& pt);
-	virtual CExportContext& operator<<(const CDoubleRect& rect);
 
 	virtual SFString tabs      (SFInt32 add=0) { return SFString(tCh, nTabs+add); }
 	virtual SFString inc       (void)          { SFString ret = SFString(tCh, nTabs); nTabs++; return ret; }

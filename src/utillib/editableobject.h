@@ -7,7 +7,6 @@
  *
  *------------------------------------------------------------------------*/
 
-class CPerson;
 class CFieldList;
 class CServerBase;
 

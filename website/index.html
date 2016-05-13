@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <title>Ethslurp - Drink the Blockchain</title>
+    <title>EthSlurp - Drink the Blockchain</title>
     <script src=utils.js></script>
   </head>
 
@@ -16,8 +16,8 @@
 
     <header>
       <div class="container">
-        <h1>ethslurp</h1>
-        <h2>Drink from the block chain</h2>
+        <h1>EthSlurp</h1>
+        <h2>Drink the block chain</h2>
 
         <section id="downloads">
           <a href="https://github.com/Great-Hill-Corporation/ethslurp/zipball/master" class="btn">Download as .zip</a>
@@ -35,40 +35,42 @@
 
 <h3>Welcome to EthSlurp</h3>
 
-    <p>'slurp' the Ethereum blockchain extracting incoming and/or
-        outgoing transactions from a given address. With our flexible templating
-        language, you can format the output however you wish.
+    <p>EthSlurp allows you to 'slurp' the Ethereum blockchain extracting
+        transactions from any Ethereum address, including smart contracts.
         For example,
 
     <pre><big> ethslurp 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</big></pre>
 
-    <p>returns all transactions both into and out of the "The DAO." If you
-        run the above command, you will notice that output is very
-        difficult to read. Use the -p option to pretty print the
-        output.
+    <p>returns every external transaction, both in to and out of, "The DAO."
+        However, if you run the above command (don't it takes a long time),
+        you will get JSON formatted data--that is, computer gobbeldy-gook.
+
+    <p>This is where EthSlurp shines. Using the pretty print (-p) option
+        you can make the output human readable.
 
         <pre><big> ethslurp -p 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</big></pre>
 
-    There are many other options detailed in the <a href=documentation.html>documentation</a>.<p>
+    <p>It's even better than that. The output format is fully customizable using
+        a feature called <a href=export.html>display strings</a>. You
+        can choose which fields to export, which fields to ignore,
+        what format the export takes.
+
+    <p>For example, by changing a single configuration line, you can create
+        a .csv file that can be opened in MS Excel, or an HTML web page.
+        There are many other options detailed in the <a href=documentation.html>documentation</a>.<p>
 
 <h3>What can I do with EthSlurp</h3>
 
-    <!-- p>Let's say you're an Ethereum gambler, and you want to bet on a
-        gambling website. The website provides an address, the source code,
-        and claims to pay out 99%. Like most people, you don't read source. Use
-        'ethslurp' to check that the code actually does what it says it does. -->
+    <p>Let's say you've deployed a smart contract. How do you account for it?
+        With EthSlurp you can create the information you need to
+        fully account for all the ins and outs of your contact. You
+        can even filter the transactions by date. Wouldn't it be nice
+        to finally know if your contracts are making any money?
 
-    <p>Let's say you run a smart contract. How do you account for it?
-        With 'ethslurp' you can create the information you need for
-        a profit and loss statement. You can even provide a time span.
-        Furhtermore, you can use the price feed (-f) option to generate
-        your report in any fiat currency you want. Wouldn't it be nice
-        to know if your contracts are making any money?
-
-    <p>We use a version of this software as the back-end of our website
+    <!-- p>We use a version of this software as the back-end of our website
         <a href=http://daoreporter.com>DAO Reporter</a>. Of course, there are
         many other uses for the software. If you think of a novel use,
-        please join us on our slack and let us know.
+        please join us on our slack and let us know. -->
 
 <h3>Building the software</h3>
 
