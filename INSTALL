@@ -1,10 +1,24 @@
-First download the software and unzip it.
+Thanks for downloading the source code for building EthSlurp.
 
-Then switch into the src folder
+Please follow these instructions to compile and use the software.
+These instructions assume you already have a C++ compiler and a make
+system installed on your computer:
 
-and type 'make'
+1. Download this software and unzip it into a temporary folder.
 
-This should build the software and create a file called 'ethslurp'
+2. Open a command prompt or terminal window on your system.
 
-You may run ethslurp by typing ./ethslurp on the command line
+3. Find the unzipped folder and, from there, find the ./src
+    subfolder. Change into the ./src folder.
 
+4. From the command line type the command 'make' and press enter.
+
+Building the software should be as simple as that. From here all
+you need to do is copy or move the executable (it's called ethslurp
+and it's in this folder) to a folder in your $PATH.
+
+Run ./ethslurp and a help screen should appear. If it does, you're
+ready to start slurping.
+
+Bon chance
+info@greathill.com

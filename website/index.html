@@ -41,55 +41,54 @@
 
     <pre><big> ethslurp 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</big></pre>
 
-    <p>returns every external transaction, both in to and out of, "The DAO."
-        However, if you run the above command (don't it takes a long time),
-        you will get JSON formatted data--that is, computer gobbeldy-gook.
+    <p>returns all transactions, both in to and out of, "The DAO."
+        If you run the above command--don't it takes a long time--you
+        will get JSON formatted data, in other words, computer gobbeldy-gook.
 
-    <p>This is where EthSlurp shines. Using the pretty print (-p) option
+    <p>This is where EthSlurp comes in. Using the formatting (-f) option
         you can make the output human readable.
 
         <pre><big> ethslurp -p 0xbb9bc244d798123fde783fcc1c72d3bb8c189413</big></pre>
 
-    <p>It's even better than that. The output format is fully customizable using
-        a feature called <a href=export.html>display strings</a>. You
-        can choose which fields to export, which fields to ignore,
-        what format the export takes.
+    <p>It's even better than that. The format of the output is fully customizable
+        using a feature called <a href=export.html>display strings</a>. Choose
+        which fields to include, which fields to ignore, and exactly what format
+        the output takes.
 
-    <p>For example, by changing a single configuration line, you can create
-        a .csv file that can be opened in MS Excel, or an HTML web page.
-        There are many other options detailed in the <a href=documentation.html>documentation</a>.<p>
+    <p>For example, by changing a single line in a configuration file, you can
+        create a tab delimited text file, a comma seperated .csv file that will
+        open directly in MS Excel, or an HTML web page. There are many other
+        options detailed fully in our <a href=documentation.html>documentation</a>.<p>
 
-<h3>What can I do with EthSlurp</h3>
+<h3>Why would I need to do that?</h3>
 
-    <p>Let's say you've deployed a smart contract. How do you account for it?
-        With EthSlurp you can create the information you need to
-        fully account for all the ins and outs of your contact. You
-        can even filter the transactions by date. Wouldn't it be nice
-        to finally know if your contracts are making any money?
-
-    <!-- p>We use a version of this software as the back-end of our website
-        <a href=http://daoreporter.com>DAO Reporter</a>. Of course, there are
-        many other uses for the software. If you think of a novel use,
-        please join us on our slack and let us know. -->
+    <p>Let's say you've deployed a smart contract. How do you know what's
+        going on with it? With EthSlurp you can create the information you
+        need to fully account for all the incoming and outgoing ether in
+        your contact. You can even filter the transactions by date. Wouldn't
+        it be nice to finally know on a monthly or weekly basis if your
+        contracts are even making any money?
 
 <h3>Building the software</h3>
 
-    <p>We do not provide binaries (mostly because we don't know how). You must
-        download the source code and compile it yourself. Don't worry--it's easy.
-        Information on how to build the software is provided on the
-        <a href=documentation.html>documentation</a> page.
+    <p>Currently (pre-beta), we do not provide binaries (mostly because we
+        don't know how). You must download the source code and compile it
+        yourself--but don't worry--it's extremely easy. Information on building
+        the software is provided on the <a href=documentation.html>documentation</a>
+        page.
 
-    <p>We also don't know how to make a full-fledged package, and there are a few
-        dependencies which may not resolve. Please join our git account and
-        help us out. Email use with questions:
+    <p>We also do not know how to make a full-fledged package. There may be a few
+        dependencies which may not resolve during the build. Please contact us
+        if that happens, and we will respond quickly. Email us with questions:
         <a href="mailto:info@ethslurp.com">info@ethslurp.com</a></p>
 
 <h3>Cautions and warnings</h3>
 
-    <p>This software is pre-beta. We are working on making it as robust as
-        possible, but it's in an early phase. Please use it at your own risk.
-        The software is provided as is, and is hereby released into the public
-        domain.</p>
+    <p>This software is pre-beta. We are constantly working to make the software
+        as robust as possible, but we're still in the early phases. Use the software
+        at your own risk. We make no representation as to its fitness for any
+        purpose. The software is provided as is, and is hereby released into
+        the public domain.</p>
 
 <h3>Support / contact us</h3>
 
