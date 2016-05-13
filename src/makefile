@@ -38,3 +38,4 @@ clean:
 	@rm -f $(OBJS)
 	@rm -f *.cgi
 	@rm -f *~
+	@rm -f .DS_Store

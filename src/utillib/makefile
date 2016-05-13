@@ -54,3 +54,4 @@ cleanall:
 
 clean:
 	-@$(RM) -f $(product) $(objects) 2> /dev/null
+	@rm .DS_Store
