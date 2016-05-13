@@ -1,5 +1,5 @@
 # ethslurp
-Drink the block chain
+Drink the block chain (http://ethslurp.com)
 
 #### ethslurp
 
