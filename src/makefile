@@ -1,41 +1,40 @@
-OBJS = \
-ethslurp.o \
-manage.o \
-transaction.o \
-transaction_custom.o
+cflags=-Wall -O2 -DLINUX -I. -I./utillib
 
-CPPFLAGS=-I. -I./utillib
-CFLAGS=-Wall -O2 -DLINUX
+product=ethslurp
 
-SHIP=/Users/jrush/source
-SHIP_EXE=ethslurp
-GOLD=/Users/jrush/source
+libs=utillib/utillib.a /usr/lib/libcurl.dylib
 
-LIBS= utillib/utillib.a /usr/lib/libcurl.dylib
+src= \
+ethslurp.cpp \
+manage.cpp \
+transaction.cpp \
+transaction_custom.cpp
+
+#-------------------------------------------------
+# probably don't have to change below this line
+
+objects = $(patsubst %.cpp,objs/%.o,$(src))
 
 all:
 	cd utillib; make; cd ..
-	make ship
+	@echo "$(product) build started"
+	@echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	@make $(product)
+	@echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-ship: ethslurp
-	@strip ethslurp
-	@cp -p ethslurp $(SHIP)/$(SHIP_EXE)
-	@rm ethslurp
-	@echo "ethslurp built into $(SHIP)/$(SHIP_EXE)"
+$(product): $(objects) $(libs)
+	g++ -o $(product) $(objects) $(libs)
+	@strip $(product)
 
-ethslurp: $(OBJS) $(LIBS)
-	g++ -o ethslurp $(OBJS) $(LIBS)
+$(objects): | objs
 
-.cpp.o:
-	g++ $(CPPFLAGS) $(CFLAGS) -c $<
+objs:
+	@mkdir -p $@
 
-cleanall:
-	cd people; make clean; cd ..
-	cd utillib; make clean; cd ..
-	make clean
+objs/%.o : %.cpp
+	$(CXX) $(CXXFLAGS) $(cflags) -c $< -o $@
 
 clean:
-	@rm -f $(OBJS)
-	@rm -f *.cgi
-	@rm -f *~
-	@rm -f .DS_Store
+	@cd utillib; make clean; cd ..
+	-@$(RM) -f $(product) $(objects) 2> /dev/null
+

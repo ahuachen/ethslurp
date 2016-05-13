@@ -48,10 +48,5 @@ objs:
 objs/%.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(cflags) -c $< -o $@
 
-cleanall:
-	@cd lib_people ; make cleanall
-	@make clean
-
 clean:
 	-@$(RM) -f $(product) $(objects) 2> /dev/null
-	@rm .DS_Store
