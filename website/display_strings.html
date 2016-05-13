@@ -26,18 +26,18 @@
         </section>
       </div>
       <div class="container">
-        <script>Menu("Config");</script><br><script>DocMenu("export");</script>
+        <script>Menu("Config");</script><br><script>DocMenu("display strings");</script>
       </div>
     </header>
 
     <div class="container">
       <section id="main_content">
 
-<h3>Export Formats</h3>
+<h3>Display strings (summary)</h3>
 
     <p>EthSlurp allows you to export the slurped blockchain
         data in any format you wish. While it does provide
-        three pre-canned formats (json, txt, and csv), the
+        three pre-canned formats (txt, csv, and html), the
         number of available formats is limitless. This is
         accomplished through a feature we call 'display strings.'
 
@@ -50,22 +50,25 @@
 </code></pre>
 
     <hr>
-    <p>Jumping directly to an example. The display string for
-        exporting a tab seperated text file containing timeStamp,
-        from, and value would be:
+    <p>Jumping directly to an example: the display string for
+        exporting a tab seperated text file (.txt) containing
+        the data fields 'timeStamp,' 'from,' and 'value' would
+        look like this:
 
 <pre><code> [{TIMESTAMP}]\t[{FROM}]\t[{VALUE}]\n                                       <i>~1</i> </code></pre>
 
-    <p>If instead you wanted blocknumber, to, gas, and value, you would use:
+    <p>If, instead, you wanted to include 'blocknumber,' 'to,' 'gas,' and
+        'value,' your display string would look like this:
 
 <pre><code> [{BLOCKNUMBER}]\t[{TO}]\t[{GASUSED}]\t[{VALUE}]\n                          <i>~2</i> </code></pre>
 
-    <p>If you wanted comma seperated values so you could open the data
-        in MS Excel, you would use:
+    <p>If you wanted comma seperated values (.csv) so you could open the
+        data in MS Excel, you would use:
 
 <pre><code> ["{BLOCKNUMBER}"],["{TO}"],["{GASUSED}"],["{VALUE}"]\n                     <i>~3</i> </code></pre>
 
-    <p>If you wanted something human readable, you would use:
+    <p>If you wanted the resulting exported data to be a bit more human
+        readable, you would use:
 
 <pre><code> [Num:\t{BLOCKNUMBER}\n][To:\t{TO}\n][Gas:\t{GASUSED}\n][Value:\t{VALUE}\n] <i>~4</i> </code></pre>
 
@@ -73,23 +76,25 @@
 
     <p>A couple of things to note about display strings:
         <ul>
-            <li>The field name in the string is the same
-                as the name of the data field except it is in UPPERCASE;<br>
-            <li>Each field is surrounded directly with squiggly brackets.
-                A field name will not be recognized if it is not in UPPERCASE and
-                surrounded directly with squiggly brackets;<br>
-            <li>Each field is further surrounded with square brackets. Again
-                a field will not be recognized without its square brackets,
-                but this time the square brackets do not need to be touching
-                the squiggly brackets;<br>
-            <li>If a field's value is empty, the entire [...] string will
-                evaluate to empty.
+            <li>The field specifier for a data field is identical to
+                name of the data field except it is in UPPERCASE;<p>
+            <li>Each field specifier is surrounded {directly} with squiggly brackets.
+                A field specifier will not be recognized if it is not in UPPERCASE and
+                surrounded directly with squiggly brackets;<p>
+            <li>Each field specifier is further surrounded with square
+                brackets. Again the specifier will not be recognized without
+                its square brackets; however, in this case, the square brackets
+                do not need to be touching the squigglies. There can be
+                arbitrary intervening text;<p>
+            <li>If a data field's value evaluates to empty, the entire specifier
+                (that is everything inside the [...]) will evaluate to empty.
         </ul>
 
     <hr>
     <p>Furthering the example, if the data for a transaction looked like this:
 
-<pre><code>  "blockHash": "0xf61cc7b7d3ef647bcb6218a0.....a17b10364e255508",
+<pre><code>{
+  "blockHash": "0xf61cc7b7d3ef647bcb6218a0.....a17b10364e255508",
   "blockNumber": "1491831",
   "confirmations": "7",
   "contractAddress": "",
@@ -105,9 +110,10 @@
   "to": "0xbb9bc244d798123...",
   "transactionIndex": "6",
   "value": "1000000000000000000"
-</code></pre>
+}</code></pre>
 
-    <p>then the above display strings would render as follows:
+    <p>(notice that it is not very easy to read), then the above display strings
+        would render as follows (spaces below are tabs):
 
 <pre><code> [{TIMESTAMP}]\t[{FROM}]\t[{VALUE}]\n                                       <i>~1</i>
 
@@ -123,22 +129,25 @@
 <p>
 <pre><code> [Num:\t{BLOCKNUMBER}\n][To:\t{TO}\n][Gas:\t{GASUSED}\n][Value:\t{VALUE}\n] <i>~4</i>
 
-   <font color=wheat>Num:    1491831
-   To:     0xbb9bc244d798123...
-   Gas:    74091
-   Value:  1000000000000000000</font></code></pre>
+   <font color=wheat>Num:        1491831
+   To:         0xbb9bc244d798123...
+   Gas:        74091
+   Value:      1000000000000000000</font></code></pre>
 
-<p>Note that the display string applies to each record as it is exported.
+   <p>Note that the display string applies to each record separately. Our
+        <a href=video.html>video</a> explains it better.
 
 <h3>What can you do with display strings?</h3>
 
-    <p>Everyone talks about the shared, immortal, immutable, infinitely
-        accessible, shared ledger that the block chain enables. "It will
-        make all of our lives life easier," they say. Until now, getting at
-        this data was hard. We know. We created this tool to help ourselves
-        get at the data in an easier way. It's helped us immensely.
+    <p>Everyone always talks about the shared, immortal, immutable, infinitely
+        accessible, shared accounting ledger that the block chain embodies.
+        "It will make all of our lives life easier!"
 
-    <p>We hope it helps you as well.
+    <p>Until now, getting at this data was anything but easy. We should
+        know. We created this tool in direct response to the great difficulty
+        we had getting useful Ethereum blockchain data in a format we wanted.
+
+    <p>We hope this tool helps you as well.
         </div>
       </section>
     </div>

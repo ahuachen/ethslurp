@@ -7,18 +7,17 @@
 //---------------------------------------------------------------------------------------------------
 CParams paramsEthSlurp[] =
 {
-	CParams("~addr",		"the address of the account or contract to slurp"                      ),
-	CParams("-income",		"include income transactions only"                                     ),
-	CParams("-expense",		"include expenditures transaction only"                                ),
-	CParams("-date",		"specify a start date or date range"                                   ),
-	CParams("-last",		"re-display the last slurp without providing address"                  ),
-//	CParams("-most",		"export only the most interesting data fields"                         ),
-	CParams("-slurp",		"force a slurp from the blockchain (ignore cache)"                     ),
-	CParams("-fmt",		    "format the output, optionally ':txt', ':csv', or ':html'"             ),
-//	CParams("-open",		"open the results in its associated editor"                            ),
-//	CParams("-backup",		"save a date stamped backup of the previous slurp"                     ),
-	CParams("-clear",		"clear all cached slurps"                                              ),
-	CParams( "",			"Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally formats the output to your specification.\n" ),
+	CParams("~addr",	"the address of the account or contract to slurp" ),
+	CParams("-income",	"include income transactions only" ),
+	CParams("-expense",	"include expenditures only" ),
+	CParams("-date",	"specify date range as 'start-[end]' (yyyymmdd[:hhmmss])" ),
+	CParams("-last",	"re-display most recent (last) slurp" ),
+	CParams("-slurp",	"force EthSlurp to take a slurp (ignore cached data)" ),
+	CParams("-fmt",		"pretty print, optionally add ':txt,' ':csv,' or ':html'" ),
+	CParams("-open",	"open output in an associated editor" ),
+	CParams("-backup",	"save a date stamped backup of the previous slurp" ),
+	CParams("-clear",	"clear all previously cached slurps" ),
+	CParams( "",		"Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally formats the output to your specification.\n" ),
 };
 SFInt32 nParamsEthSlurp = sizeof(paramsEthSlurp) / sizeof(CParams);
 
