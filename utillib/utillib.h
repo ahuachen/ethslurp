@@ -26,5 +26,6 @@
 #include "fielddata.h"
 #include "editableobject.h"
 #include "protectedobject.h"
+#include "colors.h"
 
 #endif

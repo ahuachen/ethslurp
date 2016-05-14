@@ -81,6 +81,7 @@ int usage(const SFString& cmd, const SFString& errMsg)
 		outErr << "  Usage:   " + cmd + " " << cmdFunc->options() << "\n";
 		outErr << cmdFunc->purpose();
 		outErr << cmdFunc->descriptions() << "\n";
+		outErr << "  Portions of this software are Powered by Etherscan.io APIs\n\n";
 	} else
 	{
 		outErr << "Command '" << cmd << "' not found.\n";

@@ -22,29 +22,13 @@ CParams paramsEthSlurp[] =
 SFInt32 nParamsEthSlurp = sizeof(paramsEthSlurp) / sizeof(CParams);
 
 //---------------------------------------------------------------------------------------------------
-#define PATH_TO_HOME       homeFolder()
-#define PATH_TO_ETH_SLURP  SFString(homeFolder() + ".ethslurp/")
-#define PATH_TO_SLURPS     SFString(PATH_TO_ETH_SLURP + "slurps/")
-
-//--------------------------------------------------------------------------------
-extern SFBool   establish_folders(CConfig *config);
-extern SFString homeFolder(void);
-extern SFString getDisplayFormat(SFBool prettyPrint);
-
-//---------------------------------------------------------------------------------------------------
-inline SFBool isInternal(const SFString& field)
-{
-	return field == "schema" || field == "deleted" || field == "handle" || (testOnly && field == "confirmations");
-}
-
-//---------------------------------------------------------------------------------------------------
 SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 {
+	version.setVersion(0,0,9);
+
+	// just so the test err output goes to stdin
 	if (testOnly)
 		outErr = outScreen;
-	
-	CConfig config(NULL);
-	config.loadFile(PATH_TO_ETH_SLURP+"config.dat");
 	
 	SFString addr;
     SFBool slurp = FALSE, prettyPrint=FALSE, readLast=FALSE, backup=FALSE, incomeOnly=FALSE, expenseOnly=FALSE, openFile=FALSE;
@@ -105,7 +89,6 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 		{
 			SFString unused1, unused2;
 			SFos::removeFolder(PATH_TO_SLURPS, unused1, unused2, TRUE);
-			establish_folders(&config);
 			outErr << "Cache files were cleared\n";
 			exit(1);
 
@@ -117,6 +100,32 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 		}
     }
 
+	CConfig config(NULL);
+	config.setFilename(PATH_TO_ETH_SLURP+"config.dat");
+	if (!establish_folders(&config))
+		return usage(args[0], "Unable to create data folders at " + PATH_TO_SLURPS);
+
+	SFString api_key = config.GetProfileStringGH("SETTINGS", "api_key", EMPTY);
+	while (api_key.IsEmpty())
+	{
+		// Don't use outErr here since it might be redirected by testing
+		CErrorExportContext errCtx;
+		errCtx
+			<< conYellow << "\n  ***Warning***" << conOff << "\n"
+			<< "  EthSlurp needs an api_key in order to work. http://etherscan.io/apis in order to work.\n"
+			<< "  See our online help file at http://ethslurp.com/documentation.html\n"
+			<< "  Please go there now and enter your key or 'exit' to quit:\n"
+			<< "  > ";
+		errCtx.Flush();
+		char buffer[256];
+		cin >> buffer;
+		api_key = buffer;
+		if (api_key % "exit" || api_key % "quit")
+			exit(0);
+		config.SetProfileString("SETTINGS", "api_key", api_key);
+		config.writeFile(version.toString());
+	}
+	
 	if (addr.IsEmpty() && readLast)
 		addr = asciiFileToString(PATH_TO_ETH_SLURP+"lastRead.dat").Substitute("\n",EMPTY);
 	addr.MakeLower();
@@ -131,17 +140,13 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 	outErr << "Slurping " << addr << "\n";
 	stringToAsciiFile(PATH_TO_ETH_SLURP+"lastRead.dat", addr);
 
-	if (!establish_folders(&config))
-	{
-		return usage(args[0], "Unable to create data folders at " + PATH_TO_SLURPS);
-	}
-
-	outErr << "Checking cache...\n";
+	outErr << "Checking cache...may be empty\n";
 	SFString contents = asciiFileToString(PATH_TO_SLURPS+addr+".json");
 	if (slurp || contents.IsEmpty())
 	{
-		outErr << "Address cache not found. Reading from block chain...\n";
-		SFString url = "https://api.etherscan.io/api?module=account&action=txlist&address=" + addr + "&sort=asc&apikey=" + config.GetProfileStringGH("SETTINGS", "api-key", EMPTY);
+		outErr << "Cache does not exist or is empty....\nReading from block chain using api_key: " << api_key << "...\n";
+		SFString url = "https://api.etherscan.io/api?module=account&action=txlist&address=" + addr + "&sort=asc&apikey=" + api_key;
+		outErr << "\twith url: " << url << "\n";
 		contents = urlToString(url);
 		stringToAsciiFile(PATH_TO_SLURPS+addr+".json", contents);
 	}
@@ -186,6 +191,7 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 		nTrans--;
 		outErr << "importing record " << of << " of " << of << "\n";  outErr.Flush();
 
+		SFString fieldList = ("|"+config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList", EMPTY)+"|").Substitute("||","|");
 		SFString surrFmt   = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+ppFmt+"_surround", EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
 		SFString recordFmt = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+ppFmt+"_record",   EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
 		SFString fieldFmt  = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+ppFmt+"_field",    EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
@@ -202,16 +208,18 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 			while (lPos)
 			{
 				SFString field = fields->GetNextItem(lPos)->getFieldName();
-				if (!isInternal(field))
+				if (!isInternal(field) && fieldList.Contains("|"+field+"|"))
 					fieldStr += fieldFmt.Substitute("{FIELD}", "{"+toUpper(field)+"}");
 			}
 			fmt = Strip(recordFmt.Substitute("[FIELDS]", fieldStr), '\t');
 		}
 	
+		CStringExportContext records;
 		for (int i=0;i<nTrans;i++)
-			outScreen << transactions[i].Format(fmt);
-		outScreen << "\n";
+			records << transactions[i].Format(fmt);
+		records << "\n";
 
+		outScreen << (surrFmt.Contains("RECORDS") ? surrFmt.Substitute("[RECORDS]", records) : records);
 		delete [] transactions;
 	}
 
@@ -246,57 +254,71 @@ SFString getDisplayFormat(SFBool prettyPrint)
 }
 
 //--------------------------------------------------------------------------------
-SFString homeFolder(void)
+// Make sure our data folder exist, if not establish it
+SFBool establish_folders(CConfig *config)
 {
-	system("whoami > shit.txt");
-	SFString user = asciiFileToString("shit.txt").Substitute("\n",EMPTY).Substitute("\r",EMPTY);
-//if (verbose>1) outErr << "homeFolder: found user '" << user << "'\n";
-	system("pwd > shit.txt");
-	SFString folder = asciiFileToString("shit.txt").Substitute("\n",EMPTY).Substitute("\r",EMPTY);
-//if (verbose>1) outErr << "homeFolder: found folder '" << folder << "'\n";
-	SFString ret = folder.Left(folder.Find(user)+user.GetLength()+1);
-//if (verbose) outErr << "homeFolder: returning '" << ret << "'\n";
-	SFos::removeFile("shit.txt");
-	return ret;
-}
+	if (SFos::folderExists(PATH_TO_SLURPS))
+	{
+		config->loadFile(PATH_TO_ETH_SLURP+"config.dat");
+		return TRUE;
+	}
+	
+	// create the main folder
+	SFos::mkdir(PATH_TO_ETH_SLURP);
+	if (!SFos::folderExists(PATH_TO_ETH_SLURP))
+		return FALSE;
 
-//--------------------------------------------------------------------------------
-void establish_config_file(CConfig *config, const SFString& slurpPath)
-{
-	config->SetProfileString("SETTINGS",     "datapath",          slurpPath);
-	config->SetProfileString("SETTINGS",     "api-key",           "68E1BQYW85ETVNHKWV27B8N5HYICEHEPH1");
+	// create the folder for the slurps
+	SFos::mkdir(PATH_TO_SLURPS);
+	if (!SFos::folderExists(PATH_TO_SLURPS))
+		return FALSE;
+
+const char* STR_DATA_FIELDS=
+"blockHash|"
+"blockNumber|"
+"confirmations|"
+"contractAddress|"
+"cumulativeGasUsed|"
+"from|"
+"gas|"
+"gasPrice|"
+"gasUsed|"
+"hash|"
+"input|"
+"nonce|"
+"timeStamp|"
+"to|"
+"transactionIndex|"
+"value";
+	
+	config->SetProfileString("SETTINGS",     "datapath",          PATH_TO_SLURPS);
+	config->SetProfileString("SETTINGS",     "api_key",           EMPTY);
 	config->SetProfileString("SETTINGS",     "focus",             "189");
-
+	
+	config->SetProfileString("DISPLAY_STR",  "fmt_fieldList",     STR_DATA_FIELDS);
+	
 	config->SetProfileString("DISPLAY_STR",  "fmt_txt_surround",  "[RECORDS]\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_txt_record",    "[FIELDS]\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_txt_field",     "\\t[{FIELD}]");
-
+	
 	config->SetProfileString("DISPLAY_STR",  "fmt_csv_surround",  "[RECORDS]\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_csv_record",    "[FIELDS]\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_csv_field",     "[\"{FIELD}\"],");
-
+	
 	config->SetProfileString("DISPLAY_STR",  "fmt_html_surround", "<table>\\n[RECORDS]</table>\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_html_record",   "\\t<tr>\\n[FIELDS]</tr>\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_html_field",    "\\t\\t<td>[{FIELD}]</td>\\n");
 
-	CVersion version;
-	version.setVersion(0,0,9);
 	config->writeFile(version.toString());
+	return SFos::fileExists(config->getFilename());
 }
 
 //--------------------------------------------------------------------------------
-SFBool establish_folders(CConfig *config)
+SFString getHomeFolder(void)
 {
-	if (!SFos::fileExists(PATH_TO_ETH_SLURP+"config.dat"))
-		establish_config_file(config, PATH_TO_SLURPS);
-
-	SFBool exists = SFos::folderExists(PATH_TO_SLURPS);
-	if (!exists)
-	{
-		if (!SFos::folderExists(PATH_TO_ETH_SLURP))
-			SFos::mkdir(PATH_TO_ETH_SLURP);
-		SFos::mkdir(PATH_TO_SLURPS);
-		return SFos::folderExists(PATH_TO_SLURPS);
-	}
-	return TRUE;
+	struct passwd *pw = getpwuid(getuid());
+	return SFString(pw->pw_dir)+"/";
 }
+
+//---------------------------------------------------------------------------------------------------
+CVersion version;

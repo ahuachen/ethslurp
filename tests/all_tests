@@ -1,14 +1,16 @@
+echo "	test1: default behaviour should show help"
+rm -fR ~/.ethslurp
+ethslurp -t >proposed/test1.txt
+find ~/.ethslurp >>proposed/test1.txt 2>/dev/null # should be empty
+
+clear
 echo
 echo "Running ethslurp test suite..."
 echo
 
-echo "	test1: default behaviour should show help"
-rm -f ~/.ethslurp/config.dat
-ethslurp -t >proposed/test1.txt
-
 echo "	test2: slurp on known dead account"
-ethslurp -t 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test2.txt
-cat ~/.ethslurp/config.dat >>proposed/test1.txt
+cat api_key | ethslurp -t 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test2.txt
+cat ~/.ethslurp/config.dat | grep -v api_key >>proposed/test2.txt
 sleep 1s
 
 echo "	test3: test last visited flag"

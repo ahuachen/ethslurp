@@ -8,6 +8,7 @@
 *.xcodeproj
 .DS_Store
 ethslurp
+api_key
 
 # Precompiled Headers
 *.gch

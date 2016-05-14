@@ -25,6 +25,7 @@ all:
 $(product): $(objects) $(libs)
 	g++ -o $(product) $(objects) $(libs)
 	@strip $(product)
+	@mv $(product) /Users/jrush/source
 
 $(objects): | objs
 

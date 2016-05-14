@@ -132,6 +132,7 @@ SFString nextChunk_common(const SFString& fieldIn, const SFString& cmd, const CB
 	SFString className = node->getRuntimeClass()->getClassNamePtr();
 	switch (tolower(fieldIn[0]))
 	{
+		case 'd':
 			if ( fieldIn % "deleted" ) return asString(node->isDeleted());;
 			break;
 		case 'h':

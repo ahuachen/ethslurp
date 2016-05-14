@@ -66,4 +66,7 @@ extern CFileExportContext& outErr;
 #define RETURN_OK   TRUE
 #define RETURN_FAIL FALSE
 
+#include <iostream>
+using namespace std;
+
 #endif

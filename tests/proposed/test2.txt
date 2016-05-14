@@ -1,6 +1,8 @@
 Slurping 0x713b73c3994442b533e6a083ec968e40606810ec
-Checking cache...
-Address cache not found. Reading from block chain...
+Checking cache...may be empty
+Cache does not exist or is empty....
+Reading from block chain using api_key: 68E1BQYW85ETVNHKWV27B8N5HYICEHEPH1...
+	with url: https://api.etherscan.io/api?module=account&action=txlist&address=0x713b73c3994442b533e6a083ec968e40606810ec&sort=asc&apikey=68E1BQYW85ETVNHKWV27B8N5HYICEHEPH1
 importing record 9 of 17importing record 15 of 17importing record 17 of 17
 
         {
@@ -35,3 +37,23 @@ importing record 9 of 17importing record 15 of 17importing record 17 of 17
 "blockHash":"0x5c58e4f6d0e2718fe632913ce7907c2f769d7aca6b4614644894555da1b1f456","blockNumber":"1467463","contractAddress":"","cumulativeGasUsed":"333707","from":"0xbdace480953fc8260184bd625389ea20bbd0da9f","gas":"3000000","gasPrice":"20000000000","gasUsed":"150246","hash":"0x9445b8e12a6402c7673d645c6c58fbcffefa4e82b6225223393c67ede6283959","input":"0x3ffbd47f0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000057465737433000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a6162636465666768696a00000000000000000000000000000000000000000000","nonce":"23","timeStamp":"1462535771","to":"0x713b73c3994442b533e6a083ec968e40606810ec","transactionIndex":"8","value":"10000000000000000"        },
         {
 "blockHash":"0x0a4526b34991959ab53d4b17b12c92c47c8be854c98e4605709893f1b969cb80","blockNumber":"1470405","contractAddress":"","cumulativeGasUsed":"23401","from":"0x9519afbc60719a83c470ceec41e32d3e4b8b262e","gas":"123401","gasPrice":"32210000000","gasUsed":"23401","hash":"0x68319e0f6168aeff43a48d62e06e069b991ae9c1da1889143b9bbea92576c1e0","input":"0xc822d7f00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b54686f6d61732052757368000000000000000000000000000000000000000000","nonce":"10","timeStamp":"1462577601","to":"0x713b73c3994442b533e6a083ec968e40606810ec","transactionIndex":"0","value":"0"        },
+[CONFIGFILE]
+;------------------------------------------------------------------------------
+; Copyright (c) by Great Hill Corporation. All Rights Reserved.
+; file version=0:0:9
+;------------------------------------------------------------------------------
+[SETTINGS]
+datapath=/Users/jrush/.ethslurp/slurps/
+focus=189
+
+[DISPLAY_STR]
+fmt_fieldList=blockHash|blockNumber|confirmations|contractAddress|cumulativeGasUsed|from|gas|gasPrice|gasUsed|hash|input|nonce|timeStamp|to|transactionIndex|value
+fmt_txt_surround=[RECORDS]\n
+fmt_txt_record=[FIELDS]\n
+fmt_txt_field=\t[{FIELD}]
+fmt_csv_surround=[RECORDS]\n
+fmt_csv_record=[FIELDS]\n
+fmt_csv_field=["{FIELD}"],
+fmt_html_surround=<table>\n[RECORDS]</table>\n
+fmt_html_record=\t<tr>\n[FIELDS]</tr>\n
+fmt_html_field=\t\t<td>[{FIELD}]</td>\n

@@ -24,6 +24,7 @@
 #include <utime.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <pwd.h>
 
 //-------------------------------------------------------------------------
 #define FORCE_ANSI    0x10000 // needed for Format function for some reason
