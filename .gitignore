@@ -7,6 +7,7 @@
 # Mac junk
 *.xcodeproj
 .DS_Store
+ethslurp
 
 # Precompiled Headers
 *.gch

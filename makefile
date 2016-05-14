@@ -37,4 +37,3 @@ objs/%.o : %.cpp
 clean:
 	@cd utillib; make clean; cd ..
 	-@$(RM) -f $(product) $(objects) 2> /dev/null
-
