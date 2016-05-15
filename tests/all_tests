@@ -1,9 +1,9 @@
 clear
 
 echo "	test1: default behaviour should show help"
-rm -fR ~/.ethslurp
+rm -fR ~/.ethslurp.test
 cat api_key | ../ethslurp -t >proposed/test1.txt
-find ~/.ethslurp >>proposed/test1.txt 2>/dev/null # should be empty
+find ~/.ethslurp.test >>proposed/test1.txt 2>/dev/null # should be empty
 
 echo
 echo "Running ethslurp test suite..."
@@ -11,7 +11,7 @@ echo
 
 echo "	test2: slurp on known dead account"
 ../ethslurp -t 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test2.txt
-cat ~/.ethslurp/config.dat | grep -v api_key >>proposed/test2.txt
+cat ~/.ethslurp.test/config.dat | grep -v api_key >>proposed/test2.txt
 
 echo "	test3: test last visited flag"
 ../ethslurp -t -l >proposed/test3.txt
@@ -47,10 +47,17 @@ echo "	test12: test backup option (not implemented)"
 ../ethslurp -t -b -l -f >proposed/test12.txt
 sleep 1s
 
-echo "	test14: test cache clear option"
-ls ~/.ethslurp/slurps   >proposed/test14.txt
-../ethslurp -t -c      >>proposed/test14.txt
-find ~/.ethslurp       >>proposed/test14.txt
+echo "	test14: test custom display strings, file: format and fmt_ format"
+echo "fmt_custom_file=file:custom_format_file.html" >>~/.ethslurp.test/config.dat
+echo "fmt_custom_record=fmt_html_record"            >>~/.ethslurp.test/config.dat
+echo "fmt_custom_field=fmt_html_field"              >>~/.ethslurp.test/config.dat
+cat ~/.ethslurp.test/config.dat | grep -v api_key    >proposed/test14.txt
+../ethslurp -t -l -f:custom                         >>proposed/test14.txt
+
+echo "	testlast: test cache clear option"
+ls ~/.ethslurp.test/slurps   >proposed/testlast.txt
+../ethslurp -t -c           >>proposed/testlast.txt
+find ~/.ethslurp.test       >>proposed/testlast.txt
 
 # now diff to see if anything changed
 echo "----------------------------"

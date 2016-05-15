@@ -63,6 +63,7 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 			SFString arg = nextTokenClear(exportFormat, ':');
 			if (arg != "-f" && arg != "-fmt")
 				return usage(args[0], "Unknown parameter: " + arg);
+			outErr << "exportFormat: " << exportFormat << "\n";
 
 		} else if (args[i] == "-l" || args[i] == "-last")
 		{
@@ -179,7 +180,7 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 		} else
 		{
 			nTrans++;
-			if (!(nTrans%(5+cnt))) { outErr << "importing record " << nTrans+1 << " of " << of << "\r"; outErr.Flush(); }
+			if (!(nTrans%(5+cnt))) { outErr << "importing record " << nTrans+1 << " of " << of << (testOnly?"\n":"\r"); outErr.Flush(); }
 			cnt--;
 			if (cnt==0) cnt=5;
 		}
@@ -189,12 +190,18 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 
 	SFString header;
 	SFString fmt = getDisplayString(prettyPrint, exportFormat, config, header);
+	header.ReplaceAll("<td align=right","<th align=center");
 	CStringExportContext records;
 	for (int i=0;i<nTrans;i++)
 		records << transactions[i].Format(fmt);
 
-	SFString fileString = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+exportFormat+"_file",   EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
-	outScreen << fileString.Substitute("[{RECORDS}]", records).Substitute("[{HEADER}]", header);
+	SFString result = snagDisplayString(config, "fmt_"+exportFormat+"_file");
+	result = result.Substitute("[{RECORDS}]", records.str);
+	result = result.Substitute("[{HEADER}]",  header);
+	result = result.Substitute("[{NOW}]",     Now().Format(FMT_DEFAULT));
+	result = result.Substitute("[{ADDR}]",    addr);
+	outScreen << result;
+	
 	delete [] transactions;
 	
 	return RETURN_OK;/* all done */
@@ -204,12 +211,14 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 SFString getDisplayString(SFBool prettyPrint, const SFString& exportFormat, const CConfig& config, SFString& header)
 {
 	SFString ret;
-	SFString fieldString = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+exportFormat+"_field",  EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
+	SFString fieldString = snagDisplayString(config, "fmt_"+exportFormat+"_field");
 	if (!exportFormat.IsEmpty() && !fieldString.IsEmpty())
 	{
+		SFString displayString;
+
 		SFString fieldList    = ("|"+config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList",   EMPTY)+"|").Substitute("||","|");
-		SFString recordString = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+exportFormat+"_record", EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
-		SFString fieldStr;
+
+		SFString recordString = snagDisplayString(config, "fmt_"+exportFormat+"_record");
 		const CFieldList *fields = GETRUNTIME_CLASS(CTransaction)->m_FieldList;
 		LISTPOS lPos = fields->GetFirstItem();
 		while (lPos)
@@ -217,11 +226,11 @@ SFString getDisplayString(SFBool prettyPrint, const SFString& exportFormat, cons
 			SFString field = fields->GetNextItem(lPos)->getFieldName();
 			if (!isInternal(field) && fieldList.Contains("|"+field+"|"))
 			{
-				fieldStr += fieldString.Substitute("{FIELD}", "{"+toUpper(field)+"}").Substitute("{p:FIELD}", "{p:"+field+"}");
+				displayString += fieldString.Substitute("{FIELD}", "{"+toUpper(field)+"}").Substitute("{p:FIELD}", "{p:"+field+"}");
 				header   += fieldString.Substitute("{FIELD}", field).Substitute("[",EMPTY).Substitute("]",EMPTY);
 			}
 		}
-		ret = Strip(recordString.Substitute("[{FIELDS}]", fieldStr), '\t');
+		ret = Strip(recordString.Substitute("[{FIELDS}]", displayString), '\t');
 	}
 
 	// one little hack for json
@@ -236,6 +245,31 @@ SFString getDisplayString(SFBool prettyPrint, const SFString& exportFormat, cons
 		}
 	}
 
+	return ret;
+}
+
+//--------------------------------------------------------------------------------
+SFString snagDisplayString(const CConfig& config, const SFString& name)
+{
+	SFString ret = config.GetProfileStringGH("DISPLAY_STR", name, EMPTY);
+	if (ret.Contains("file:"))
+	{
+		SFString file = ret.Substitute("file:",EMPTY);
+		if (!SFos::fileExists(file))
+		{
+			SFString cmd="ethslurp";
+			outErr << SFString("Formatting file '") + file + "' not found. Quiting...\n";
+			exit(0);
+		}
+		ret = asciiFileToString(file);
+		
+	} else if (ret.Contains("fmt_"))
+	{
+		ret = config.GetProfileStringGH("DISPLAY_STR", ret, EMPTY);
+	}
+	ret = ret.Substitute("\\n","\n").Substitute("\\t","\t");
+	if (verbose)
+		outErr << "snagDisplayString(" << name << "): " << ret << "\n";
 	return ret;
 }
 

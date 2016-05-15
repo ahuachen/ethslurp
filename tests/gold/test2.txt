@@ -2,7 +2,9 @@ Slurping 0x713b73c3994442b533e6a083ec968e40606810ec
 Checking cache...may be empty
 Cache does not exist or is empty....
 Reading from block chain...
-importing record 9 of 17importing record 15 of 17importing record 17 of 17
+importing record 9 of 17
+importing record 15 of 17
+importing record 17 of 17
 
         {
 "blockHash":"0xcc480deb89134f611d6be9b35ee405fdd785028ee1b20cc768f2370414635fe4","blockNumber":"1387025","contractAddress":"","cumulativeGasUsed":"201757","from":"0xbdace480953fc8260184bd625389ea20bbd0da9f","gas":"3000000","gasPrice":"20000000000","gasUsed":"180757","hash":"0x872cf8712a15da1af2bfc44b938a6f92c6b95cbf76701e299a27a84a0c701325","input":"0x3ffbd47f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000b54686f6d617320527573680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020492077617320686572652e20457468657265756d206576657279776865726521","nonce":"18","timeStamp":"1461381888","to":"0x713b73c3994442b533e6a083ec968e40606810ec","transactionIndex":"1","value":"10000000000000000"
@@ -58,7 +60,7 @@ importing record 9 of 17importing record 15 of 17importing record 17 of 17
 ; file version=0:0:9
 ;------------------------------------------------------------------------------
 [SETTINGS]
-datapath=/Users/jrush/.ethslurp/slurps/
+datapath=/Users/jrush/.ethslurp.test/slurps/
 focus=189
 
 [DISPLAY_STR]

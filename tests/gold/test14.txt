@@ -1,6 +1,167 @@
-0x682e426ea761db77bacd5acdce33ca122175daea.json
-0x713b73c3994442b533e6a083ec968e40606810ec.json
-Cached slurp files were cleared
-/Users/jrush/.ethslurp
-/Users/jrush/.ethslurp/config.dat
-/Users/jrush/.ethslurp/lastRead.dat
+[CONFIGFILE]
+;------------------------------------------------------------------------------
+; Copyright (c) by Great Hill Corporation. All Rights Reserved.
+; file version=0:0:9
+;------------------------------------------------------------------------------
+[SETTINGS]
+datapath=/Users/jrush/.ethslurp.test/slurps/
+focus=189
+
+[DISPLAY_STR]
+fmt_fieldList=blockNumber|timeStamp|hash|nonce|blockHash|transactionIndex|from|to|value|gas|gasPrice|input|contractAddress|cumulativeGasUsed|gasUsed|confirmations
+fmt_txt_file=[{HEADER}]\n[{RECORDS}]
+fmt_txt_record=[{FIELDS}]\n
+fmt_txt_field=\t[{FIELD}]
+fmt_csv_file=[{HEADER}]\n[{RECORDS}]
+fmt_csv_record=[{FIELDS}]\n
+fmt_csv_field=["{FIELD}"],
+fmt_html_file=<table>\n[{HEADER}]\n[{RECORDS}]</table>\n
+fmt_html_record=\t<tr>\n[{FIELDS}]</tr>\n
+fmt_html_field=\t\t<td>[{FIELD}]</td>\n
+fmt_json_file=[{RECORDS}]\n
+fmt_json_record=\n        {\n[{FIELDS}]        },
+fmt_json_field="[{p:FIELD}]":"[{FIELD}]",
+fmt_custom_file=file:custom_format_file.html
+fmt_custom_record=fmt_html_record
+fmt_custom_field=fmt_html_field
+Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
+Checking cache...may be empty
+importing record 9 of 9
+importing record 9 of 9
+<tr>
+		<td>0xa6857a2a6c90bd2701c67bd31c697b87a607421a9c75559141a7757ff02915c2</td>
+		<td>1491486</td>
+		<td></td>
+		<td>21000</td>
+		<td>0x32be343b94f860124dc4fee278fdcbd38c102d88</td>
+		<td>333333</td>
+		<td>30000000000</td>
+		<td>21000</td>
+		<td>0x515735de46790a8326a909f622122df3c9a57613e39831e47451b978b47745fe</td>
+		<td>0x</td>
+		<td>55258</td>
+		<td>1462880396</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>0</td>
+		<td>990000000000000000</td>
+</tr>
+<tr>
+		<td>0xae9664c41d42a5de3989cd0186aff8d54a3677603670bc3d7b81c23b74eca958</td>
+		<td>1491506</td>
+		<td></td>
+		<td>21000</td>
+		<td>0x32be343b94f860124dc4fee278fdcbd38c102d88</td>
+		<td>333333</td>
+		<td>30000000000</td>
+		<td>21000</td>
+		<td>0xf159cca7246933b5c3e31d850ee2c8e08d080c288f4e19b40f219d33d59acf34</td>
+		<td>0x</td>
+		<td>55259</td>
+		<td>1462880661</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>0</td>
+		<td>210631973080000000000</td>
+</tr>
+<tr>
+		<td>0x25efe249e85f2ccd7f2beca969ffa9b9b1e5f39b545e06605e9da10bf89d694b</td>
+		<td>1491707</td>
+		<td></td>
+		<td>65091</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>21000</td>
+		<td>21000000000</td>
+		<td>21000</td>
+		<td>0xa49fcea1151d14a92b306fb692b4285c500d61e0c1d9fdbe80254511d213990d</td>
+		<td>0x</td>
+		<td>0</td>
+		<td>1462883606</td>
+		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
+		<td>1</td>
+		<td>10000000000000000000</td>
+</tr>
+<tr>
+		<td>0x2b7feaa26516698c340573a2b8e4506b4e4f6ba9f271894eb7c45db78a4a6006</td>
+		<td>1491749</td>
+		<td></td>
+		<td>21000</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>21000</td>
+		<td>21000000000</td>
+		<td>21000</td>
+		<td>0xe9b7813bf7d1b88d0bebd9d6c5256199b3dbee84e81523892be09208c85ff352</td>
+		<td>0x</td>
+		<td>1</td>
+		<td>1462884275</td>
+		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
+		<td>0</td>
+		<td>10000000000000000000</td>
+</tr>
+<tr>
+		<td>0x0c01f973ccbbcd7768694f9c16ef1c6e8bb93722375f38d9d7a7abbf7e7ac6c6</td>
+		<td>1491752</td>
+		<td></td>
+		<td>21000</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>21000</td>
+		<td>21000000000</td>
+		<td>21000</td>
+		<td>0x39f18cc88b57581a1fd5a071201e98dd277bf8d460b81b41916b543615a91736</td>
+		<td>0x</td>
+		<td>2</td>
+		<td>1462884326</td>
+		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
+		<td>0</td>
+		<td>10000000000000000000</td>
+</tr>
+<tr>
+		<td>0xd1c7f5a67660305cd7a3cd471f81178e2a38b36d7c3f65de01fc4df40e299a3a</td>
+		<td>1491753</td>
+		<td></td>
+		<td>21000</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>21000</td>
+		<td>21000000000</td>
+		<td>21000</td>
+		<td>0xaddfb04d3aeffdb5d8943dcf3aaec8b420490f73fd2ab5d03438dc96fea7c25f</td>
+		<td>0x</td>
+		<td>3</td>
+		<td>1462884347</td>
+		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
+		<td>0</td>
+		<td>20000000000000000000</td>
+</tr>
+<tr>
+		<td>0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba</td>
+		<td>1491788</td>
+		<td></td>
+		<td>160182</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>85000</td>
+		<td>21000000000</td>
+		<td>74091</td>
+		<td>0xc53a3dd41116fa22627ae493f07856357d54ecd36cc834560b0dff52dcb28575</td>
+		<td>0x</td>
+		<td>4</td>
+		<td>1462884797</td>
+		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
+		<td>3</td>
+		<td>10000000000000000000</td>
+</tr>
+<tr>
+		<td>0x65483762ffcce0850ca66cde81c873f36205c37c77b7ff347bdd382f8bab4bde</td>
+		<td>1491794</td>
+		<td></td>
+		<td>275091</td>
+		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
+		<td>85000</td>
+		<td>21000000000</td>
+		<td>44091</td>
+		<td>0x92133fbfbf13d61f7e9861222ef74ec48f609c248c6f848e0bd5066242f9ce2d</td>
+		<td>0x</td>
+		<td>5</td>
+		<td>1462884945</td>
+		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
+		<td>11</td>
+		<td>201600000000000000000</td>
+</tr>
+

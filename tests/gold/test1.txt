@@ -21,6 +21,6 @@
 
   Portions of this software are Powered by Etherscan.io APIs
 
-/Users/jrush/.ethslurp
-/Users/jrush/.ethslurp/config.dat
-/Users/jrush/.ethslurp/slurps
+/Users/jrush/.ethslurp.test
+/Users/jrush/.ethslurp.test/config.dat
+/Users/jrush/.ethslurp.test/slurps
