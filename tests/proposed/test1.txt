@@ -1,7 +1,7 @@
 
   You must supply an Ethereum account or contract address. Use -l flag to read the most recently slurped address.
 
-  Usage:   ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
+  Usage:   ../ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
   Purpose: Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally formats the output to your specification.
            
   Where:

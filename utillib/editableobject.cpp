@@ -117,7 +117,7 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 	// case return surrounding text (text inside the token and outside the squiggles)
 	if (fieldName.IsEmpty())
 		return pre + post;
-
+	
 	// We have a field so lets process it.
 	ASSERT(fieldName.GetLength()>=2);
 	SFBool  isPrompt = FALSE;
@@ -126,10 +126,12 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 	// The fieldname may contain p: or w:width: or both.  If it contains either it
 	// must contain them at the beginning of the string (before the fieldName).  Anything 
 	// left after the last ':' is considered the fieldName
+	SFString promptName = fieldName;
 	if (fieldName.ContainsI("p:"))
 	{
 		isPrompt = TRUE;
 		fieldName.ReplaceI("p:", EMPTY);
+		promptName = fieldName;
 	}
 
 	if (fieldName.ContainsI("w:"))
@@ -151,6 +153,7 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 	// Get the value of the field.  If the value of the field is empty we return empty for the entire token.
 	SFBool forceShow = FALSE;
 	SFString fieldValue = (func)(fieldName, forceShow, data);
+	forceShow = (isPrompt?TRUE:forceShow);
 	if (!forceShow && fieldValue.IsEmpty())
 		return EMPTY;
 	fieldValue = truncPad(fieldValue, maxWidth); // pad or truncate
@@ -175,7 +178,7 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 		return pre + fieldValue + post;
 
 	// We are working on a prompt.  Pick up customizations if any
-	SFString prompt = toProper(fieldName);
+	SFString prompt = promptName; //toProper(fieldName);
 	if (fieldData)
 		prompt = fieldData->getPrompt();
 

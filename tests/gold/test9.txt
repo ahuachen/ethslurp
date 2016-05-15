@@ -1,5 +1,5 @@
 Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-Checking cache...
+Checking cache...may be empty
 skipping inflow 0x515735de46790a8326a909f622122df3c9a57613e39831e47451b978b47745fe
 skipping inflow 0xf159cca7246933b5c3e31d850ee2c8e08d080c288f4e19b40f219d33d59acf34
 skipping inflow 

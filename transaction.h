@@ -24,7 +24,7 @@ extern int isDuplicateTransaction (const void *rr1, const void *rr2);
 class CTransaction : public CBaseNode
 {
 public:
-	SFInt32 handle;
+	SFInt32  handle;
 	SFString blockHash;
 	SFString blockNumber;
 	SFString confirmations;

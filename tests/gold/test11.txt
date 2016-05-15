@@ -1,7 +1,7 @@
 
   open command not implemented
 
-  Usage:   ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
+  Usage:   ../ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
   Purpose: Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally formats the output to your specification.
            
   Where:
@@ -18,4 +18,6 @@
 	-t  (or -test)       generate intermediary files but do not execute the commands
 	-v  (or -verbose)    set verbose level. Follow with a number to set level (-v0 for silent)
 	-h  (or -help)       display this help screen
+
+  Portions of this software are Powered by Etherscan.io APIs
 

@@ -14,7 +14,7 @@
 //--------------------------------------------------------------------------------
 extern SFBool   establish_folders(CConfig *config);
 extern SFString getHomeFolder(void);
-extern SFString getDisplayFormat(SFBool prettyPrint);
+extern SFString getDisplayString(SFBool prettyPrint, const SFString& exportFormat, const CConfig& config, SFString& header);
 extern CVersion version;
 
 //---------------------------------------------------------------------------------------------------

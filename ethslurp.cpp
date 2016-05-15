@@ -27,12 +27,13 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 	version.setVersion(0,0,9);
 
 	// just so the test err output goes to stdin
+	CErrorExportContext theScreen;
 	if (testOnly)
 		outErr = outScreen;
 	
 	SFString addr;
     SFBool slurp = FALSE, prettyPrint=FALSE, readLast=FALSE, backup=FALSE, incomeOnly=FALSE, expenseOnly=FALSE, openFile=FALSE;
-	SFString ppFmt="json";
+	SFString exportFormat="json";
     for (int i=1;i<nArgs;i++)
     {
 		if (args[i] == "-i" || args[i] == "-income")
@@ -48,13 +49,20 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 			// date stuff
 			return usage(args[0], "date command not implemented");
 
+		} else if (args[i] == "-f")
+		{
+			// -f by itself is json prettyPrint
+			prettyPrint = TRUE;
+			exportFormat = "json";
+			
 		} else if (args[i].startsWith("-f"))
 		{
-			ppFmt = args[i];
-			SFString arg = nextTokenClear(ppFmt, ':');
+			// any other has the format attached  or is invalid
+			prettyPrint = TRUE;
+			exportFormat = args[i];
+			SFString arg = nextTokenClear(exportFormat, ':');
 			if (arg != "-f" && arg != "-fmt")
 				return usage(args[0], "Unknown parameter: " + arg);
-			prettyPrint = TRUE;
 
 		} else if (args[i] == "-l" || args[i] == "-last")
 		{
@@ -89,7 +97,7 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 		{
 			SFString unused1, unused2;
 			SFos::removeFolder(PATH_TO_SLURPS, unused1, unused2, TRUE);
-			outErr << "Cache files were cleared\n";
+			outErr << "Cached slurp files were cleared\n";
 			exit(1);
 
 		} else
@@ -109,14 +117,13 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 	while (api_key.IsEmpty())
 	{
 		// Don't use outErr here since it might be redirected by testing
-		CErrorExportContext errCtx;
-		errCtx
-			<< conYellow << "\n  ***Warning***" << conOff << "\n"
-			<< "  EthSlurp needs an api_key in order to work. http://etherscan.io/apis in order to work.\n"
-			<< "  See our online help file at http://ethslurp.com/documentation.html\n"
-			<< "  Please go there now and enter your key or 'exit' to quit:\n"
+		theScreen
+			<< conRed << "\n  ***Warning***" << conOff << "\n"
+			<< "  " << conYellow << "ethslurp" << conOff << " needs an api_key from EtherScan in order to work. You may get one at\n"
+			<< "  http://etherscan.io/apis. See our online help file for more information.\n"
+			<< "  Please enter your key or 'exit'\n"
 			<< "  > ";
-		errCtx.Flush();
+		theScreen.Flush();
 		char buffer[256];
 		cin >> buffer;
 		api_key = buffer;
@@ -144,113 +151,92 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 	SFString contents = asciiFileToString(PATH_TO_SLURPS+addr+".json");
 	if (slurp || contents.IsEmpty())
 	{
-		outErr << "Cache does not exist or is empty....\nReading from block chain using api_key: " << api_key << "...\n";
+		outErr << "Cache does not exist or is empty....\nReading from block chain...\n";
 		SFString url = "https://api.etherscan.io/api?module=account&action=txlist&address=" + addr + "&sort=asc&apikey=" + api_key;
-		outErr << "\twith url: " << url << "\n";
 		contents = urlToString(url);
 		stringToAsciiFile(PATH_TO_SLURPS+addr+".json", contents);
 	}
 
-	if (ppFmt.IsEmpty() && (!incomeOnly && !expenseOnly))
+	SFInt32 nTrans = countOf('}', contents);
+	CTransaction *transactions = new CTransaction[nTrans];
+	SFInt32 of = nTrans; nTrans=0;
+	int cnt=5;
+	while (!contents.IsEmpty())
 	{
-		if (prettyPrint)
-			system((const char*)"cat " + PATH_TO_SLURPS+addr+".json | python -m json.tool");
-		else
-			outScreen << contents;
-		outScreen << "\n";
-
-	} else
-	{
-		SFInt32 nTrans = countOf('}', contents);
-		CTransaction *transactions = new CTransaction[nTrans];
-		SFInt32 of = nTrans; nTrans=0;
-		int cnt=5;
-		while (!contents.IsEmpty())
+		SFString trans = nextTokenClear(contents, '}');
+		CTransaction *cur = &transactions[nTrans];
+		cur->parseJson(trans);
+		if (incomeOnly && cur->to != addr)
 		{
-			SFString trans = nextTokenClear(contents, '}');
-			CTransaction *cur = &transactions[nTrans];
-			cur->parseJson(trans);
-			if (incomeOnly && cur->to != addr)
-			{
-				if (verbose)
-					outErr << cur->Format("skipping expenditure [{HASH}]\n");
+			if (verbose)
+				outErr << cur->Format("skipping expenditure [{HASH}]\n");
 
-			} else if (expenseOnly && cur->from != addr)
-			{
-				if (verbose)
-					outErr << cur->Format("skipping inflow [{HASH}]\n");
-
-			} else
-			{
-				nTrans++;
-				if (!(nTrans%(5+cnt))) { outErr << "importing record " << nTrans+1 << " of " << of << "\r"; outErr.Flush(); }
-				cnt--;
-				if (cnt==0) cnt=5;
-			}
-		}
-		nTrans--;
-		outErr << "importing record " << of << " of " << of << "\n";  outErr.Flush();
-
-		SFString fieldList = ("|"+config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList", EMPTY)+"|").Substitute("||","|");
-		SFString surrFmt   = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+ppFmt+"_surround", EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
-		SFString recordFmt = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+ppFmt+"_record",   EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
-		SFString fieldFmt  = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+ppFmt+"_field",    EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
-
-		SFString fmt = getDisplayFormat(prettyPrint);
-		if (!ppFmt.IsEmpty() && !fieldFmt.IsEmpty())
+		} else if (expenseOnly && cur->from != addr)
 		{
-			if (verbose && !fieldFmt.IsEmpty())
-				outErr << "format: " << ppFmt << "\nsurround: " << surrFmt << "records: " << recordFmt << "field: " << fieldFmt << "\n";
+			if (verbose)
+				outErr << cur->Format("skipping inflow [{HASH}]\n");
 
-			SFString fieldStr;
-			const CFieldList *fields = GETRUNTIME_CLASS(CTransaction)->m_FieldList;
-			LISTPOS lPos = fields->GetFirstItem();
-			while (lPos)
-			{
-				SFString field = fields->GetNextItem(lPos)->getFieldName();
-				if (!isInternal(field) && fieldList.Contains("|"+field+"|"))
-					fieldStr += fieldFmt.Substitute("{FIELD}", "{"+toUpper(field)+"}");
-			}
-			fmt = Strip(recordFmt.Substitute("[FIELDS]", fieldStr), '\t');
+		} else
+		{
+			nTrans++;
+			if (!(nTrans%(5+cnt))) { outErr << "importing record " << nTrans+1 << " of " << of << "\r"; outErr.Flush(); }
+			cnt--;
+			if (cnt==0) cnt=5;
 		}
-	
-		CStringExportContext records;
-		for (int i=0;i<nTrans;i++)
-			records << transactions[i].Format(fmt);
-		records << "\n";
-
-		outScreen << (surrFmt.Contains("RECORDS") ? surrFmt.Substitute("[RECORDS]", records) : records);
-		delete [] transactions;
 	}
+	nTrans--;
+	outErr << "importing record " << of << " of " << of << "\n";  outErr.Flush();
 
+	SFString header;
+	SFString fmt = getDisplayString(prettyPrint, exportFormat, config, header);
+	CStringExportContext records;
+	for (int i=0;i<nTrans;i++)
+		records << transactions[i].Format(fmt);
+
+	SFString fileString = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+exportFormat+"_file",   EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
+	outScreen << fileString.Substitute("[{RECORDS}]", records).Substitute("[{HEADER}]", header);
+	delete [] transactions;
+	
 	return RETURN_OK;/* all done */
 }
 
 //---------------------------------------------------------------------------------------------------
-SFString getDisplayFormat(SFBool prettyPrint)
+SFString getDisplayString(SFBool prettyPrint, const SFString& exportFormat, const CConfig& config, SFString& header)
 {
 	SFString ret;
-	const CFieldList *fields = GETRUNTIME_CLASS(CTransaction)->m_FieldList;
-	LISTPOS lPos = fields->GetFirstItem();
-	while (lPos)
+	SFString fieldString = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+exportFormat+"_field",  EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
+	if (!exportFormat.IsEmpty() && !fieldString.IsEmpty())
 	{
-		SFString field = fields->GetNextItem(lPos)->getFieldName();
-		if (!isInternal(field))
+		SFString fieldList    = ("|"+config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList",   EMPTY)+"|").Substitute("||","|");
+		SFString recordString = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+exportFormat+"_record", EMPTY).Substitute("\\n","\n").Substitute("\\t","\t");
+		SFString fieldStr;
+		const CFieldList *fields = GETRUNTIME_CLASS(CTransaction)->m_FieldList;
+		LISTPOS lPos = fields->GetFirstItem();
+		while (lPos)
 		{
-			if (!ret.IsEmpty())
-				ret += ",";
-			ret += "\"" + field + "\":\"[{" + toUpper(field) + "}]\"";
+			SFString field = fields->GetNextItem(lPos)->getFieldName();
+			if (!isInternal(field) && fieldList.Contains("|"+field+"|"))
+			{
+				fieldStr += fieldString.Substitute("{FIELD}", "{"+toUpper(field)+"}").Substitute("{p:FIELD}", "{p:"+field+"}");
+				header   += fieldString.Substitute("{FIELD}", field).Substitute("[",EMPTY).Substitute("]",EMPTY);
+			}
+		}
+		ret = Strip(recordString.Substitute("[{FIELDS}]", fieldStr), '\t');
+	}
+
+	// one little hack for json
+	if (exportFormat=="json")
+	{
+		ret.ReplaceReverse("}]\",","}]\"\n");
+		if (prettyPrint)
+		{
+			ret.ReplaceAll("\"[{p:", "            \"[{p:");
+			ret.ReplaceAll("}]\",",  "}]\",\n");
+			ret.ReplaceAll("\":\"", "\": \"");
 		}
 	}
-	if (prettyPrint)
-	{
-		ret.Replace("\"","            \"");
-		ret.ReplaceAll("\",\"","\",            \"");
-		ret.ReplaceAll("}]\",", "}]\",\n");
-		ret.ReplaceAll(":",": ");
-		ret += "\n";
-	}
-	return "\n        {\n" + ret + "        },";
+
+	return ret;
 }
 
 //--------------------------------------------------------------------------------
@@ -274,22 +260,22 @@ SFBool establish_folders(CConfig *config)
 		return FALSE;
 
 const char* STR_DATA_FIELDS=
-"blockHash|"
 "blockNumber|"
-"confirmations|"
-"contractAddress|"
-"cumulativeGasUsed|"
+"timeStamp|"
+"hash|"
+"nonce|"
+"blockHash|"
+"transactionIndex|"
 "from|"
+"to|"
+"value|"
 "gas|"
 "gasPrice|"
-"gasUsed|"
-"hash|"
 "input|"
-"nonce|"
-"timeStamp|"
-"to|"
-"transactionIndex|"
-"value";
+"contractAddress|"
+"cumulativeGasUsed|"
+"gasUsed|"
+"confirmations";
 	
 	config->SetProfileString("SETTINGS",     "datapath",          PATH_TO_SLURPS);
 	config->SetProfileString("SETTINGS",     "api_key",           EMPTY);
@@ -297,17 +283,21 @@ const char* STR_DATA_FIELDS=
 	
 	config->SetProfileString("DISPLAY_STR",  "fmt_fieldList",     STR_DATA_FIELDS);
 	
-	config->SetProfileString("DISPLAY_STR",  "fmt_txt_surround",  "[RECORDS]\\n");
-	config->SetProfileString("DISPLAY_STR",  "fmt_txt_record",    "[FIELDS]\\n");
+	config->SetProfileString("DISPLAY_STR",  "fmt_txt_file",      "[{HEADER}]\\n[{RECORDS}]");
+	config->SetProfileString("DISPLAY_STR",  "fmt_txt_record",    "[{FIELDS}]\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_txt_field",     "\\t[{FIELD}]");
 	
-	config->SetProfileString("DISPLAY_STR",  "fmt_csv_surround",  "[RECORDS]\\n");
-	config->SetProfileString("DISPLAY_STR",  "fmt_csv_record",    "[FIELDS]\\n");
+	config->SetProfileString("DISPLAY_STR",  "fmt_csv_file",      "[{HEADER}]\\n[{RECORDS}]");
+	config->SetProfileString("DISPLAY_STR",  "fmt_csv_record",    "[{FIELDS}]\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_csv_field",     "[\"{FIELD}\"],");
 	
-	config->SetProfileString("DISPLAY_STR",  "fmt_html_surround", "<table>\\n[RECORDS]</table>\\n");
-	config->SetProfileString("DISPLAY_STR",  "fmt_html_record",   "\\t<tr>\\n[FIELDS]</tr>\\n");
+	config->SetProfileString("DISPLAY_STR",  "fmt_html_file",     "<table>\\n[{HEADER}]\\n[{RECORDS}]</table>\\n");
+	config->SetProfileString("DISPLAY_STR",  "fmt_html_record",   "\\t<tr>\\n[{FIELDS}]</tr>\\n");
 	config->SetProfileString("DISPLAY_STR",  "fmt_html_field",    "\\t\\t<td>[{FIELD}]</td>\\n");
+
+	config->SetProfileString("DISPLAY_STR",  "fmt_json_file",     "[{RECORDS}]\\n");
+	config->SetProfileString("DISPLAY_STR",  "fmt_json_record",   "\\n        {\\n[{FIELDS}]        },");
+	config->SetProfileString("DISPLAY_STR",  "fmt_json_field",    "\"[{p:FIELD}]\":\"[{FIELD}]\",");
 
 	config->writeFile(version.toString());
 	return SFos::fileExists(config->getFilename());
