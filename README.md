@@ -1,6 +1,8 @@
 # ethslurp
 Drink the block chain (http://ethslurp.com)
 
+Watch a video tutorial <a href="https://www.youtube.com/embed/ZZDV1yAgces">here</a>
+
 #### ethslurp
 
     Usage:   ./ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
