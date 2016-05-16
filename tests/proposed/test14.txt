@@ -28,6 +28,53 @@ Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
 Checking cache...may be empty
 importing record 9 of 9
 importing record 9 of 9
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/statement.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+
+    <title>EthSlurp - Drink the Blockchain</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>EthSlurp</h1>
+        <h2>Drink the block chain</h2>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+
+<center>
+<table width=60%><tr><td>
+<h1 style="display:inline">Smart Contract Statement</h1><br>
+<h2 style="display:inline">For month of May</h2><br>
+<h3 style="display:inline">For smart contract: 0x682e426ea761db77bacd5acdce33ca122175daea</h3><p>
+<h3>Transactions:</h4>
+<table width=75%>
+<tr>
+		<td>blockHash</td>
+		<td>blockNumber</td>
+		<td>contractAddress</td>
+		<td>cumulativeGasUsed</td>
+		<td>from</td>
+		<td>gas</td>
+		<td>gasPrice</td>
+		<td>gasUsed</td>
+		<td>hash</td>
+		<td>input</td>
+		<td>nonce</td>
+		<td>timeStamp</td>
+		<td>to</td>
+		<td>transactionIndex</td>
+		<td>value</td>
+
+</tr>
 <tr>
 		<td>0xa6857a2a6c90bd2701c67bd31c697b87a607421a9c75559141a7757ff02915c2</td>
 		<td>1491486</td>
@@ -165,3 +212,9 @@ importing record 9 of 9
 		<td>201600000000000000000</td>
 </tr>
 
+</table>
+Statement created: <i>5/15/2016 11:55:22pm</i>
+</td></tr></table>
+
+</body>
+</html>

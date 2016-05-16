@@ -63,7 +63,7 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 			SFString arg = nextTokenClear(exportFormat, ':');
 			if (arg != "-f" && arg != "-fmt")
 				return usage(args[0], "Unknown parameter: " + arg);
-			outErr << "exportFormat: " << exportFormat << "\n";
+//			outErr << "exportFormat: " << exportFormat << "\n";
 
 		} else if (args[i] == "-l" || args[i] == "-last")
 		{
@@ -268,8 +268,6 @@ SFString snagDisplayString(const CConfig& config, const SFString& name)
 		ret = config.GetProfileStringGH("DISPLAY_STR", ret, EMPTY);
 	}
 	ret = ret.Substitute("\\n","\n").Substitute("\\t","\t");
-	if (verbose)
-		outErr << "snagDisplayString(" << name << "): " << ret << "\n";
 	return ret;
 }
 
