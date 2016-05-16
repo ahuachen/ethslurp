@@ -1,7 +1,7 @@
 # ethslurp
 Drink the block chain (http://ethslurp.com)
 
-Watch a video tutorial <a href="https://www.youtube.com/embed/ZZDV1yAgces">here</a>
+Watch a video tutorial <a href="https://www.youtube.com/watch?v=ZZDV1yAgces">here</a>
 
 #### ethslurp
 
