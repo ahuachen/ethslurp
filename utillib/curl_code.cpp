@@ -409,4 +409,3 @@ SFString urlToString(const SFString& url)
     }
     return ret;
 }
-

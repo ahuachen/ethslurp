@@ -9,6 +9,7 @@
 .DS_Store
 ethslurp
 api_key
+movies
 
 # Precompiled Headers
 *.gch
