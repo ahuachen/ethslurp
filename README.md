@@ -18,7 +18,7 @@ Please return soon and often.
              account or smart contract. Optionally formats the output
             to your specification.
 
-#### Where:
+#### where:
 
   	addr                 the address of the account or contract to slurp (required)
   	-b  (or -backup)     save a date stamped backup of the previous slurp
