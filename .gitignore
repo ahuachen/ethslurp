@@ -11,13 +11,8 @@ ethslurp
 api_key
 movies
 not_published
-*.cpp
-*.h
-makefile
-tests
-utillib
 timeConvert
-INSTALL.save
+tests
 
 # Precompiled Headers
 *.gch

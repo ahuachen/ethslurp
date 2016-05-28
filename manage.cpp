@@ -5,40 +5,6 @@
 #include "manage.h"
 #include "ethslurp.h"
 
-#if 1
-
-CFileExportContext ctx;
-
-int main(int argc, char *argv[])
-{
-	SFInt32 cnt=0;
-	SFString contents = asciiFileToString("/Users/jrush/src.GitHub/ethslurp/data/shit.txt");
-	//	ctx << contents;
-	double total=0;
-	SFInt32 n=0;
-	SFString lastAdd="";
-	while (!contents.IsEmpty())
-	{
-		SFString amount = nextTokenClear(contents, '\r');
-		SFString addr   = nextTokenClear(contents, '\t');
-		n++;
-		total += atof((const char*)amount);
-		if (lastAdd!=addr)
-		{
-			ctx << ++cnt << " : " << addr << "\t" << n << "\t" << total << "\n";
-			total=0.0;
-			n=0;
-			lastAdd = addr;
-		}
-	}
-	return 0;
-}
-int usage(const SFString& cmd, const SFString& errMsg)
-{
-	return 0;
-}
-#else
-
 //--------------------------------------------------------------------------------
 CCmdFunction funcs[] =
 {
@@ -132,6 +98,32 @@ CCmdFunction *findCommand(const SFString& cmd)
 }
 
 //--------------------------------------------------------------------------------
+CParams::CParams( const SFString& nameIn, const SFString& descr )
+{
+	SFString name = nameIn;
+
+	description = descr;
+	if (!name.IsEmpty())
+	{
+		shortName   = name.Left(2);
+		if (name.GetLength()>2)
+			longName  = name;
+		if (name.Contains("{"))
+		{
+			name.Replace("{","|{");
+			nextTokenClear(name,'|');
+			shortName += name;
+
+		} else if (name.Contains(":"))
+		{
+			nextTokenClear(name,':');
+			shortName += name[0];
+			longName = "-" + name;
+		}
+	}
+}
+
+//--------------------------------------------------------------------------------
 SFString CCmdFunction::options(void) const
 {
 	SFString required;
@@ -211,34 +203,6 @@ int sortCommand(const void *c1, const void *c2)
 	else if (p2->shortName=="-h")
 		return -1;
 	return (int)p1->shortName.Compare(p2->shortName);
-}
-
-#endif
-
-//--------------------------------------------------------------------------------
-CParams::CParams( const SFString& nameIn, const SFString& descr )
-{
-	SFString name = nameIn;
-	
-	description = descr;
-	if (!name.IsEmpty())
-	{
-		shortName   = name.Left(2);
-		if (name.GetLength()>2)
-			longName  = name;
-		if (name.Contains("{"))
-		{
-			name.Replace("{","|{");
-			nextTokenClear(name,'|');
-			shortName += name;
-			
-		} else if (name.Contains(":"))
-		{
-			nextTokenClear(name,':');
-			shortName += name[0];
-			longName = "-" + name;
-		}
-	}
 }
 
 //--------------------------------------------------------------------------------
