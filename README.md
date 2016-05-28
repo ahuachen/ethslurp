@@ -3,6 +3,13 @@ Drink the block chain (http://ethslurp.com)
 
 Watch a video tutorial <a href="https://www.youtube.com/watch?v=ZZDV1yAgces">here</a>
 
+#### source code
+
+While we fully intend to post our source code to open source, we decided against doing so now
+because the software is not fully tested. All the data we present, the documentation, and
+the videos were produced using the software, but it's just not quite ready for prime time.
+Please return soon and often. 
+
 #### ethslurp
 
     Usage:   ./ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
