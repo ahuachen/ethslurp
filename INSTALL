@@ -1,33 +1,8 @@
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # EthSlurp - Installation and Build Instructions
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thanks for downloading EthSlurp.
 
-Follow these instructions to compile and use the software.
-These instructions assume you already have a C++ compiler and a make
-system installed on your computer:
-
-    1. Open a command prompt or terminal window on your system.
-
-    2. Change to the folder containing this file.
-
-    3. From the command prompt type 'make' and press enter.
-
-It should be as simple as that.
-
-#------------------
-# Running EthSlurp
-#------------------
-In the folder you built the software in type:
-
-    ./ethslurp
-
-The help screen should appear. If it does, you're ready to
-start slurping the Ethereum block chain. If you wish,
-you may copy or move the executable to any folder
-in your $PATH.
-
-Bon chance
+We are currently not providing source code, but we hope to do so very soon. Please come back.
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 info@greathill.com
