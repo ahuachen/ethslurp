@@ -130,9 +130,9 @@ public:
 			Release();
 		}
 
-  SFBool Lock    (const SFString& fn, const SFString& mode, SFBool obeyLock);
-  SFBool ReLock  (const SFString& mode);
-  void   Release (void);
+	SFBool Lock    (const SFString& fn, const SFString& mode, SFBool obeyLock);
+	SFBool ReLock  (const SFString& mode);
+	void   Release (void);
 	void   Close   (void);
 
 	CVersion getVersion(void) const { return m_version; }
@@ -146,7 +146,10 @@ public:
 	void     Seek        (SFInt32 offset, SFInt32 whence) const;
 	SFInt32  Write       (const void *buff, SFInt32 size, SFInt32 cnt) const;
 	SFInt32  Write       (const SFString& str) const;
+	SFInt32  Write       (SFInt32 val) const;
 	SFInt32  Read        (void *buff, SFInt32 cnt, SFInt32 size);
+	SFInt32  Read        (SFString& str);
+	SFInt32  Read        (SFInt32& val);
 	SFBool   Eof         (void) const;
 	char    *ReadLine    (char *buff, SFInt32 maxBuff);
 	void     WriteLine   (const SFString& str);

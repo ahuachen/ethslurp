@@ -1093,6 +1093,7 @@ extern SFString snagFieldClearEx   (      SFString& in, const SFString& tagName,
 extern SFString snagFieldClear     (      SFString& in, const SFString& tagName, const SFString& defVal=nullString);
 extern SFString snagFieldClearStrip(      SFString& in, const SFString& tagName, const SFString& defVal=nullString, const SFString& stripWhat="\t\r\n ");
 extern SFString snagField          (const SFString& in, const SFString& tagName, const SFString& defVal=nullString);
+extern SFString snagFieldStrip     (const SFString& in, const SFString& tagName, const SFString& defVal=nullString, const SFString& stripWhat="\t\r\n ");
 
 //-------------------------------------------------------------------------------------------------------------
 extern SFInt32  snagFieldClearI    (      SFString& in, const SFString& tagName, const SFString& defVal=nullString);
@@ -1168,5 +1169,6 @@ inline SFString TrimAt(const SFString& str, const SFString& findStr)
 extern SFString whichBadChar(const SFString& checkStr, const SFString& disallowStr=";| \n\t\r");
 extern int sortByStringValue(const void *rr1, const void *rr2);
 extern int compareStringValue(const void *rr1, const void *rr2);
+#define getString(a) EMPTY
 
 #endif

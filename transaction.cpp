@@ -11,16 +11,16 @@
 IMPLEMENT_NODE(CTransaction, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-SFString CTransaction::Format(const SFString& fmtIn) const
+void CTransaction::Format_base(CExportContext& ctx, const SFString& fmtIn) const
 {
+	if (!isShowing())
+		return;
+	
 	SFString fmt = fmtIn;
 
-	SFString ret;
 	CTransactionNotify dn(this);
 	while (!fmt.IsEmpty())
-		ret += getNextChunk(fmt, nextTransactionChunk, &dn);
-
-	return ret;
+		ctx << getNextChunk(fmt, nextTransactionChunk, &dn);
 }
 
 //---------------------------------------------------------------------------
@@ -30,10 +30,10 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 	const CTransaction *tra = tr->getDataPtr();
 
 	// Give common (edit, delete, etc.) code a chance to override
-	SFString ret = nextChunk_common(fieldIn, EMPTY, tra);
+	SFString ret = nextChunk_common(fieldIn, getString("cmd"), tra);
 	if (!ret.IsEmpty())
 		return ret;
-	
+
 	// Now give customized code a chance to override
 	ret = nextTransactionChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())

@@ -131,3 +131,8 @@ SFString CVersion::toString(char sep) const
 	ctx << m_Major << sep << m_Minor << sep << m_Build;
 	return ctx.str;
 }
+
+SFInt32 CVersion::toInt32(void) const
+{
+	return m_Major*10000+m_Minor*100+m_Build;
+}

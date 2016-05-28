@@ -10,6 +10,14 @@
 ethslurp
 api_key
 movies
+not_published
+*.cpp
+*.h
+makefile
+tests
+utillib
+timeConvert
+INSTALL.save
 
 # Precompiled Headers
 *.gch

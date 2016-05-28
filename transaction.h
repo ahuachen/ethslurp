@@ -1,8 +1,8 @@
 #ifndef _TRANSACTION_H_
 #define _TRANSACTION_H_
 
+//---------------------------------------------------------------------------
 #include "utillib.h"
-#include "editableobject.h"
 
 //--------------------------------------------------------------------------
 class CTransaction;
@@ -24,7 +24,7 @@ extern int isDuplicateTransaction (const void *rr1, const void *rr2);
 class CTransaction : public CBaseNode
 {
 public:
-	SFInt32  handle;
+	SFInt32 handle;
 	SFString blockHash;
 	SFString blockNumber;
 	SFString confirmations;
@@ -51,13 +51,18 @@ public:
 	DECLARE_NODE (CTransaction);
 
 	// EXISTING_CODE
-	void parseJson(SFString& strIn);
+	SFInt32 parseJson(SFString& strIn);
+	SFInt32 writeToFile(CSharedResource& file) const;
+	SFBool  readFromFile(CSharedResource& file);
 	// EXISTING_CODE
 
 private:
 	void			Clear      		(void);
 	void			Init      		(void);
 	void			Copy      		(const CTransaction& tr);
+
+	// EXISTING_CODE
+	// EXISTING_CODE
 };
 
 //--------------------------------------------------------------------------
@@ -178,7 +183,31 @@ inline SFInt32 CTransaction::getHandle(void) const
 extern SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void *data);
 
 //---------------------------------------------------------------------------
-IMPLEMENT_ARCHIVE_ARRAY(CTransactionArray);
+inline SFArchive& operator<<(SFArchive& archive, CTransactionArray& array)
+{
+	SFInt32 count = array.getCount();
+	if (!archive.writeDeleted())
+	{
+		for (int i=0;i<array.getCount();i++)
+		{
+			if (array[i].isDeleted())
+				count--;
+		}
+	}
+	archive << count;
+	for (int i=0;i<array.getCount();i++)
+		array[i].Serialize(archive);
+	return archive;
+}
+inline SFArchive& operator>>(SFArchive& archive, CTransactionArray& array)
+{
+	SFInt32 count;
+	archive >> count;
+	for (int i=0;i<count;i++)
+		array[i].Serialize(archive);
+	return archive;
+}
+
 IMPLEMENT_ARCHIVE_LIST(CTransactionList);
 
 //---------------------------------------------------------------------------

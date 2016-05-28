@@ -3,25 +3,40 @@
 /*--------------------------------------------------------------------------------
  * Copyright 2016 - Great Hill Corporation.
  --------------------------------------------------------------------------------*/
-
 #include "manage.h"
+#include "slurp.h"
 
 //---------------------------------------------------------------------------------------------------
-#define PATH_TO_HOME       getHomeFolder()
-#define PATH_TO_ETH_SLURP  SFString(getHomeFolder() + ".ethslurp" + (testOnly?".test":EMPTY) + "/")
-#define PATH_TO_SLURPS     SFString(PATH_TO_ETH_SLURP + "slurps/")
+class CSlurperApp : public CApplication
+{
+public:
+	SFString  api_key;
+	SFString  api_provider;
+	SFString  api_url;
+	CSlurp    theSlurp;
 
-//--------------------------------------------------------------------------------
-extern SFBool   establish_folders(CConfig *config);
-extern SFString getHomeFolder(void);
-extern SFString getDisplayString(SFBool prettyPrint, const SFString& exportFormat, const CConfig& config, SFString& header);
-extern SFString snagDisplayString(const CConfig& config, const SFString& name);
-extern CVersion version;
+	         CSlurperApp(void) : CApplication() { };
+        	~CSlurperApp(void) {  }
+
+	void     buildDisplayStrings (void);
+	SFString getFormatString     (const SFString& name);
+	
+	SFBool Slurp  (SFString& message);
+	SFBool Display(SFString& message);
+};
+
+//---------------------------------------------------------------------------------------------------
+extern SFBool establish_folders(CConfig& config, const SFString& vers);
+extern void   findBlockRange   (const SFString& contents, SFInt32& minBlock, SFInt32& maxBlock);
+
+//---------------------------------------------------------------------------------------------------
+#define PATH_TO_ETH_SLURP  SFString(getHomeFolder() + ".ethslurp" + (isTesting?".test":EMPTY) + "/")
+#define PATH_TO_SLURPS     SFString(PATH_TO_ETH_SLURP + "slurps/")
 
 //---------------------------------------------------------------------------------------------------
 inline SFBool isInternal(const SFString& field)
 {
-	return field == "schema" || field == "deleted" || field == "handle" || (testOnly && field == "confirmations");
+	return field == "schema" || field == "deleted" || field == "handle" || (isTesting && field == "confirmations");
 }
 
 #endif

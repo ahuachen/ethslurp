@@ -1047,6 +1047,13 @@ SFString snagField(const SFString& in, const SFString& field, const SFString& de
 	return ret;
 }
 
+//---------------------------------------------------------------------------------------
+SFString snagFieldStrip(const SFString& in, const SFString& field, const SFString& defVal, const SFString& stripWhat)
+{
+	SFString ret = snagField(in, field, defVal);
+	return StripAny(ret, stripWhat);
+}
+
 const char* CHR_VALID_NAME  = "\t\n\r()<>[]{}`\\|; " "'!$^*~@" "?&#+%" ",:/=\"";
 const char* CHR_ALLOW_URL   =                              "@" "?&#+%" ",:/=\"";
 const char* CHR_ALLOW_EMAIL =                        "'!$^*~@" "?&#+%";

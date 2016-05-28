@@ -27,5 +27,6 @@
 #include "editableobject.h"
 #include "protectedobject.h"
 #include "colors.h"
+#include "performance.h"
 
 #endif

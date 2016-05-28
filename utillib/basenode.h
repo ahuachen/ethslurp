@@ -19,6 +19,7 @@ private:
 	SFInt32 m_refCount;
 	SFBool  m_deleted;
 	SFInt32 m_schema;
+	SFBool  m_showing;
 	
 public:
 
@@ -32,6 +33,8 @@ public:
 			void    setDeleted      (SFBool val);
 			SFInt32 getSchema       (void) const;
 			void    setSchema       (SFInt32 val);
+			SFBool  isShowing       (void) const;
+			void    setShowing      (SFInt32 val);
 
 	virtual SFBool  isKindOf        (const ghRuntimeClass* pClass) const;
 

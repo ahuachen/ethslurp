@@ -5,60 +5,31 @@
  --------------------------------------------------------------------------------*/
 
 #include "utillib.h"
+#include "options.h"
 #include "transaction.h"
 
 //--------------------------------------------------------------------------------
-typedef SFInt32 (*CMDFUNC)  (SFInt32 nArgs, const SFString *args);
-
-//--------------------------------------------------------------------------------
-typedef SFInt32 (*USAGEFUNC)(const SFString& errMsg);
-
-//--------------------------------------------------------------------------------
-class CParams
+class CApplication
 {
 public:
-	SFString  shortName;
-	SFString  longName;
-	SFString  description;
-	CParams( const SFString& name, const SFString& descr );
+	static    CParams params[];
+	static    SFInt32 nParams;
+	COptions  opt;
+	CVersion  version;
+	CConfig   config;
+	CApplication(void) : config(NULL) { nParams = 0; }
 };
 
 //--------------------------------------------------------------------------------
-class CCmdFunction
-{
-	CCmdFunction( void ) {}
-public:
-	SFString    functionName;
-	CMDFUNC     cFunc;
-	CParams    *params;
-	SFInt32     nParams;
-	CCmdFunction (const SFString& functionNameIn, CMDFUNC cFuncIn, CParams *paramsIn, SFInt32 nParamsIn)
-	{
-		functionName = functionNameIn;
-		cFunc        = cFuncIn;
-		params       = paramsIn;
-		nParams      = nParamsIn;
-	}
-	SFString options     (void) const;
-	SFString descriptions(void) const;
-	SFString purpose     (void) const;
-};
-
-//--------------------------------------------------------------------------------
-#define DEFINE_COMMAND(cmdName) extern SFInt32 cmd##cmdName(SFInt32 nArgs,const SFString *args); extern CParams params##cmdName[]; extern SFInt32 nParams##cmdName;
-
-//--------------------------------------------------------------------------------
-DEFINE_COMMAND(EthSlurp);
-
-//--------------------------------------------------------------------------------
-int           usage       (const SFString& cmd, const SFString& errMsg=nullString);
-CCmdFunction *findCommand (const SFString& cmd);
-int           sortCommand (const void *c1, const void *c2);
+extern int           usage        (const SFString& cmd, const SFString& errMsg=nullString);
+extern CCmdFunction *findCommand  (const SFString& cmd);
+extern int           sortCommand  (const void *c1, const void *c2);
+extern SFString      getHomeFolder(void);
 
 //--------------------------------------------------------------------------------
 extern SFBool verbose;
-extern SFBool testOnly;
-extern CFileExportContext   outScreen;
+extern SFBool isTesting;
+extern CFileExportContext  outScreen;
 extern CFileExportContext& outErr;
 
 //--------------------------------------------------------------------------------
@@ -68,5 +39,8 @@ extern CFileExportContext& outErr;
 
 #include <iostream>
 using namespace std;
+
+//--------------------------------------------------------------------------------
+extern SFInt32 cmdEthSlurp(SFInt32 nArgs,const SFString *args);
 
 #endif

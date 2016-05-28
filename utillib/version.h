@@ -8,9 +8,9 @@
  *------------------------------------------------------------------------*/
 
 // Applications must define these items
-#define FILE_MAJOR_VERSION ((SFInt32)4)
-#define FILE_MINOR_VERSION ((SFInt32)6)
-#define FILE_BUILD_VERSION ((SFInt32)2)
+#define FILE_MAJOR_VERSION ((SFInt32)0)
+#define FILE_MINOR_VERSION ((SFInt32)5)
+#define FILE_BUILD_VERSION ((SFInt32)1)
 
 // Syntactic sugar
 #define VERSION_MAJOR  FILE_MAJOR_VERSION
@@ -54,6 +54,7 @@ public:
 	SFBool    earlier      (const CVersion& version) const;
 
 	SFString  toString     (char sep=':') const;
+	SFInt32   toInt32      (void) const;
 };
 
 //-------------------------------------------------------------------------

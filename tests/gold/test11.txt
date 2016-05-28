@@ -1,23 +1,32 @@
+test11: test open config file
+../ethslurp -o -l -f 
+Testing only for open command:
+[CONFIGFILE]
+;------------------------------------------------------------------------------
+; Copyright (c) by Great Hill Corporation. All Rights Reserved.
+; file version=0:5:1
+;------------------------------------------------------------------------------
 
-  open command not implemented
+[SETTINGS]
+datapath=/Users/jrush/.ethslurp.test/slurps/
+api_key=68E1BQYW85ETVNHKWV27B8N5HYICEHEPH1
+focus=189
+api_provider=EtherScan
+api_url=http://etherscan.io/apis
+lastRead=0x682e426ea761db77bacd5acdce33ca122175daea
 
-  Usage:   ../ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
-  Purpose: Fetches data off the Ethereum block chain for an arbitrary account or smart contract. Optionally formats the output to your specification.
-           
-  Where:
-	addr                 the address of the account or contract to slurp (required)
-	-b  (or -backup)     save a date stamped backup of the previous slurp
-	-c  (or -clear)      clear all previously cached slurps
-	-d  (or -date)       specify date range as 'start-[end]' (yyyymmdd[:hhmmss])
-	-e  (or -expense)    include expenditures only
-	-f  (or -fmt)        pretty print, optionally add ':txt,' ':csv,' or ':html'
-	-i  (or -income)     include income transactions only
-	-l  (or -last)       re-display most recent (last) slurp
-	-o  (or -open)       open output in an associated editor
-	-s  (or -slurp)      force EthSlurp to take a slurp (ignore cached data)
-	-t  (or -test)       generate intermediary files but do not execute the commands
-	-v  (or -verbose)    set verbose level. Follow with a number to set level (-v0 for silent)
-	-h  (or -help)       display this help screen
-
-  Portions of this software are Powered by Etherscan.io APIs
+[DISPLAY_STR]
+fmt_fieldList=
+fmt_txt_file=[{HEADER}]\n[{RECORDS}]
+fmt_txt_record=[{FIELDS}]\n
+fmt_txt_field=\t[{FIELD}]
+fmt_csv_file=[{HEADER}]\n[{RECORDS}]
+fmt_csv_record=[{FIELDS}]\n
+fmt_csv_field=["{FIELD}"],
+fmt_html_file=<table>\n[{HEADER}]\n[{RECORDS}]</table>\n
+fmt_html_record=\t<tr>\n[{FIELDS}]</tr>\n
+fmt_html_field=\t\t<td>[{FIELD}]</td>\n
+fmt_json_file=[{RECORDS}]\n
+fmt_json_record=\n        {\n[{FIELDS}]        },
+fmt_json_field="[{p:FIELD}]":"[{FIELD}]",
 

@@ -177,11 +177,9 @@ inline void XX_C(const SFString& p, const SFString& v)
 	if (p.IsEmpty())
 		fmt.Replace(":", EMPTY);
 
-#ifdef TESTING
 	fmt.Replace("<span class=warning>", EMPTY);
 	fmt.Replace("</span>", EMPTY);
 	fmt.Replace("<br>", EMPTY);
-#endif
 
 	printf((const char*)fmt, xx_a_cnt++, (const char*)p, (const char*)v);
 //	fmt.ReplaceAll("<", "&lt;");

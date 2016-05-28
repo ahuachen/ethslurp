@@ -305,22 +305,50 @@ SFInt32 CSharedResource::Write(const void *buff, SFInt32 size, SFInt32 cnt) cons
 }
 
 //----------------------------------------------------------------------
-SFInt32 CSharedResource::Write(const SFString& str) const
+SFInt32 CSharedResource::Write(const SFString& val) const
 {
 	ASSERT(isOpen());
 	ASSERT(!isAscii());
 
-	SFInt32 len = str.GetLength();
+	SFInt32 len = val.GetLength();
 
 	SFInt32 ret = Write(&len, sizeof(SFInt32), 1);
-	return Write((const char *)str, sizeof(char), len) + ret;
+	return Write((const char *)val, sizeof(char), len) + ret;
 }
 
 //----------------------------------------------------------------------
-SFInt32 CSharedResource::Read(void *buff, SFInt32 cnt, SFInt32 size)
+SFInt32 CSharedResource::Write(SFInt32 val) const
+{
+	return Write(&val, sizeof(SFInt32), 1);
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Read(void *buff, SFInt32 size, SFInt32 cnt)
 {
 	ASSERT(isOpen());
 	return (SFInt32)fread(buff, cnt, size, m_fp);
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Read(SFString& str)
+{
+	char buff[2048];
+
+	ASSERT(isOpen());
+	ASSERT(!isAscii());
+	
+	SFInt32 len;
+	Read(&len, sizeof(SFInt32), 1);
+	Read(buff, sizeof(char), len);
+	buff[len] = '\0';
+	str = buff;
+	return len;
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Read(SFInt32& val)
+{
+	return Read(&val, sizeof(SFInt32), 1);
 }
 
 //----------------------------------------------------------------------

@@ -3,11 +3,46 @@
  --------------------------------------------------------------------------------*/
 
 #include "manage.h"
+#include "ethslurp.h"
+
+#if 1
+
+CFileExportContext ctx;
+
+int main(int argc, char *argv[])
+{
+	SFInt32 cnt=0;
+	SFString contents = asciiFileToString("/Users/jrush/src.GitHub/ethslurp/data/shit.txt");
+	//	ctx << contents;
+	double total=0;
+	SFInt32 n=0;
+	SFString lastAdd="";
+	while (!contents.IsEmpty())
+	{
+		SFString amount = nextTokenClear(contents, '\r');
+		SFString addr   = nextTokenClear(contents, '\t');
+		n++;
+		total += atof((const char*)amount);
+		if (lastAdd!=addr)
+		{
+			ctx << ++cnt << " : " << addr << "\t" << n << "\t" << total << "\n";
+			total=0.0;
+			n=0;
+			lastAdd = addr;
+		}
+	}
+	return 0;
+}
+int usage(const SFString& cmd, const SFString& errMsg)
+{
+	return 0;
+}
+#else
 
 //--------------------------------------------------------------------------------
 CCmdFunction funcs[] =
 {
-	CCmdFunction( "ethslurp",  cmdEthSlurp,  paramsEthSlurp,  nParamsEthSlurp ),
+	CCmdFunction( "ethslurp",  cmdEthSlurp,  CSlurperApp::params,  CSlurperApp::nParams ),
 };
 SFInt32 nFuncs = sizeof(funcs) / sizeof(CCmdFunction);
 
@@ -57,7 +92,7 @@ int main(int argc, const char * argv[])
 
 		} else if (arg=="-t" || arg=="-test" || arg=="-titles")
 		{
-			testOnly = TRUE;
+			isTesting = TRUE;
 
 		} else
 		{
@@ -94,32 +129,6 @@ int usage(const SFString& cmd, const SFString& errMsg)
 CCmdFunction *findCommand(const SFString& cmd)
 {
 	return &funcs[0];
-}
-
-//--------------------------------------------------------------------------------
-CParams::CParams( const SFString& nameIn, const SFString& descr )
-{
-	SFString name = nameIn;
-
-	description = descr;
-	if (!name.IsEmpty())
-	{
-		shortName   = name.Left(2);
-		if (name.GetLength()>2)
-			longName  = name;
-		if (name.Contains("{"))
-		{
-			name.Replace("{","|{");
-			nextTokenClear(name,'|');
-			shortName += name;
-
-		} else if (name.Contains(":"))
-		{
-			nextTokenClear(name,':');
-			shortName += name[0];
-			longName = "-" + name;
-		}
-	}
 }
 
 //--------------------------------------------------------------------------------
@@ -204,9 +213,37 @@ int sortCommand(const void *c1, const void *c2)
 	return (int)p1->shortName.Compare(p2->shortName);
 }
 
+#endif
+
+//--------------------------------------------------------------------------------
+CParams::CParams( const SFString& nameIn, const SFString& descr )
+{
+	SFString name = nameIn;
+	
+	description = descr;
+	if (!name.IsEmpty())
+	{
+		shortName   = name.Left(2);
+		if (name.GetLength()>2)
+			longName  = name;
+		if (name.Contains("{"))
+		{
+			name.Replace("{","|{");
+			nextTokenClear(name,'|');
+			shortName += name;
+			
+		} else if (name.Contains(":"))
+		{
+			nextTokenClear(name,':');
+			shortName += name[0];
+			longName = "-" + name;
+		}
+	}
+}
+
 //--------------------------------------------------------------------------------
 SFBool verbose  = FALSE;
-SFBool testOnly = FALSE;
+SFBool isTesting = FALSE;
 
 //--------------------------------------------------------------------------------
 CFileExportContext   outScreen;

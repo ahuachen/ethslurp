@@ -76,6 +76,22 @@ void ghRuntimeClass::ClearFieldList(void)
 }
 
 //-------------------------------------------------------------------------
+SFString ghRuntimeClass::listOfFields(char sep) const
+{
+	SFString ret;
+	if (m_FieldList)
+	{
+		LISTPOS p = m_FieldList->GetFirstItem();
+		while (p)
+		{
+			CFieldData *field = m_FieldList->GetNextItem(p);
+			ret += field->getFieldName() + sep;
+		}
+	}
+	return ret;
+}
+
+//-------------------------------------------------------------------------
 void ghRuntimeClass::AddField(const SFString& fieldName, SFInt32 dataType, SFInt32 fieldID)
 {
 	if (!m_FieldList)
@@ -143,6 +159,7 @@ SFString nextChunk_common(const SFString& fieldIn, const SFString& cmd, const CB
 			break;
 		case 's':
 			if ( fieldIn % "schema" ) return asString(node->getSchema());
+			if ( fieldIn % "showing" ) return asString(node->isShowing());
 			break;
 		default:
 			break;

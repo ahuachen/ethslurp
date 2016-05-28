@@ -13,7 +13,7 @@ typedef CBaseNode* (*PFNV)(void);
 #include "fielddata.h"
 
 //----------------------------------------------------------------------------
-#define NO_SCHEMA -1
+#define NO_SCHEMA 501
 
 //----------------------------------------------------------------------------
 class ghRuntimeClass;
@@ -43,6 +43,7 @@ public:
 	SFBool        IsDerivedFrom   (const ghRuntimeClass* pBaseClass) const;
 	void          AddField        (const SFString& fieldName, SFInt32 dataType, SFInt32 fieldID);
 	void          ClearFieldList  (void);
+	SFString      listOfFields    (char sep='|') const;
 	CFieldList   *GetFieldList    (void) const { return m_FieldList; }
 	SFInt32       Reference       (void);
 	SFInt32       Dereference     (void);
@@ -94,7 +95,8 @@ public: \
 	virtual SFString getValueByName(const SFString& fieldName) const; \
 	virtual SFBool   setValueByName(const SFString& fieldName, const SFString& fieldValue); \
 	virtual void     Serialize     (SFArchive& archive); \
-	virtual SFString Format        (const SFString& fmtIn) const; \
+    virtual void     Format_base   (CExportContext& ctx, const SFString& fmtIn) const; \
+    virtual SFString Format        (const SFString& fmtIn) const { CStringExportContext ctx;Format_base(ctx, fmtIn);return ctx.str;} \
 	        SFString getClassName  (void); \
 	static  void     registerClass (void);
 
@@ -109,6 +111,7 @@ public: \
 		if (fileVersion != archive.getSchema()) \
 			fprintf(stderr, "'%ld' data version found. Expected '%ld.'\n", fileVersion, archive.getSchema()); \
 		setSchema(fileVersion); \
+		SFBool show; archive >> show; setShowing(show); \
 		SFString className; archive >> className; \
 		if (className != getClassName()) \
 			fprintf(stderr, "'%s' data type found. Expected '%s.'\n", (const char*)className, (const char*)getClassName()); \
@@ -118,6 +121,7 @@ public: \
 			return; \
 		archive << isDeleted(); \
 		archive << getSchema(); \
+		archive << isShowing(); \
 		archive << getClassName(); \
 	}
 

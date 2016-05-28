@@ -12,6 +12,7 @@ dates.cpp \
 editableobject.cpp \
 editableobjectbase.cpp \
 exportcontext.cpp \
+importcontext.cpp \
 fielddata.cpp \
 fieldlist.cpp \
 runtimeclass.cpp \

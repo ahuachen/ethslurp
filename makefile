@@ -6,9 +6,13 @@ libs=utillib/utillib.a /usr/lib/libcurl.dylib
 
 src= \
 ethslurp.cpp \
+slurper.cpp \
 manage.cpp \
+options.cpp \
 transaction.cpp \
-transaction_custom.cpp
+transaction_custom.cpp \
+slurp.cpp \
+slurp_custom.cpp
 
 #-------------------------------------------------
 # probably don't have to change below this line
@@ -33,6 +37,9 @@ objs:
 
 objs/%.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(cflags) -c $< -o $@
+
+cleanall:
+	clean
 
 clean:
 	@cd utillib; make clean; cd ..

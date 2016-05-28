@@ -1,63 +1,90 @@
 clear
+rm -fR ~/.ethslurp.test # clean up prior tests
+rm -fR ./files/files_*/*
 
-echo "	test1: default behaviour should show help"
-rm -fR ~/.ethslurp.test
-cat api_key | ../ethslurp -t >proposed/test1.txt
-find ~/.ethslurp.test >>proposed/test1.txt 2>/dev/null # should be empty
+echo "test1: default behaviour should show help"                              >proposed/test1.txt
+cat api_key | ../ethslurp -t                                                 >>proposed/test1.txt
+find ~/.ethslurp.test                                                        >>proposed/test1.txt 2>/dev/null # should be empty
+./copyTestFolder 1
 
 echo
 echo "Running ethslurp test suite..."
 echo
 
-echo "	test2: slurp on known dead account"
-../ethslurp -t 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test2.txt
-cat ~/.ethslurp.test/config.dat | grep -v api_key >>proposed/test2.txt
+echo "test2: slurp on known dead account"                                | tee proposed/test2.txt
+../ethslurp -t 0x713B73c3994442b533e6A083eC968e40606810Ec                    >>proposed/test2.txt
+cat ~/.ethslurp.test/config.dat | grep -v api_key                            >>proposed/test2.txt
+./copyTestFolder 2
 
-echo "	test3: test last visited flag"
-../ethslurp -t -l >proposed/test3.txt
+echo "test3: test last visited flag"                                     | tee proposed/test3.txt
+../ethslurp -t -l                                                            >>proposed/test3.txt
+./copyTestFolder 3
 
-echo "	test4: test prettyPrint flag"
-../ethslurp -t -l -f >proposed/test4.txt ; ./strip_confirms 4;
+echo "test4: test prettyPrint flag"                                      | tee proposed/test4.txt
+../ethslurp -t -l -f                                                         >>proposed/test4.txt ; ./strip_confirms 4;
+./copyTestFolder 4
 sleep 1s
 
-echo "	test5: test tab delimited flag"
-../ethslurp -t -v -l -f:txt >proposed/test5.txt
+echo "test5: test tab delimited flag"                                    | tee proposed/test5.txt
+../ethslurp -t -v -l -f:txt                                                  >>proposed/test5.txt
+./copyTestFolder 5
 
-echo "	test6: test comma seperated value flag"
-../ethslurp -t -v -l -f:csv >proposed/test6.csv
+echo "test6: test comma seperated value flag"                            | tee proposed/test6.csv
+../ethslurp -t -v -l -f:csv                                                  >>proposed/test6.csv
+./copyTestFolder 6
 
-echo "	test7: test html flag"
-../ethslurp -t -v -l -f:html >proposed/test7.html
+echo "test7: test html flag"                                             | tee proposed/test7.html
+../ethslurp -t -v -l -f:html                                                 >>proposed/test7.html
+./copyTestFolder 7
 sleep 1s
 
-echo "	test8: extract income records only"
-../ethslurp -t -v -i -f 0x682e426ea761db77bacd5acdce33ca122175daea >proposed/test8.txt
+echo "test8: extract income records only"                                | tee proposed/test8.txt
+../ethslurp -t -v -i -f 0x682e426ea761db77bacd5acdce33ca122175daea           >>proposed/test8.txt
+./copyTestFolder 8
 
-echo "	test9: extract expense records only"
-../ethslurp -t -v -e -f 0x682e426ea761db77bacd5acdce33ca122175daea >proposed/test9.txt
+echo "test9: extract expense records only"                               | tee proposed/test9.txt
+../ethslurp -t -v -e -f 0x682e426ea761db77bacd5acdce33ca122175daea           >>proposed/test9.txt
+./copyTestFolder 9
 sleep 1s
 
-echo "	test10: test date option (not implemented)"
-../ethslurp -t -d -l -f 0x713B73c3994442b533e6A083eC968e40606810Ec >proposed/test10.txt
+echo "test10: test date option (not implemented)"                        | tee proposed/test10.txt
+../ethslurp -t -d -l -f 0x713B73c3994442b533e6A083eC968e40606810Ec           >>proposed/test10.txt
+./copyTestFolder 10
 
-echo "	test11: test open option (not implemented)"
-../ethslurp -t -o -l -f >proposed/test11.txt
+echo "test11: test open config file"                                     | tee proposed/test11.txt
+../ethslurp -t -o -l -f                                                      >>proposed/test11.txt
+./copyTestFolder 11
 
-echo "	test12: test backup option (not implemented)"
-../ethslurp -t -b -l -f >proposed/test12.txt
+echo "test12: test backup option (not implemented)"                      | tee proposed/test12.txt
+../ethslurp -t -b -l -f                                                      >>proposed/test12.txt
+./copyTestFolder 12
 sleep 1s
 
-echo "	test14: test custom display strings, file: format and fmt_ format"
-echo "fmt_custom_file=file:custom_format_file.html" >>~/.ethslurp.test/config.dat
-echo "fmt_custom_record=fmt_html_record"            >>~/.ethslurp.test/config.dat
-echo "fmt_custom_field=fmt_html_field"              >>~/.ethslurp.test/config.dat
-cat ~/.ethslurp.test/config.dat | grep -v api_key    >proposed/test14.txt
-../ethslurp -t -l -f:custom                         >>proposed/test14.txt
+echo "fmt_custom_file=file:custom_format_file.html"                       >>~/.ethslurp.test/config.dat
+echo "fmt_custom_record=fmt_html_record"                                  >>~/.ethslurp.test/config.dat
+echo "fmt_custom_field=fmt_html_field"                                    >>~/.ethslurp.test/config.dat
 
-echo "	testlast: test cache clear option"
-ls ~/.ethslurp.test/slurps   >proposed/testlast.txt
-../ethslurp -t -c           >>proposed/testlast.txt
-find ~/.ethslurp.test       >>proposed/testlast.txt
+echo "test14: test custom display strings, file: format and fmt_ format" | tee proposed/test14.txt
+cat ~/.ethslurp.test/config.dat | grep -v api_key                            >>proposed/test14.txt
+../ethslurp -t -l -f:custom                                                  >>proposed/test14.txt
+./copyTestFolder 14
+
+echo "test15: test cache clear option"                                   | tee proposed/test15.txt
+ls ~/.ethslurp.test/slurps                                                   >>proposed/test15.txt
+../ethslurp -t -c                                                            >>proposed/test15.txt
+find ~/.ethslurp.test                                                        >>proposed/test15.txt
+
+if [ $# -ne 0 ]
+  then
+	#
+	# With a cleared cache we first copy an old bin file from May 2016 and then 
+	# read and possibly update from the blockchain (set api_key first but ignore it)
+	cat api_key | ../ethslurp -t                                                            >proposed/test16.txt
+	echo "test16: test updating from cache"                                            | tee proposed/test16.txt
+	cp -p cache/0x41f274c0023f83391de4e0733c609df5a124c3d4.bin ~/.ethslurp.test/slurps     >>proposed/test16.txt
+	../ethslurp -t -f:csv 0x41f274c0023f83391de4e0733c609df5a124c3d4                       >>proposed/test16.txt
+	# ./perf_tests
+fi
 
 # now diff to see if anything changed
 echo "----------------------------"

@@ -29,6 +29,7 @@ void CBaseNode::Init(void)
 	m_refCount = 0;
 	m_deleted  = FALSE;
 	m_schema = NO_SCHEMA;
+	m_showing = TRUE;
 }
 
 //--------------------------------------------------------------------------------
@@ -37,6 +38,7 @@ void CBaseNode::Copy(const CBaseNode& bn)
 	m_refCount = bn.m_refCount;
 	m_deleted  = bn.m_deleted;
 	m_schema = bn.m_schema;
+	m_showing = bn.m_showing;
 }
 
 //--------------------------------------------------------------------------------
@@ -78,9 +80,21 @@ SFInt32 CBaseNode::getSchema(void) const
 }
 
 //--------------------------------------------------------------------------------
+SFBool CBaseNode::isShowing(void) const
+{
+	return (m_showing);
+}
+
+//--------------------------------------------------------------------------------
 void CBaseNode::setSchema(SFBool val)
 {
 	m_schema = val;
+}
+
+//--------------------------------------------------------------------------------
+void CBaseNode::setShowing(SFBool val)
+{
+	m_showing = val;
 }
 
 //--------------------------------------------------------------------------------

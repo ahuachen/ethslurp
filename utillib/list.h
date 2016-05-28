@@ -41,6 +41,7 @@ public:
 	
 	      void    Clear         (void);
 
+	void    Grow     (SFInt32 sizeNeeded);
 private:
 		  void    CheckSize     (SFInt32 sizeNeeded);
 	      void    Copy          (const SFArrayBase& copy);
@@ -103,6 +104,13 @@ inline void SFArrayBase<TYPE>::Copy(const SFArrayBase<TYPE>& copy)
 	for (int i=0;i<copy.getCount();i++)
 		m_Values[i] = copy.m_Values[i];
 	m_nValues = copy.getCount();
+}
+
+//----------------------------------------------------------------------
+template<class TYPE>
+inline void SFArrayBase<TYPE>::Grow(SFInt32 sizeNeeded)
+{
+	CheckSize(sizeNeeded);
 }
 
 //----------------------------------------------------------------------
