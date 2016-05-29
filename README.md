@@ -1,18 +1,16 @@
 # ethslurp
 Drink the block chain (http://ethslurp.com)
 
-## videos
-
 Watch a video tutorial <a href="https://www.youtube.com/watch?v=ZZDV1yAgces">here</a>
 
-#### source code
+### source code
 
 While we fully intend to post our source code to open source, we decided against doing so now
 because the software is not fully tested. All the data we present, the documentation, and
 the videos were produced using the software, but it's just not quite ready for prime time.
 Please return soon and often. 
 
-#### ethslurp
+### ethslurp
 
     Usage:   ./ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
 
@@ -20,7 +18,7 @@ Please return soon and often.
              account or smart contract. Optionally formats the output
             to your specification.
 
-#### where:
+### where:
 
   	addr                 the address of the account or contract to slurp (required)
   	-b  (or -backup)     save a date stamped backup of the previous slurp
