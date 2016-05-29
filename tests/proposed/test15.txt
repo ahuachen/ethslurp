@@ -1,0 +1,9 @@
+test15: test cache clear option
+0x682e426ea761db77bacd5acdce33ca122175daea.bin
+0x682e426ea761db77bacd5acdce33ca122175daea.json
+0x713b73c3994442b533e6a083ec968e40606810ec.bin
+0x713b73c3994442b533e6a083ec968e40606810ec.json
+../ethslurp -c 
+Cached slurp files were cleared
+/Users/jrush/.ethslurp.test
+/Users/jrush/.ethslurp.test/config.dat

@@ -12,7 +12,7 @@ Please return soon and often.
 
 ### ethslurp
 
-    Usage:   ./ethslurp [-b|-c|-d|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
+    Usage:   ./ethslurp [-b|-c|-e|-f|-i|-l|-o|-s|-t|-v|-h] addr
 
     Purpose: Fetches data off the Ethereum block chain for an arbitrary
              account or smart contract. Optionally formats the output
@@ -21,9 +21,8 @@ Please return soon and often.
 ### where:
 
   	addr                 the address of the account or contract to slurp (required)
-  	-b  (or -backup)     save a date stamped backup of the previous slurp
+  	-b  (or -block)      ignore all records from blocks earlier than :num (:0)
   	-c  (or -clear)      clear all previously cached slurps
-  	-d  (or -date)       specify date range as 'start-[end]' (yyyymmdd[:hhmmss])
   	-e  (or -expense)    include expenditures only
   	-f  (or -fmt)        pretty print, optionally add ':txt,' ':csv,' or ':html'
   	-i  (or -income)     include income transactions only

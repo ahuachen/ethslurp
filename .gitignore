@@ -10,9 +10,11 @@
 ethslurp
 api_key
 movies
-not_published
+data_not_published
 timeConvert
-tests
+tests/cache
+tests/files
+
 
 # Precompiled Headers
 *.gch
