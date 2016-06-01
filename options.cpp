@@ -126,11 +126,6 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 		{
 			slurp = TRUE;
 
-		} else if (args[i] == "-t" || args[i] == "-totals")
-		{
-			// totals command stuff
-			return usage(args[0], "totals commands not implemented");
-
 		} else if (args[i] == "-o" || args[i] == "-open")
 		{
 			// open command stuff

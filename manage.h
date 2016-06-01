@@ -37,13 +37,14 @@ extern CFileExportContext& outErr;
 #define RETURN_OK   TRUE
 #define RETURN_FAIL FALSE
 
-#include <iostream>
-using namespace std;
-
 //--------------------------------------------------------------------------------
 extern SFInt32 cmdEthSlurp(SFInt32 nArgs,const SFString *args);
 
 //--------------------------------------------------------------------------------
 #define LARGEST_LONG 2147483647
+
+//--------------------------------------------------------------------------------
+#include <iostream>
+using namespace std;
 
 #endif

@@ -37,9 +37,11 @@ int main(int argc, const char * argv[])
 		return 0;
 	}
 
+	SFString *arguments = new SFString[CSlurperApp::nParams*2]; // should be big enough, probably way too big
+
 	SFInt32   nArgs = 0;
-	SFString *arguments = new SFString[argc+2]; // play it safe
-	for (int i=0;i<argc;i++)
+	arguments[nArgs++] = argv[0];
+	for (int i=1;i<argc;i++)
 	{
 		SFString arg = argv[i];
 		if (arg=="-h" || arg=="-help" || arg=="--help")
@@ -63,7 +65,11 @@ int main(int argc, const char * argv[])
 
 		} else
 		{
-			arguments[nArgs++] = arg;
+			while (!arg.IsEmpty())
+			{
+				arguments[nArgs++] = cmdFunc->expandOption(arg);
+				printf("");
+			}
 		}
 	}
 
@@ -192,6 +198,41 @@ SFString CCmdFunction::descriptions(void) const
 	ctx << "\t" << "-v  (or -verbose)    set verbose level. Follow with a number to set level (-v0 for silent)\n";
 	ctx << "\t" << "-h  (or -help)       display this help screen\n";
 	return ctx.str;
+}
+
+//--------------------------------------------------------------------------------
+SFBool CCmdFunction::isOption(const SFString& arg) const
+{
+	return TRUE;
+}
+
+//--------------------------------------------------------------------------------
+SFString CCmdFunction::expandOption(SFString& arg) const
+{
+	SFString ret = arg;
+	if (!arg.startsWith('-')) // not an option
+	{
+		arg=EMPTY;
+		return ret;
+	}
+
+	if (arg.GetLength()==2) // single option
+	{
+		arg=EMPTY;
+		return ret;
+	}
+
+	if (arg.Contains(":")) // one of the range commands. These must be alone on the line, so fail if necassary
+	{
+		arg=EMPTY;
+		return ret;
+	}
+
+	// This is a double (or more) option, so we need to pull it apart
+	// by returning the first two chars, and saving the rest for later.
+	ret = arg.Left(2);
+	arg = "-"+arg.Mid(2,1000);
+	return ret;
 }
 
 //--------------------------------------------------------------------------------

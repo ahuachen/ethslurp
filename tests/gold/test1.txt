@@ -1,11 +1,11 @@
 test1: default behaviour should show help
-../ethslurp
+../ethslurp 
 
   You must supply an Ethereum account or contract address. Use -r flag to rerun the most recently slurped address.
 
   Usage:   ../ethslurp [-b|-c|-d|-e|-f|-i|-l|-m|-o|-r|-s|-t|-v|-h] addr
   Purpose: Fetches data off the Ethereum blockchain for an arbitrary account or smart contract. Optionally formats the output to your specification.
-
+           
   Where:
 	addr                 the address of the account or contract to slurp (required)
 	-b  (or -blocks)     export records in block range (:0[:max])

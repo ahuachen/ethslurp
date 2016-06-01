@@ -85,6 +85,9 @@ cat ~/.ethslurp.test/config.dat | grep -v api_key                            >>p
 ../ethslurp -t -r -f:custom                                                  >>proposed/test14.txt
 ./copyTestFolder 14
 
+echo "test17: test chunked commands (test,fmt,slurp,re-run)"             | tee proposed/test17.txt
+../ethslurp -t -fsr                                                          >>proposed/test17.txt
+
 echo "test15: test list and cache clear options"                         | tee proposed/test15.txt
 ls ~/.ethslurp.test/slurps                                                   >>proposed/test15.txt
 ../ethslurp -t -l                                                            >>proposed/test15.txt

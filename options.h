@@ -62,6 +62,8 @@ public:
 	SFString options     (void) const;
 	SFString descriptions(void) const;
 	SFString purpose     (void) const;
+	SFBool   isOption    (const SFString& arg) const;
+	SFString expandOption(SFString& arg) const;
 };
 
 #endif

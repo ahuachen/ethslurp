@@ -51,7 +51,7 @@ SFBool CSlurperApp::Slurp(SFString& message)
 
 	// If the user tells us he/she wants to update the cache, or the cache
 	// hasn't been updated in five minutes, then update it
-	SFInt32 nSeconds = config.GetProfileIntGH("SETTINGS", "update_freq", 300);
+	SFInt32 nSeconds = MAX(60,config.GetProfileIntGH("SETTINGS", "update_freq", 300));
 	if (opt.slurp || (now - fileTime) > SFTimeSpan(0,0,0,nSeconds))
 	{
 		// This is how many records we currently have
@@ -112,7 +112,8 @@ SFBool CSlurperApp::Slurp(SFString& message)
 		}
 		if (contents.endsWith("}]}"))
 			contents.SetAt(contents.GetLength()-2,'\0');
-		stringToAsciiFile(binaryFileName.Substitute(".bin",".json"), contents);
+		//Why store these? We never use them?
+		//stringToAsciiFile(binaryFileName.Substitute(".bin",".json"), contents);
 		SFInt32 minBlock=0,maxBlock=0;
 		findBlockRange(contents, minBlock, maxBlock);
 		outErr << "\nDownload contains blocks from " << minBlock << " to " << maxBlock << "\n";
