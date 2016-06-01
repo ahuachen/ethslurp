@@ -436,7 +436,7 @@ void CConfig::negateKey(const SFString& group, const SFString& name)
 {
 	SFKey *key = findKey(group, name);
 	if (key)
-		key->setValue(asString(!atoi((const char *)key->getValue())));
+		key->setValue(asString(!toLong(key->getValue())));
 }
 
 //---------------------------------------------------------------------------------------

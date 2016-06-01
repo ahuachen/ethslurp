@@ -32,6 +32,7 @@ public:
 	SFBool pageSize;
 	SFInt32 lastPage;
 	SFInt32 lastBlock;
+	SFInt32 nVisible;
 	CTransactionArray transactions;
 
 public:
@@ -102,6 +103,7 @@ inline void CSlurp::Init(void)
 	pageSize = 0;
 	lastPage = 0;
 	lastBlock = 0;
+	nVisible = 0;
 //	transactions = ??; /* unknown type: CTransactionArray */
 
 	// EXISTING_CODE
@@ -121,6 +123,7 @@ inline void CSlurp::Copy(const CSlurp& sl)
 	pageSize = sl.pageSize;
 	lastPage = sl.lastPage;
 	lastBlock = sl.lastBlock;
+	nVisible = sl.nVisible;
 	transactions = sl.transactions;
 
 	// EXISTING_CODE

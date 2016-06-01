@@ -38,7 +38,7 @@ CFieldData::CFieldData(const SFString& group, const SFString& fieldName, const S
 	if (m_fieldID != NOT_A_FIELD)
 	{
 		m_defStr    = value;
-		m_defInt    = atoi(value);
+		m_defInt    = toLong(value);
 	    setHidden(m_prompt.IsEmpty());
 	}
 
@@ -53,20 +53,20 @@ CFieldData::CFieldData(const SFString& in)
 	SFString line = in;
 	ASSERT(countOf('|', line) == 11 || in == "|unknown");
 
-	m_groupName =                    nextTokenClear(line, '|');
-	m_fieldName =                    nextTokenClear(line, '|');
-	m_prompt    =                    nextTokenClear(line, '|');
-	m_defStr    =                    nextTokenClear(line, '|');
-	m_required  = atoi((const char *)nextTokenClear(line, '|'));
-	m_export    = atoi((const char *)nextTokenClear(line, '|'));
-	m_minPerms  = atoi((const char *)nextTokenClear(line, '|'));
-	m_access    = atoi((const char *)nextTokenClear(line, '|'));
-	m_helpText  =                    nextTokenClear(line, '|');
-	m_type      = atoi((const char *)nextTokenClear(line, '|'));
-	m_fieldID   = atoi((const char *)nextTokenClear(line, '|'));
+	m_groupName =        nextTokenClear(line, '|');
+	m_fieldName =        nextTokenClear(line, '|');
+	m_prompt    =        nextTokenClear(line, '|');
+	m_defStr    =        nextTokenClear(line, '|');
+	m_required  = toLong(nextTokenClear(line, '|'));
+	m_export    = toLong(nextTokenClear(line, '|'));
+	m_minPerms  = toLong(nextTokenClear(line, '|'));
+	m_access    = toLong(nextTokenClear(line, '|'));
+	m_helpText  =        nextTokenClear(line, '|');
+	m_type      = toLong(nextTokenClear(line, '|'));
+	m_fieldID   = toLong(nextTokenClear(line, '|'));
 
 	setHidden(m_prompt.IsEmpty());
-	m_defInt = atoi((const char *)m_defStr);
+	m_defInt = toLong(m_defStr);
 
 	m_resolved = TRUE;
 }

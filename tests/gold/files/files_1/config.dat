@@ -1,7 +1,7 @@
 [CONFIGFILE]
 ;------------------------------------------------------------------------------
 ; Copyright (c) by Great Hill Corporation. All Rights Reserved.
-; file version=0:5:1
+; file version=0:7:5
 ;------------------------------------------------------------------------------
 [SETTINGS]
 datapath=/Users/jrush/.ethslurp.test/slurps/
@@ -27,3 +27,6 @@ fmt_html_field=\t\t<td>[{FIELD}]</td>\n
 fmt_json_file=[{RECORDS}]\n
 fmt_json_record=\n        {\n[{FIELDS}]        },
 fmt_json_field="[{p:FIELD}]":"[{FIELD}]",
+fmt_custom_file=file:custom_format_file.html
+fmt_custom_record=fmt_html_record
+fmt_custom_field=fmt_html_field

@@ -146,7 +146,7 @@ public:
 	SFInt32  getEditSize  (void) const { return m_editSize;  }
 	SFInt32  getMaxSize   (void) const { return m_maxSize;   }
 	SFString getValue     (void) const { return m_value;     }
-	SFInt32  getValueI    (void) const { return atoi((const char *)m_value); }
+	SFInt32  getValueI    (void) const { return toLong(m_value); }
 	SFBool   isExport     (void) const { return m_export;    }
 	SFBool   getAccess    (void) const { return m_access;    }
 	SFString getHelpText  (void) const { return m_helpText;  }
@@ -205,7 +205,7 @@ public:
 	void     setDefStr    (const SFString& defStr)
 		{
 			m_defStr = defStr;
-			m_defInt = atoi((const char *)m_defStr);
+			m_defInt = toLong(m_defStr);
 		}
 
 	SFString toAscii      (void) const;

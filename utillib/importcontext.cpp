@@ -16,13 +16,13 @@ CImportContext::CImportContext(void)
 
 CImportContext& CImportContext::operator>>(char& c)
 {
-	c = (char)atoi(getNextToken(DEF_DELIMITER));
+	c = (char)toLong(getNextToken(DEF_DELIMITER));
 	return *this;
 }
 
 CImportContext& CImportContext::operator>>(long& dw)
 {
-	dw = atoi(getNextToken(DEF_DELIMITER));
+	dw = toLong(getNextToken(DEF_DELIMITER));
 	return *this;
 }
 

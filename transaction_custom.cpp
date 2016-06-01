@@ -5,6 +5,7 @@
  *
  *------------------------------------------------------------------------*/
 
+#include "manage.h"
 #include "transaction.h"
 
 // EXISTING_CODE
@@ -28,7 +29,7 @@ SFString nextTransactionChunk_custom(const SFString& fieldIn, SFBool& force, con
 		case 'd':
 			if ( fieldIn % "date" )
 			{
-				time_t utc = strtol((const char*)tra->timeStamp, NULL, 10);
+				time_t utc = tra->timeStamp;
 				struct tm *tm = gmtime(&utc);
 				char retStr[40];
 				strftime(retStr, sizeof(retStr), "%Y-%m-%d %H:%M:%S UTC", tm);
@@ -63,6 +64,14 @@ SFString nextTransactionChunk_custom(const SFString& fieldIn, SFBool& force, con
 #pragma unused(tra)
 
 	return EMPTY;
+}
+
+//---------------------------------------------------------------------------
+SFBool CTransaction::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data) const
+{
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return FALSE;
 }
 
 // EXISTING_CODE
@@ -169,5 +178,11 @@ SFInt32 CTransaction::parseJson(SFString& strIn)
 		s++;
 	}
 	return nFields;
+}
+
+//---------------------------------------------------------------------------
+SFTime CTransaction::getDate(void) const
+{
+	return snagDate(Format("[{DATE}]").Substitute("-","").Substitute(":", "").Substitute(" ", ""));
 }
 // EXISTING_CODE

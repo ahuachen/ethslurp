@@ -138,7 +138,7 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 	{
 		ASSERT(fieldName.Left(2) % "w:");         // must be first thing in the string
 		fieldName.ReplaceI("w:", EMPTY);          // get rid of the 'w:'
-		maxWidth = atoi((const char *)fieldName); // grab the width
+		maxWidth = toLong(fieldName); // grab the width
 		nextTokenClear(fieldName, ':');           // skip to the start of the fieldname
 	}
 

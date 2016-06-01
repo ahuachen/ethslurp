@@ -9,7 +9,6 @@ skipping inflow 0x515735de46790a8326a909f622122df3c9a57613e39831e47451b978b47745
 skipping inflow 0xf159cca7246933b5c3e31d850ee2c8e08d080c288f4e19b40f219d33d59acf34
 skipping inflow 0xaf50938c5e69fbc0456259047646693d863db618419c434da57362c8b3d9b270
 skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc61
-Exporting record 0 of 15
 
         {
             "blockHash": "0x25efe249e85f2ccd7f2beca969ffa9b9b1e5f39b545e06605e9da10bf89d694b",
@@ -61,8 +60,7 @@ Exporting record 0 of 15
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "0",
             "value": "10000000000000000000"
-        },Exporting record 5 of 15
-
+        },
         {
             "blockHash": "0xd1c7f5a67660305cd7a3cd471f81178e2a38b36d7c3f65de01fc4df40e299a3a",
             "blockNumber": "1491753",
@@ -79,7 +77,8 @@ Exporting record 0 of 15
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "0",
             "value": "20000000000000000000"
-        },
+        },Exporting record 5 of 11 visible records
+
         {
             "blockHash": "0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba",
             "blockNumber": "1491788",
@@ -130,8 +129,7 @@ Exporting record 0 of 15
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "1",
             "value": "16000000000000000000"
-        },Exporting record 10 of 15
-
+        },
         {
             "blockHash": "0x2db805f88fd6384274c1962469dacbae4bf5cedb097a10ca0aa6dfc8a534be10",
             "blockNumber": "1546613",
@@ -165,7 +163,8 @@ Exporting record 0 of 15
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "1",
             "value": "16000000000000000000"
-        },
+        },Exporting record 10 of 11 visible records
+
         {
             "blockHash": "0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e",
             "blockNumber": "1598704",

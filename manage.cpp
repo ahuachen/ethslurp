@@ -15,6 +15,7 @@ SFInt32 nFuncs = sizeof(funcs) / sizeof(CCmdFunction);
 //--------------------------------------------------------------------------------
 int main(int argc, const char * argv[])
 {
+	CSlurp::registerClass();
 	CTransaction::registerClass();
 
 	//
@@ -54,7 +55,7 @@ int main(int argc, const char * argv[])
 			arg.Replace("-v",      EMPTY);
 			arg.Replace(":",       EMPTY);
 			if (!arg.IsEmpty())
-				verbose = atoi((const char*)arg);
+				verbose = toLong(arg);
 
 		} else if (arg=="-t" || arg=="-test" || arg=="-titles")
 		{

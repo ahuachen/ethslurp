@@ -106,17 +106,17 @@ SFTimeOfDay::SFTimeOfDay(const SFString& timeStr, const SFString& fmtStr)
 		{
 		case 'h':
 		case 'H':
-			hour = atoi((const char *)nextTokenClear(str, sep));
+			hour = toLong(nextTokenClear(str, sep));
 			break;
 
 		case 'm':
 		case 'M':
-			min = atoi((const char *)nextTokenClear(str, sep));
+			min = toLong(nextTokenClear(str, sep));
 			break;
 
 		case 's':
 		case 'S':
-			secs = atoi((const char *)nextTokenClear(str, sep));
+			secs = toLong(nextTokenClear(str, sep));
 			break;
 		}
 	}

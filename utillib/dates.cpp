@@ -742,13 +742,13 @@ void SFTime::fromSortStr(const SFString& vStr)
 	SFString dStr = vStr.Mid(0,8);
 	SFString tStr = vStr.Mid(8,6);
 
-	SFInt32 y = atoi((const char *)dStr.Mid(0,4));
-	SFInt32 m = atoi((const char *)dStr.Mid(4,2));
-	SFInt32 d = atoi((const char *)dStr.Mid(6,2));
+	SFInt32 y = toLong(dStr.Mid(0,4));
+	SFInt32 m = toLong(dStr.Mid(4,2));
+	SFInt32 d = toLong(dStr.Mid(6,2));
 
-	SFInt32 h  = atoi((const char *)tStr.Mid(0,2));
-	SFInt32 mn = atoi((const char *)tStr.Mid(2,2));
-	SFInt32 s  = atoi((const char *)tStr.Mid(4,2));
+	SFInt32 h  = toLong(tStr.Mid(0,2));
+	SFInt32 mn = toLong(tStr.Mid(2,2));
+	SFInt32 s  = toLong(tStr.Mid(4,2));
 
 	*this = SFTime(SFDate(y,m,d), SFTimeOfDay(h,mn,s));
 	ASSERT(IsValid());
@@ -779,18 +779,25 @@ SFTime Now(void)
 }
 
 //---------------------------------------------------------------------------------------
-SFTime snagDate(const SFString& dStr, const SFTime& def)
+SFTime snagDate(const SFString& strIn, const SFTime& def, SFBool dir)
 {
-	SFString str = dStr;
-	if (str.IsEmpty())
+	if (strIn.IsEmpty())
 		return def;
 	
-	SFInt32 y  = atoi(nextTokenClear(str, ';'));
-	SFInt32 m  = atoi(nextTokenClear(str, ';'));
-	SFInt32 d  = atoi(nextTokenClear(str, ';'));
-	SFInt32 h  = atoi(nextTokenClear(str, ';'));
-	SFInt32 mn = atoi(nextTokenClear(str, ';'));
-	SFInt32 s  = atoi(nextTokenClear(str, ';'));
+	SFString str = strIn;
+	if (str.GetLength() != 14)
+	{
+		if (dir==-1) str += "000001";
+		if (dir== 0) str += "120000";
+		if (dir== 1) str += "235959";
+	}
+
+	SFInt32 y  = toLong(str.Left(4));
+	SFInt32 m  = toLong(str.Mid( 4,2));
+	SFInt32 d  = toLong(str.Mid( 6,2));
+	SFInt32 h  = toLong(str.Mid( 8,2));
+	SFInt32 mn = toLong(str.Mid(10,2));
+	SFInt32 s  = toLong(str.Mid(12,2));
 
 	return SFTime(y,m,d,h,mn,s);
 }

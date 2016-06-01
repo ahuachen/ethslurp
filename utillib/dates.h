@@ -758,7 +758,7 @@ inline SFString displayTime1(const SFTime& tm)
 #define stripSeconds(a) SFTime(a.GetYear(), a.GetMonth(), a.GetDay(), a.GetHour(), a.GetMinute(), 0)
 
 //---------------------------------------------------------------------------------------------
-extern SFTime snagDate(const SFString& str, const SFTime& def=Now());
+extern SFTime snagDate(const SFString& str, const SFTime& def=Now(), SFBool dir=0); // -1 BOD, 0 MIDDAY, 1 EOD
 //extern SFTime newestFileDateInFolder(const SFString& path, SFString *whichFilePtr, const SFString& ignore);
 
 #endif

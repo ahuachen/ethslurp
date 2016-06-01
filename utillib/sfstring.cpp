@@ -590,7 +590,7 @@ void SFString::FormatV(const char *lpszFormat, va_list argList) const
 		if (nWidth == 0)
 		{
 			// width indicated by
-			nWidth = atoi(lpsz);
+			nWidth = (int)toLong(lpsz);
 			for (; *lpsz != '\0' && isdigit(*lpsz); lpsz = incPtr(lpsz))
 				;
 		}
@@ -610,7 +610,7 @@ void SFString::FormatV(const char *lpszFormat, va_list argList) const
 			}
 			else
 			{
-				nPrecision = atoi(lpsz);
+				nPrecision = (int)toLong(lpsz);
 				for (; *lpsz != '\0' && isdigit(*lpsz); lpsz = incPtr(lpsz))
 					;
 			}

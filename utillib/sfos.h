@@ -192,12 +192,12 @@ inline SFString SFos::getValue(SFInt32 type)
 }
 
 //-------------------------------------------------------------------------------
-inline SFBool   SFos::isMilitary  (void) { return atoi((const char*)getValue(MILITARY)); }
-inline SFBool   SFos::isEuropean  (void) { return atoi((const char*)getValue(EUROPEAN)); }
-inline SFString SFos::getDateSep  (void) { return                   getValue(DSEP);      }
-inline SFString SFos::getTimeSep  (void) { return                   getValue(TSEP);      }
-inline SFInt32  SFos::getFirstDay (void) { return atoi((const char*)getValue(FDAY));     }
-inline SFInt32  SFos::getTimeZone (void) { return atoi((const char*)getValue(TZ));       }
+inline SFBool   SFos::isMilitary  (void) { return toLong(getValue(MILITARY)); }
+inline SFBool   SFos::isEuropean  (void) { return toLong(getValue(EUROPEAN)); }
+inline SFString SFos::getDateSep  (void) { return        getValue(DSEP);      }
+inline SFString SFos::getTimeSep  (void) { return        getValue(TSEP);      }
+inline SFInt32  SFos::getFirstDay (void) { return toLong(getValue(FDAY));     }
+inline SFInt32  SFos::getTimeZone (void) { return toLong(getValue(TZ));       }
 
 extern SFString unEscapeString    (const char *in);
 extern SFString parseQueryString  (const SFString& queryString, const SFString& fieldName);

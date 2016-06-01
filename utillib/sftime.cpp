@@ -71,7 +71,7 @@ SFTime::SFTime(const SFDate& datePart, const SFTimeOfDay& timePart)
 //----------------------------------------------------------------------------------------------------
 SFTime::SFTime(const SFString& dateStr, const SFString& fmtStr)
 {
- if (dateStr.IsEmpty() || fmtStr.IsEmpty())
+	if (dateStr.IsEmpty() || fmtStr.IsEmpty())
 		*this = earliestDate;
 	else
 		*this = SFTime(SFDate(dateStr, fmtStr), SFTimeOfDay(dateStr, fmtStr));

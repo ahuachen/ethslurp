@@ -18,7 +18,7 @@ SFBool CSlurperApp::Display(SFString& message)
 	{
 		double stop = vrNow();
 		double timeSpent = stop-start;
-		fprintf(stderr, "Displayed %ld records in %f seconds\n", theSlurp.transactions.getCount(), timeSpent);
+		fprintf(stderr, "Exported %ld records in %f seconds             \n\n", theSlurp.nVisible, timeSpent);
 		fflush(stderr);
 	}
 	return TRUE;
@@ -29,11 +29,11 @@ SFBool CSlurperApp::Slurp(SFString& message)
 {
 	double start = vrNow();
 	theSlurp.transactions.Clear();
-	
+
 	// Do we have a binary file cached?
 	if (SFos::fileExists(binaryFileName))
 	{
-		// Once a transaction is on the block chain, it will never change
+		// Once a transaction is on the blockchain, it will never change
 		// therefore, we can store them in a binary cache
 		CSharedResource file;
 		if (!file.Lock(binaryFileName, binaryReadOnly, LOCK_NOWAIT))
@@ -51,13 +51,14 @@ SFBool CSlurperApp::Slurp(SFString& message)
 
 	// If the user tells us he/she wants to update the cache, or the cache
 	// hasn't been updated in five minutes, then update it
-	if (opt.slurp || (now - fileTime) > SFTimeSpan(0,5,0,0))
+	SFInt32 nSeconds = config.GetProfileIntGH("SETTINGS", "update_freq", 300);
+	if (opt.slurp || (now - fileTime) > SFTimeSpan(0,0,0,nSeconds))
 	{
 		// This is how many records we currently have
 		SFInt32 origCount = theSlurp.transactions.getCount();
 		SFInt32 nextRecord = origCount;
-		
-		outErr << "Slurping new transactions from block chain...\n";
+
+		outErr << "Slurping new transactions from blockchain...\n";
 
 		SFString contents;
 		SFInt32  nRequests = 0, nRead = 0;
@@ -70,10 +71,10 @@ SFBool CSlurperApp::Slurp(SFString& message)
 		while (!done)
 		{
 			SFString url = SFString("https://api.etherscan.io/api?module=account&action=txlist&sort=asc") +
-										"&address=" + opt.addr +
-										"&page="    + asString(page) +
-										"&offset="  + asString(opt.pageSize) +
-										"&apikey="  + api_key;
+			"&address=" + opt.addr +
+			"&page="    + asString(page) +
+			"&offset="  + asString(opt.pageSize) +
+			"&apikey="  + api_key;
 
 			// Grab a page of data
 			SFString thisPage = urlToString(url);
@@ -96,7 +97,7 @@ SFBool CSlurperApp::Slurp(SFString& message)
 			// If we got a full page, there are more to come
 			done = (nRecords < opt.pageSize);
 			if (!done)
-					page++;
+				page++;
 
 			// Etherscan.io doesn't want more than five pages per second, so sleep for a second
 			if (++nRequests==4)
@@ -109,32 +110,32 @@ SFBool CSlurperApp::Slurp(SFString& message)
 			if (nRead >= opt.maxTransactions)
 				done=TRUE;
 		}
-			if (contents.endsWith("}]}"))
-				contents.SetAt(contents.GetLength()-2,'\0');
+		if (contents.endsWith("}]}"))
+			contents.SetAt(contents.GetLength()-2,'\0');
 		stringToAsciiFile(binaryFileName.Substitute(".bin",".json"), contents);
 		SFInt32 minBlock=0,maxBlock=0;
 		findBlockRange(contents, minBlock, maxBlock);
 		outErr << "\nDownload contains blocks from " << minBlock << " to " << maxBlock << "\n";
-	
+
 		// Keep track of which last full page we've read
 		theSlurp.lastPage = page;
 		theSlurp.pageSize = opt.pageSize;
-	
+
 		outErr << "Searching transactions";
 		if (theSlurp.lastBlock>0)
 			outErr << " after block " << theSlurp.lastBlock;
 		outErr << "\n";
 
 		SFInt32 lastBlock=0;
-	while (!contents.IsEmpty())
-	{
+		while (!contents.IsEmpty())
+		{
 			CTransaction trans;
 
-		SFString oneTransaction = nextTokenClear(contents, '}');
+			SFString oneTransaction = nextTokenClear(contents, '}');
 			if (trans.parseJson(oneTransaction))
 			{
-			static SFInt32 cnt=0;
-				SFInt32 transBlock = atoi((const char*)trans.blockNumber);
+				static SFInt32 cnt=0;
+				SFInt32 transBlock = trans.blockNumber;
 				if (transBlock > theSlurp.lastBlock) // add the new transaction if it's in a new block
 				{
 					theSlurp.transactions[nextRecord++] = trans;
@@ -143,56 +144,70 @@ SFBool CSlurperApp::Slurp(SFString& message)
 				if (lastBlock)
 					if (!((cnt+1)%5)) { outErr << "Found new transaction at block " << lastBlock << ". Importing..." << (isTesting?"\n":"\r"); outErr.Flush(); }
 				cnt++;
-	}
+			}
 		}
 		if (lastBlock)
 			outErr << "\n";
 		theSlurp.lastBlock = lastBlock;
-	
+
 		// Write the data if we got new data
 		SFInt32 newRecords = (theSlurp.transactions.getCount() - origCount);
 		if (newRecords)
-	{
+		{
 			outErr << "Writing " << newRecords << " new records to cache\n";
-		CSharedResource file;
-		if (file.Lock(binaryFileName, binaryWriteCreate, LOCK_CREATE))
-		{
-			theSlurp.writeToFile(file);
-			file.Close();
+			CSharedResource file;
+			if (file.Lock(binaryFileName, binaryWriteCreate, LOCK_CREATE))
+			{
+				theSlurp.writeToFile(file);
+				file.Close();
 
-		} else
-		{
-			message = "Could not open file: '" + binaryFileName + "'\n";
-			return FALSE;
+			} else
+			{
+				message = "Could not open file: '" + binaryFileName + "'\n";
+				return FALSE;
+			}
 		}
-	}
 	}
 
 	// Apply filters if any (order matters) and find the last known block
-		for (int i=0;i<theSlurp.transactions.getCount();i++)
+	theSlurp.nVisible=0;
+	for (int i=0;i<theSlurp.transactions.getCount();i++)
+	{
+		if (opt.firstDate != earliestDate || opt.lastDate != latestDate)
 		{
-			if (opt.incomeOnly && theSlurp.transactions[i].to != opt.addr)
+			SFTime date = theSlurp.transactions[i].getDate();
+			SFBool isVisible = (date >= opt.firstDate && date <= opt.lastDate);
+			theSlurp.transactions[i].setShowing(isVisible);
+
+		} else if (opt.firstBlock!=0||opt.lastBlock!=LARGEST_LONG)
 		{
-			if (verbose)
-					outErr << theSlurp.transactions[i].Format("skipping expenditure [{HASH}]\n");
-				theSlurp.transactions[i].setShowing(FALSE);
-				
-			} else if (opt.expenseOnly && theSlurp.transactions[i].from != opt.addr)
-		{
-			if (verbose)
-					outErr << theSlurp.transactions[i].Format("skipping inflow [{HASH}]\n");
-				theSlurp.transactions[i].setShowing(FALSE);
-			}
+			SFInt32 bN = theSlurp.transactions[i].blockNumber;
+			SFBool isVisible = (bN >= opt.firstBlock && bN <= opt.lastBlock);
+			theSlurp.transactions[i].setShowing(isVisible);
 		}
+		if (opt.incomeOnly && theSlurp.transactions[i].to != opt.addr)
+		{
+			if (verbose)
+				outErr << theSlurp.transactions[i].Format("skipping expenditure [{HASH}]\n");
+			theSlurp.transactions[i].setShowing(FALSE);
+
+		} else if (opt.expenseOnly && theSlurp.transactions[i].from != opt.addr)
+		{
+			if (verbose)
+				outErr << theSlurp.transactions[i].Format("skipping inflow [{HASH}]\n");
+			theSlurp.transactions[i].setShowing(FALSE);
+		}
+		theSlurp.nVisible+=theSlurp.transactions[i].isShowing();
+	}
 
 	if (!isTesting)
 	{
 		double stop = vrNow();
 		double timeSpent = stop-start;
-		fprintf(stderr, "Loaded %ld total records in %f seconds\n", theSlurp.transactions.getCount(), timeSpent);
+		fprintf(stderr, "Loaded %ld total records (%ld visible) in %f seconds\n", theSlurp.transactions.getCount(), theSlurp.nVisible, timeSpent);
 		fflush(stderr);
 	}
-	
+
 	return (theSlurp.transactions.getCount()>0);
 }
 
@@ -228,9 +243,9 @@ void CSlurperApp::buildDisplayStrings(void)
 	// Set the default if it's not set
 	if (opt.exportFormat.IsEmpty())
 		opt.exportFormat = "json";
-	
+
 	const SFString fmtForFields  = getFormatString("field");  ASSERT(!fmtForFields.IsEmpty());
-	
+
 	// The user may have customized the field list, so get look config first
 	SFString fieldList = config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList", EMPTY);
 	if (fieldList.IsEmpty())
@@ -242,10 +257,10 @@ void CSlurperApp::buildDisplayStrings(void)
 		const CFieldData *field = findField(fieldName);
 		if (!field)
 		{
-			outErr << "Field '" << fieldName << "' not found Nim. Quitting...\n";
+			outErr << "Field '" << fieldName << "' not found. Quitting...\n";
 			exit(0);
 		}
-		
+
 		if (!isInternal(fieldName))
 		{
 			SFString resolved = fieldName;
@@ -279,7 +294,7 @@ SFString CSlurperApp::getFormatString(const SFString& which)
 		buildDisplayStrings();
 
 	SFString errMsg;
-	
+
 	SFString formatName = "fmt_" + opt.exportFormat + "_" + which;
 	SFString ret = config.GetProfileStringGH("DISPLAY_STR", formatName, EMPTY);
 	if (ret.Contains("file:"))
@@ -289,7 +304,7 @@ SFString CSlurperApp::getFormatString(const SFString& which)
 			errMsg = SFString("Formatting file '") + file + "' for display string '" + formatName + "' not found. Quiting...\n";
 		else
 			ret = asciiFileToString(file);
-		
+
 	} else if (ret.Contains("fmt_")) // it's referring to another format string...
 	{
 		SFString newName = ret;
@@ -297,7 +312,7 @@ SFString CSlurperApp::getFormatString(const SFString& which)
 		formatName += ":"+newName;
 	}
 	ret = ret.Substitute("\\n","\n").Substitute("\\t","\t");
-	
+
 	// some sanity checks
 	if (countOf('{',ret) != countOf('}',ret) ||
 		countOf('[',ret) != countOf(']',ret))
@@ -329,8 +344,8 @@ void findBlockRange(const SFString& contents, SFInt32& minBlock, SFInt32& maxBlo
 	if (first!=-1)
 	{
 		SFString str = contents.Mid(first+len,100);
-		minBlock = atoi((const char*)str);
-//		outScreen << first << " : " << str << " : " << minBlock << "\n";
+		minBlock = toLong(str);
+		//		outScreen << first << " : " << str << " : " << minBlock << "\n";
 	}
 
 	SFString end = contents.Mid(contents.ReverseFind('{'),10000);//pull off the last transaction
@@ -338,7 +353,7 @@ void findBlockRange(const SFString& contents, SFInt32& minBlock, SFInt32& maxBlo
 	if (last!=-1)
 	{
 		SFString str = end.Mid(last+len,100);
-		maxBlock = atoi((const char*)str);
-//		outScreen << last << " : " << str << " : " << maxBlock << "\n";
+		maxBlock = toLong(str);
+		//		outScreen << last << " : " << str << " : " << maxBlock << "\n";
 	}
 }

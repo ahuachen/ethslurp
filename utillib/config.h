@@ -267,14 +267,14 @@ public:
 	SFInt32  GetProfileIntGH   (const SFString& group, const SFString& key, SFInt32 def) const
 		{
 			SFString ret = GetProfileStringGH(group, key, asString(def));
-			return atoi((const char *)ret);
+			return toLong(ret);
 		}
 	SFBool   GetProfileBoolGH(const SFString& group, const SFString& key, SFInt32 def) const
 		{
 			SFString ret = GetProfileStringGH(group, key, asString(def));
 			if (ret % "true")  return TRUE;
 			if (ret % "false") return FALSE;
-			return atoi((const char *)ret);
+			return toLong(ret);
 		}
 
 	void SetProfileString(const SFString& group, const SFString& key, const SFString& value)

@@ -332,16 +332,27 @@ SFInt32 CSharedResource::Read(void *buff, SFInt32 size, SFInt32 cnt)
 //----------------------------------------------------------------------
 SFInt32 CSharedResource::Read(SFString& str)
 {
-	char buff[2048];
-
 	ASSERT(isOpen());
 	ASSERT(!isAscii());
-	
+
 	SFInt32 len;
 	Read(&len, sizeof(SFInt32), 1);
-	Read(buff, sizeof(char), len);
-	buff[len] = '\0';
-	str = buff;
+	
+	if (len < 8192)
+	{
+		char buff[8192];
+		Read(buff, sizeof(char), len);
+		buff[len] = '\0';
+		str = buff;
+	} else
+	{
+		char *buff = new char[len+1];
+		Read(buff, sizeof(char), len);
+		buff[len] = '\0';
+		str = buff;
+		delete [] buff;
+	}
+
 	return len;
 }
 

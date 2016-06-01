@@ -12,48 +12,19 @@
 IMPLEMENT_NODE(CSlurp, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-void CSlurp::Format_base(CExportContext& ctx, const SFString& fmtIn) const
+void CSlurp::Format_base(CExportContext& ctx, const SFString& fmtIn, void *data) const
 {
 	if (!isShowing())
 		return;
+
+	if (handleCustomFormat(ctx, fmtIn, data))
+		return;
 	
-	// Split the format string into three parts: pre, post and records.
-	// If no records, just process as normal. We do this because it's so slow
-	// copying the records into a string, so we write it directly to the
-	// export context. If there is no {RECORDS}, then just send handle it like normal
-	if (!fmtIn.Contains("{RECORDS}") || transactions.getCount()==0)
-	{
-		SFString fmt = fmtIn;
+	SFString fmt = fmtIn;
 
-		CSlurpNotify dn(this);
-		while (!fmt.IsEmpty())
-			ctx << getNextChunk(fmt, nextSlurpChunk, &dn);
-	} else
-	{
-		SFString postFmt = fmtIn;
-		postFmt.Replace("{RECORDS}","|");
-		SFString preFmt = nextTokenClear(postFmt,'|');
-
-		// We assume here that the token was properly formed. For the pre-text we
-		// have to clear out the start '[', and for the post text we clear out the ']'
-		preFmt.ReplaceReverse("[","");
-		postFmt.Replace("]","");
-
-		// We handle the display in three parts: pre, records, and post so as
-		// to avoid building the entire record list into an ever-growing and
-		// ever-slowing string
-		CSlurpNotify dn(this);
-		while (!preFmt.IsEmpty())
-			ctx << getNextChunk(preFmt, nextSlurpChunk, &dn);
-		for (int i=0;i<transactions.getCount();i++)
-		{
-			if (!(i%5)) { outErr << "Exporting record " << i << " of " << transactions.getCount() << (isTesting?"\n":"\r"); outErr.Flush(); }
-			ctx << transactions[i].Format(displayString);
-		}
-		ctx << "\n";
-		while (!postFmt.IsEmpty())
-			ctx << getNextChunk(postFmt, nextSlurpChunk, &dn);
-	}
+	CSlurpNotify dn(this);
+	while (!fmt.IsEmpty())
+		ctx << getNextChunk(fmt, nextSlurpChunk, &dn);
 }
 
 //---------------------------------------------------------------------------
@@ -88,12 +59,15 @@ SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data
 			if ( fieldIn % "lastPage" ) return asString(slu->lastPage);
 			if ( fieldIn % "lastBlock" ) return asString(slu->lastBlock);
 			break;
+		case 'n':
+			if ( fieldIn % "nVisible" ) return asString(slu->nVisible);
+			break;
 		case 'p':
 			if ( fieldIn % "pageSize" ) return asString(slu->pageSize);
 			break;
 		case 't':
-#if 0
 			if ( fieldIn % "transactions" )
+#if 0
 			{
 				SFString ret = "\n";
 				for (int i=0;i<slu->transactions.getCount();i++)
@@ -126,6 +100,7 @@ void CSlurp::Serialize(SFArchive& archive)
 		archive >> pageSize;
 		archive >> lastPage;
 		archive >> lastBlock;
+		archive >> nVisible;
 		archive >> transactions;
 
 	} else
@@ -137,6 +112,7 @@ void CSlurp::Serialize(SFArchive& archive)
 		archive << pageSize;
 		archive << lastPage;
 		archive << lastBlock;
+		archive << nVisible;
 		archive << transactions;
 
 	}
@@ -156,6 +132,7 @@ void CSlurp::registerClass(void)
 	ADD_FIELD(CSlurp, "pageSize", T_RADIO, ++fieldNum);
 	ADD_FIELD(CSlurp, "lastPage", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CSlurp, "lastBlock", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CSlurp, "nVisible", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CSlurp, "transactions", T_TEXT|TS_ARRAY, ++fieldNum);
 }
 

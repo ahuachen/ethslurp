@@ -1,11 +1,10 @@
 test4: test prettyPrint flag
-../ethslurp -l -f 
+../ethslurp -r -f 
 Slurping 0x713b73c3994442b533e6a083ec968e40606810ec
 Reading from binary cache...record 5 of 16
 Reading from binary cache...record 10 of 16
 Reading from binary cache...record 15 of 16
 
-Exporting record 0 of 16
 
         {
             "blockHash": "0xcc480deb89134f611d6be9b35ee405fdd785028ee1b20cc768f2370414635fe4",
@@ -74,7 +73,8 @@ Exporting record 0 of 16
             "to": "0x713b73c3994442b533e6a083ec968e40606810ec",
             "transactionIndex": "3",
             "value": "10000000000000000"
-        },
+        },Exporting record 5 of 16 records
+
         {
             "blockHash": "0x0fb7d45310c5f6f70b1dd816db6ef178dd6ca970b3ee5eb2f50181a0e7183f4a",
             "blockNumber": "1390841",
@@ -91,8 +91,7 @@ Exporting record 0 of 16
             "to": "0x713b73c3994442b533e6a083ec968e40606810ec",
             "transactionIndex": "4",
             "value": "10000000000000000"
-        },Exporting record 5 of 16
-
+        },
         {
             "blockHash": "0x5dffef9c64b9ae74ae26955ac49cb959f588ed8b052d21801115ba10b39d67d6",
             "blockNumber": "1390889",
@@ -160,7 +159,8 @@ Exporting record 0 of 16
             "to": "0x713b73c3994442b533e6a083ec968e40606810ec",
             "transactionIndex": "3",
             "value": "10000000000000000"
-        },
+        },Exporting record 10 of 16 records
+
         {
             "blockHash": "0x237901c8f4060f1430cbe3fca45f5e5c8556a7cc3d95d377c6d29b64ee61679b",
             "blockNumber": "1414693",
@@ -177,8 +177,7 @@ Exporting record 0 of 16
             "to": "0x713b73c3994442b533e6a083ec968e40606810ec",
             "transactionIndex": "1",
             "value": "10000000000000000"
-        },Exporting record 10 of 16
-
+        },
         {
             "blockHash": "0x933b494db556c55472eb4fbc42cf2ce03287c54a488274c4d33e53f4d87cc80e",
             "blockNumber": "1436298",
@@ -246,7 +245,8 @@ Exporting record 0 of 16
             "to": "0x713b73c3994442b533e6a083ec968e40606810ec",
             "transactionIndex": "1",
             "value": "10000000000000000"
-        },
+        },Exporting record 15 of 16 records
+
         {
             "blockHash": "0x5c58e4f6d0e2718fe632913ce7907c2f769d7aca6b4614644894555da1b1f456",
             "blockNumber": "1467463",
@@ -263,8 +263,7 @@ Exporting record 0 of 16
             "to": "0x713b73c3994442b533e6a083ec968e40606810ec",
             "transactionIndex": "8",
             "value": "10000000000000000"
-        },Exporting record 15 of 16
-
+        },
         {
             "blockHash": "0x0a4526b34991959ab53d4b17b12c92c47c8be854c98e4605709893f1b969cb80",
             "blockNumber": "1470405",

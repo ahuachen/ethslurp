@@ -26,8 +26,8 @@ class CTransaction : public CBaseNode
 public:
 	SFInt32 handle;
 	SFString blockHash;
-	SFString blockNumber;
-	SFString confirmations;
+	SFInt32 blockNumber;
+	SFInt32 confirmations;
 	SFString contractAddress;
 	SFString cumulativeGasUsed;
 	SFString from;
@@ -37,9 +37,9 @@ public:
 	SFString hash;
 	SFString input;
 	SFString nonce;
-	SFString timeStamp;
+	SFInt32 timeStamp;
 	SFString to;
-	SFString transactionIndex;
+	SFInt32 transactionIndex;
 	SFString value;
 
 public:
@@ -54,6 +54,7 @@ public:
 	SFInt32 parseJson(SFString& strIn);
 	SFInt32 writeToFile(CSharedResource& file) const;
 	SFBool  readFromFile(CSharedResource& file);
+	SFTime  getDate(void) const;
 	// EXISTING_CODE
 
 private:
@@ -106,8 +107,8 @@ inline void CTransaction::Init(void)
 
 	handle = 0;
 	blockHash = EMPTY;
-	blockNumber = EMPTY;
-	confirmations = EMPTY;
+	blockNumber = 0;
+	confirmations = 0;
 	contractAddress = EMPTY;
 	cumulativeGasUsed = EMPTY;
 	from = EMPTY;
@@ -117,9 +118,9 @@ inline void CTransaction::Init(void)
 	hash = EMPTY;
 	input = EMPTY;
 	nonce = EMPTY;
-	timeStamp = EMPTY;
+	timeStamp = 0;
 	to = EMPTY;
-	transactionIndex = EMPTY;
+	transactionIndex = 0;
 	value = EMPTY;
 
 	// EXISTING_CODE

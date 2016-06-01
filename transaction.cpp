@@ -5,15 +5,19 @@
  *
  *------------------------------------------------------------------------*/
 
+#include "manage.h"
 #include "transaction.h"
 
 //---------------------------------------------------------------------------
 IMPLEMENT_NODE(CTransaction, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-void CTransaction::Format_base(CExportContext& ctx, const SFString& fmtIn) const
+void CTransaction::Format_base(CExportContext& ctx, const SFString& fmtIn, void *data) const
 {
 	if (!isShowing())
+		return;
+
+	if (handleCustomFormat(ctx, fmtIn, data))
 		return;
 	
 	SFString fmt = fmtIn;
@@ -33,7 +37,7 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 	SFString ret = nextChunk_common(fieldIn, getString("cmd"), tra);
 	if (!ret.IsEmpty())
 		return ret;
-
+	
 	// Now give customized code a chance to override
 	ret = nextTransactionChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())
@@ -43,10 +47,10 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 	{
 		case 'b':
 			if ( fieldIn % "blockHash" ) return tra->blockHash;
-			if ( fieldIn % "blockNumber" ) return tra->blockNumber;
+			if ( fieldIn % "blockNumber" ) return asString(tra->blockNumber);
 			break;
 		case 'c':
-			if ( fieldIn % "confirmations" ) return tra->confirmations;
+			if ( fieldIn % "confirmations" ) return asString(tra->confirmations);
 			if ( fieldIn % "contractAddress" ) return tra->contractAddress;
 			if ( fieldIn % "cumulativeGasUsed" ) return tra->cumulativeGasUsed;
 			break;
@@ -69,9 +73,9 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 			if ( fieldIn % "nonce" ) return tra->nonce;
 			break;
 		case 't':
-			if ( fieldIn % "timeStamp" ) return tra->timeStamp;
+			if ( fieldIn % "timeStamp" ) return asString(tra->timeStamp);
 			if ( fieldIn % "to" ) return tra->to;
-			if ( fieldIn % "transactionIndex" ) return tra->transactionIndex;
+			if ( fieldIn % "transactionIndex" ) return asString(tra->transactionIndex);
 			break;
 		case 'v':
 			if ( fieldIn % "value" ) return tra->value;
@@ -88,10 +92,10 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 	{
 		case 'b':
 			if ( fieldName % "blockHash" ) blockHash = fieldValue;
-			if ( fieldName % "blockNumber" ) blockNumber = fieldValue;
+			if ( fieldName % "blockNumber" ) blockNumber = toLong(fieldValue);
 			break;
 		case 'c':
-			if ( fieldName % "confirmations" ) confirmations = fieldValue;
+			if ( fieldName % "confirmations" ) confirmations = toLong(fieldValue);
 			if ( fieldName % "contractAddress" ) contractAddress = fieldValue;
 			if ( fieldName % "cumulativeGasUsed" ) cumulativeGasUsed = fieldValue;
 			break;
@@ -104,7 +108,7 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 			if ( fieldName % "gasUsed" ) gasUsed = fieldValue;
 			break;
 		case 'h':
-			if ( fieldName % "handle" ) return handle = atoi((const char*)fieldValue);
+			if ( fieldName % "handle" ) return handle = toLong(fieldValue);
 			if ( fieldName % "hash" ) hash = fieldValue;
 			break;
 		case 'i':
@@ -114,9 +118,9 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 			if ( fieldName % "nonce" ) nonce = fieldValue;
 			break;
 		case 't':
-			if ( fieldName % "timeStamp" ) timeStamp = fieldValue;
+			if ( fieldName % "timeStamp" ) timeStamp = toLong(fieldValue);
 			if ( fieldName % "to" ) to = toLower(fieldValue);
-			if ( fieldName % "transactionIndex" ) transactionIndex = fieldValue;
+			if ( fieldName % "transactionIndex" ) transactionIndex = toLong(fieldValue);
 			break;
 		case 'v':
 			if ( fieldName % "value" ) value = fieldValue;
@@ -181,8 +185,8 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "deleted", T_RADIO|TS_LABEL,  ++fieldNum);
 	ADD_FIELD(CTransaction, "handle", T_NUMBER|TS_LABEL,  ++fieldNum);
 	ADD_FIELD(CTransaction, "blockHash", T_TEXT, ++fieldNum);
-	ADD_FIELD(CTransaction, "blockNumber", T_TEXT, ++fieldNum);
-	ADD_FIELD(CTransaction, "confirmations", T_TEXT, ++fieldNum);
+	ADD_FIELD(CTransaction, "blockNumber", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CTransaction, "confirmations", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CTransaction, "contractAddress", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "cumulativeGasUsed", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "from", T_TEXT, ++fieldNum);
@@ -192,9 +196,9 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "hash", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "input", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "nonce", T_TEXT, ++fieldNum);
-	ADD_FIELD(CTransaction, "timeStamp", T_TEXT, ++fieldNum);
+	ADD_FIELD(CTransaction, "timeStamp", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CTransaction, "to", T_TEXT, ++fieldNum);
-	ADD_FIELD(CTransaction, "transactionIndex", T_TEXT, ++fieldNum);
+	ADD_FIELD(CTransaction, "transactionIndex", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CTransaction, "value", T_TEXT, ++fieldNum);
 }
 

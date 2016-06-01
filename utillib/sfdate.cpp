@@ -117,16 +117,16 @@ SFDate::SFDate(const SFString& dateStr, const SFString& fmtStr)
 		{
 		case 'd':
 		case 'D':
-		day = atoi((const char *)nextTokenClear(str, sep));
+		day = toLong(nextTokenClear(str, sep));
 		break;
 		case 'm':
 		case 'M':
-		month = atoi((const char *)nextTokenClear(str, sep));
+		month = toLong(nextTokenClear(str, sep));
 		break;
 		case 'y':
 		case 'Y':
 		{
-			year = atoi((const char *)nextTokenClear(str, sep));
+			year = toLong(nextTokenClear(str, sep));
 			char c = fmtStr.GetAt(3);
 			ASSERT((c == '2') || (c == '4'));
 			if (c == '2' || year < 100)

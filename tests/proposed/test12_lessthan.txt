@@ -1,0 +1,129 @@
+test12: test block number option less than
+../ethslurp -b::1491788 -r -f 
+Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
+Reading from binary cache...record 5 of 15
+Reading from binary cache...record 10 of 15
+Reading from binary cache...record 15 of 15
+
+
+        {
+            "blockHash": "0xa6857a2a6c90bd2701c67bd31c697b87a607421a9c75559141a7757ff02915c2",
+            "blockNumber": "1491486",
+            "contractAddress": "",
+            "cumulativeGasUsed": "21000",
+            "from": "0x32be343b94f860124dc4fee278fdcbd38c102d88",
+            "gas": "333333",
+            "gasPrice": "30000000000",
+            "gasUsed": "21000",
+            "hash": "0x515735de46790a8326a909f622122df3c9a57613e39831e47451b978b47745fe",
+            "input": "0x",
+            "nonce": "55258",
+            "timeStamp": "1462880396",
+            "to": "0x682e426ea761db77bacd5acdce33ca122175daea",
+            "transactionIndex": "0",
+            "value": "990000000000000000"
+        },
+        {
+            "blockHash": "0xae9664c41d42a5de3989cd0186aff8d54a3677603670bc3d7b81c23b74eca958",
+            "blockNumber": "1491506",
+            "contractAddress": "",
+            "cumulativeGasUsed": "21000",
+            "from": "0x32be343b94f860124dc4fee278fdcbd38c102d88",
+            "gas": "333333",
+            "gasPrice": "30000000000",
+            "gasUsed": "21000",
+            "hash": "0xf159cca7246933b5c3e31d850ee2c8e08d080c288f4e19b40f219d33d59acf34",
+            "input": "0x",
+            "nonce": "55259",
+            "timeStamp": "1462880661",
+            "to": "0x682e426ea761db77bacd5acdce33ca122175daea",
+            "transactionIndex": "0",
+            "value": "210631973080000000000"
+        },
+        {
+            "blockHash": "0x25efe249e85f2ccd7f2beca969ffa9b9b1e5f39b545e06605e9da10bf89d694b",
+            "blockNumber": "1491707",
+            "contractAddress": "",
+            "cumulativeGasUsed": "65091",
+            "from": "0x682e426ea761db77bacd5acdce33ca122175daea",
+            "gas": "21000",
+            "gasPrice": "21000000000",
+            "gasUsed": "21000",
+            "hash": "0xa49fcea1151d14a92b306fb692b4285c500d61e0c1d9fdbe80254511d213990d",
+            "input": "0x",
+            "nonce": "0",
+            "timeStamp": "1462883606",
+            "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
+            "transactionIndex": "1",
+            "value": "10000000000000000000"
+        },
+        {
+            "blockHash": "0x2b7feaa26516698c340573a2b8e4506b4e4f6ba9f271894eb7c45db78a4a6006",
+            "blockNumber": "1491749",
+            "contractAddress": "",
+            "cumulativeGasUsed": "21000",
+            "from": "0x682e426ea761db77bacd5acdce33ca122175daea",
+            "gas": "21000",
+            "gasPrice": "21000000000",
+            "gasUsed": "21000",
+            "hash": "0xe9b7813bf7d1b88d0bebd9d6c5256199b3dbee84e81523892be09208c85ff352",
+            "input": "0x",
+            "nonce": "1",
+            "timeStamp": "1462884275",
+            "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
+            "transactionIndex": "0",
+            "value": "10000000000000000000"
+        },Exporting record 5 of 7 visible records
+
+        {
+            "blockHash": "0x0c01f973ccbbcd7768694f9c16ef1c6e8bb93722375f38d9d7a7abbf7e7ac6c6",
+            "blockNumber": "1491752",
+            "contractAddress": "",
+            "cumulativeGasUsed": "21000",
+            "from": "0x682e426ea761db77bacd5acdce33ca122175daea",
+            "gas": "21000",
+            "gasPrice": "21000000000",
+            "gasUsed": "21000",
+            "hash": "0x39f18cc88b57581a1fd5a071201e98dd277bf8d460b81b41916b543615a91736",
+            "input": "0x",
+            "nonce": "2",
+            "timeStamp": "1462884326",
+            "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
+            "transactionIndex": "0",
+            "value": "10000000000000000000"
+        },
+        {
+            "blockHash": "0xd1c7f5a67660305cd7a3cd471f81178e2a38b36d7c3f65de01fc4df40e299a3a",
+            "blockNumber": "1491753",
+            "contractAddress": "",
+            "cumulativeGasUsed": "21000",
+            "from": "0x682e426ea761db77bacd5acdce33ca122175daea",
+            "gas": "21000",
+            "gasPrice": "21000000000",
+            "gasUsed": "21000",
+            "hash": "0xaddfb04d3aeffdb5d8943dcf3aaec8b420490f73fd2ab5d03438dc96fea7c25f",
+            "input": "0x",
+            "nonce": "3",
+            "timeStamp": "1462884347",
+            "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
+            "transactionIndex": "0",
+            "value": "20000000000000000000"
+        },
+        {
+            "blockHash": "0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba",
+            "blockNumber": "1491788",
+            "contractAddress": "",
+            "cumulativeGasUsed": "160182",
+            "from": "0x682e426ea761db77bacd5acdce33ca122175daea",
+            "gas": "85000",
+            "gasPrice": "21000000000",
+            "gasUsed": "74091",
+            "hash": "0xc53a3dd41116fa22627ae493f07856357d54ecd36cc834560b0dff52dcb28575",
+            "input": "0x",
+            "nonce": "4",
+            "timeStamp": "1462884797",
+            "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
+            "transactionIndex": "3",
+            "value": "10000000000000000000"
+        },
+

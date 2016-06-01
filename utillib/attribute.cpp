@@ -71,8 +71,8 @@ int sortByAttributeValueReverse(const void *rr1, const void *rr2)
 
 int sortByAttributeIntReverse(const void *rr1, const void *rr2)
 {
-	SFInt32 v1 = atoi((const char *)((SFAttribute*)rr1)->getValue());
-	SFInt32 v2 = atoi((const char *)((SFAttribute*)rr2)->getValue());
+	SFInt32 v1 = toLong(((SFAttribute*)rr1)->getValue());
+	SFInt32 v2 = toLong(((SFAttribute*)rr2)->getValue());
 	if (v2 == v1)
 		return sortByAttributeName(rr1, rr2);
 	return (int)(v2 - v1);

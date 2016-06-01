@@ -85,6 +85,10 @@ extern SFInt32 showAssert;
 #endif
 
 //-------------------------------------------------------------------------
+inline SFInt32 toLong(const char *str) { return (SFInt32)strtol((const char*)(str),NULL,10); }
+inline SFInt32 toLong(char *str)       { return (SFInt32)strtol((const char*)(str),NULL,10); }
+
+//-------------------------------------------------------------------------
 // The one class that is used almost everywhere
 #include "sfstring.h"
 

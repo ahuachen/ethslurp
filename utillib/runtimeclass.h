@@ -90,15 +90,16 @@ public: \
 
 //------------------------------------------------------------
 #define DECLARE_NODE(CLASS_NAME) \
-	        DECLARE_NODE_BASE      (CLASS_NAME) \
-	virtual SFInt32  getHandle     (void) const; \
-	virtual SFString getValueByName(const SFString& fieldName) const; \
-	virtual SFBool   setValueByName(const SFString& fieldName, const SFString& fieldValue); \
-	virtual void     Serialize     (SFArchive& archive); \
-    virtual void     Format_base   (CExportContext& ctx, const SFString& fmtIn) const; \
-    virtual SFString Format        (const SFString& fmtIn) const { CStringExportContext ctx;Format_base(ctx, fmtIn);return ctx.str;} \
-	        SFString getClassName  (void); \
-	static  void     registerClass (void);
+	        DECLARE_NODE_BASE          (CLASS_NAME) \
+	virtual SFInt32  getHandle         (void) const; \
+	virtual SFString getValueByName    (const SFString& fieldName) const; \
+	virtual SFBool   setValueByName    (const SFString& fieldName, const SFString& fieldValue); \
+	virtual void     Serialize         (SFArchive& archive); \
+    virtual SFBool   handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
+    virtual void     Format_base       (CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
+    virtual SFString Format            (const SFString& fmtIn) const { CStringExportContext ctx;Format_base(ctx, fmtIn, NULL);return ctx.str;} \
+	        SFString getClassName      (void); \
+	static  void     registerClass     (void);
 
 //---------------------------------------------------------------------------
 #define SERIALIZE_START() \

@@ -52,9 +52,9 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 		slurper.config.writeFile(slurper.version.toString());
 	}
 	
-	// If we are told to get the address from the lastRead address, do so...
-	if (slurper.opt.addr.IsEmpty() && slurper.opt.lastRead)
-		slurper.opt.addr = slurper.config.GetProfileStringGH("SETTINGS", "lastRead", EMPTY);
+	// If we are told to get the address from the rerun address, do so...
+	if (slurper.opt.addr.IsEmpty() && slurper.opt.rerun)
+		slurper.opt.addr = slurper.config.GetProfileStringGH("SETTINGS", "rerun", EMPTY);
 	
 	// Ethereum addresses are case insensative. Force all address to lower case to avoid mismatches.
 	slurper.opt.addr.MakeLower();
@@ -63,13 +63,13 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 	if (slurper.opt.addr.IsEmpty())
 	{
 		SFString msg = "You must supply an Ethereum account or contract address. ";
-		if (!slurper.opt.lastRead)
-			msg += "Use -l flag to read the most recently slurped address.";
+		if (!slurper.opt.rerun)
+			msg += "Use -r flag to rerun the most recently slurped address.";
 		return usage(args[0], msg);
 	}
 	
 	// Save the address for the next run if needed
-	slurper.config.SetProfileString("SETTINGS", "lastRead", slurper.opt.addr);
+	slurper.config.SetProfileString("SETTINGS", "rerun", slurper.opt.addr);
 	slurper.config.writeFile(slurper.version.toString());
 
 	// Ready to slurp
@@ -93,7 +93,7 @@ SFInt32 cmdEthSlurp(SFInt32 nArgs, const SFString *args)
 // Make sure our data folder exist, if not establish it
 SFBool establish_folders(CConfig& config, const SFString& vers)
 {
-	if (SFos::folderExists(PATH_TO_SLURPS))
+	if (SFos::folderExists(PATH_TO_SLURPS) && SFos::fileExists(PATH_TO_ETH_SLURP+"config.dat"))
 	{
 		config.loadFile(PATH_TO_ETH_SLURP+"config.dat");
 		return TRUE;
@@ -113,9 +113,6 @@ SFBool establish_folders(CConfig& config, const SFString& vers)
 	config.SetProfileString("SETTINGS",     "api_key",           EMPTY);
 	config.SetProfileString("SETTINGS",     "focus",             "189");
 	
-	// this field we translate by default to human readable
-	config.SetProfileString("FIELD_STR",    "timeStamp",         "date");
-	
 	config.SetProfileString("DISPLAY_STR",  "fmt_fieldList",     EMPTY);
 	
 	config.SetProfileString("DISPLAY_STR",  "fmt_txt_file",      "[{HEADER}]\\n[{RECORDS}]");
@@ -133,6 +130,10 @@ SFBool establish_folders(CConfig& config, const SFString& vers)
 	config.SetProfileString("DISPLAY_STR",  "fmt_json_file",     "[{RECORDS}]\\n");
 	config.SetProfileString("DISPLAY_STR",  "fmt_json_record",   "\\n        {\\n[{FIELDS}]        },");
 	config.SetProfileString("DISPLAY_STR",  "fmt_json_field",    "\"[{p:FIELD}]\":\"[{FIELD}]\",");
+
+	config.SetProfileString("DISPLAY_STR",  "fmt_custom_file",	 "file:custom_format_file.html");
+	config.SetProfileString("DISPLAY_STR",  "fmt_custom_record", "fmt_html_record");
+	config.SetProfileString("DISPLAY_STR",  "fmt_custom_field",	 "fmt_html_field");
 
 	config.writeFile(vers);
 	return SFos::fileExists(config.getFilename());

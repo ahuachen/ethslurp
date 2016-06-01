@@ -53,9 +53,9 @@ void CVersion::setVersionStr(const SFString& line)
 	{
 		SFString v = line;
 		nextToken(v, '=');
-		m_Major = atoi((const char *)nextToken(v, ':'));
-		m_Minor = atoi((const char *)nextToken(v, ':'));
-		m_Build = atoi((const char *)nextToken(v, ':'));
+		m_Major = toLong(nextToken(v, ':'));
+		m_Minor = toLong(nextToken(v, ':'));
+		m_Build = toLong(nextToken(v, ':'));
 	}
 }
 
@@ -64,16 +64,16 @@ void getCompileDate_Base(const SFString& date, const SFString& time, SFInt32& da
 {
 	const char *months[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 	char *temp = (char *)(const char*)date;
-	year = atoi(temp + 9); *(temp + 6) = 0;
-	day  = atoi(temp + 4); *(temp + 3) = 0;
+	year = toLong(temp + 9); *(temp + 6) = 0;
+	day  = toLong(temp + 4); *(temp + 3) = 0;
 	for (SFInt32 i=0; i<12; i++)
 		if (!strcmp(temp, months[i]))
 			month = i + 1;
 
 	SFString timeStr = time;
-	hour = atoi((const char*)nextTokenClear(timeStr, ':')) % 26;
-	min  = atoi((const char*)nextTokenClear(timeStr, ':')) % 26;
-	sec  = atoi((const char*)nextTokenClear(timeStr, ':')) % 26;
+	hour = toLong((const char*)nextTokenClear(timeStr, ':')) % 26;
+	min  = toLong((const char*)nextTokenClear(timeStr, ':')) % 26;
+	sec  = toLong((const char*)nextTokenClear(timeStr, ':')) % 26;
 	ASSERT(hour >= 0 && hour < 26);
 	ASSERT(min  >= 0 && hour < 26);
 	ASSERT(sec  >= 0 && hour < 26);

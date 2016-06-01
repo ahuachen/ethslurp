@@ -870,7 +870,7 @@ inline SFString nextTokenClear(SFString& line, char delim)
 
 inline SFInt32 nextTokenClearI(SFString& line, char delim)
 {
-	return atoi((const char*)nextTokenClear(line, delim));
+	return toLong(nextTokenClear(line, delim));
 }
 
 #define EMPTY SFString("")
@@ -1106,7 +1106,7 @@ extern SFString randomPassword     (void);
 //-------------------------------------------------------------------------------------------------------------
 inline SFInt32  snagFieldClearI(SFString& in, const SFString& tagName, const SFString& defVal)
 {
-	return atoi((const char*)snagFieldClear(in, tagName, defVal));
+	return toLong(snagFieldClear(in, tagName, defVal));
 }
 
 //-------------------------------------------------------------------------------------------------------------

@@ -10,10 +10,13 @@ class COptions
 public:
 	SFBool   slurp;
 	SFBool   prettyPrint;
-	SFBool   lastRead;
-	SFBool   backup;
+	SFBool   rerun;
 	SFBool   incomeOnly;
 	SFBool   expenseOnly;
+	SFInt32  firstBlock;
+	SFInt32  lastBlock;
+	SFTime   firstDate;
+	SFTime   lastDate;
 	SFBool   openFile;
 	SFString addr;
 	SFInt32  maxTransactions;

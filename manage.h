@@ -43,4 +43,7 @@ using namespace std;
 //--------------------------------------------------------------------------------
 extern SFInt32 cmdEthSlurp(SFInt32 nArgs,const SFString *args);
 
+//--------------------------------------------------------------------------------
+#define LARGEST_LONG 2147483647
+
 #endif

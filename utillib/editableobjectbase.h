@@ -99,7 +99,7 @@ private:
 //---------------------------------------------------------------------------
 inline SFInt32 CServerBase::getCookieInt32(const SFString& name, SFInt32 defVal) const
 {
-	return atoi((const char *)getCookieString(name, asString(defVal)));
+	return toLong(getCookieString(name, asString(defVal)));
 }
 
 //-------------------------------------------------------------------
