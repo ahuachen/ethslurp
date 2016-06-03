@@ -6,8 +6,6 @@ libs=utillib/utillib.a /usr/lib/libcurl.dylib
 
 src= \
 ethslurp.cpp \
-slurper.cpp \
-manage.cpp \
 options.cpp \
 transaction.cpp \
 transaction_custom.cpp \

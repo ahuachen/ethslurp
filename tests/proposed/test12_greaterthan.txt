@@ -1,9 +1,9 @@
 test12: test block number option greater than
-../ethslurp -b:1491788 -r -f 
-Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-Reading from binary cache...record 5 of 15
-Reading from binary cache...record 10 of 15
-Reading from binary cache...record 15 of 15
+Processing: -t -b:1491788 -r -f 
+	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
+	Reading from binary cache...record 5 of 15
+	Reading from binary cache...record 10 of 15
+	Reading from binary cache...record 15 of 15
 
 
         {
@@ -21,7 +21,11 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1462884797",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "3",
-            "value": "10000000000000000000"
+            "value": "10000000000000000000",
+            "date": "2016-05-10 12:53:17 UTC",
+            "ether": "10.000000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x65483762ffcce0850ca66cde81c873f36205c37c77b7ff347bdd382f8bab4bde",
@@ -38,7 +42,11 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1462884945",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "11",
-            "value": "201600000000000000000"
+            "value": "201600000000000000000",
+            "date": "2016-05-10 12:55:45 UTC",
+            "ether": "201.600000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x6240e3b5b4e7f2b643fa182d2a7cc4a69280b35392feac2d4859d05fb84ee585",
@@ -55,7 +63,11 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1463670698",
             "to": "0x682e426ea761db77bacd5acdce33ca122175daea",
             "transactionIndex": "0",
-            "value": "15990000000000000000"
+            "value": "15990000000000000000",
+            "date": "2016-05-19 15:11:38 UTC",
+            "ether": "15.990000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x40b3016476a6bce30059ba8272c5cd42c5d36eaadab2deda0fdc44663e4c6a2c",
@@ -72,8 +84,12 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1463670925",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "1",
-            "value": "16000000000000000000"
-        },Exporting record 5 of 9 visible records
+            "value": "16000000000000000000",
+            "date": "2016-05-19 15:15:25 UTC",
+            "ether": "16.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
+        },	Exporting record 5 of 9 visible records
 
         {
             "blockHash": "0x2db805f88fd6384274c1962469dacbae4bf5cedb097a10ca0aa6dfc8a534be10",
@@ -90,7 +106,11 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1463670964",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "0",
-            "value": "16000000000000000000"
+            "value": "16000000000000000000",
+            "date": "2016-05-19 15:16:04 UTC",
+            "ether": "16.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x101d897952044bc08f406a239f4443bafd5a1df6d38ae3522cf6dbf30f595abc",
@@ -107,7 +127,11 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1463671007",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "1",
-            "value": "16000000000000000000"
+            "value": "16000000000000000000",
+            "date": "2016-05-19 15:16:47 UTC",
+            "ether": "16.000000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0xaa563920abd7bb8783ecfc26cdb0ced5108be34441db996b056feb686a057e72",
@@ -124,7 +148,11 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1464418040",
             "to": "0x682e426ea761db77bacd5acdce33ca122175daea",
             "transactionIndex": "1",
-            "value": "116281545710000000000"
+            "value": "116281545710000000000",
+            "date": "2016-05-28 06:47:20 UTC",
+            "ether": "116.281545710000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e",
@@ -141,7 +169,11 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1464418632",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "6",
-            "value": "116000000000000000000"
+            "value": "116000000000000000000",
+            "date": "2016-05-28 06:57:12 UTC",
+            "ether": "116.000000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e",
@@ -158,6 +190,10 @@ Reading from binary cache...record 15 of 15
             "timeStamp": "1464418632",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "7",
-            "value": "280000000000000000"
+            "value": "280000000000000000",
+            "date": "2016-05-28 06:57:12 UTC",
+            "ether": "0.280000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
 

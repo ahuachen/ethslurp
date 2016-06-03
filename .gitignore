@@ -15,6 +15,7 @@ timeConvert
 tests/cache
 tests/files
 data
+ghc
 
 
 # Precompiled Headers

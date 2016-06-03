@@ -28,5 +28,6 @@
 #include "protectedobject.h"
 #include "colors.h"
 #include "performance.h"
+#include "sffile.h"
 
 #endif

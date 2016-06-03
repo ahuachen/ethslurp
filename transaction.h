@@ -55,6 +55,7 @@ public:
 	SFInt32 writeToFile(CSharedResource& file) const;
 	SFBool  readFromFile(CSharedResource& file);
 	SFTime  getDate(void) const;
+	SFString inputToFunction(void) const;
 	// EXISTING_CODE
 
 private:

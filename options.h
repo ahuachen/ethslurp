@@ -22,13 +22,12 @@ public:
 	SFInt32  maxTransactions;
 	SFInt32  pageSize;
 	SFString exportFormat;
+	FILE    *output; // for use when -a is on
 
 	        COptions       (void);
+	       ~COptions       (void);
 	SFInt32 parseArguments (SFInt32 nArgs, const SFString *args);
 };
-
-//--------------------------------------------------------------------------------
-typedef SFInt32 (*CMDFUNC)  (SFInt32 nArgs, const SFString *args);
 
 //--------------------------------------------------------------------------------
 typedef SFInt32 (*USAGEFUNC)(const SFString& errMsg);
@@ -48,22 +47,18 @@ class CCmdFunction
 {
 	CCmdFunction( void ) {}
 public:
-	SFString    functionName;
-	CMDFUNC     cFunc;
 	CParams    *params;
 	SFInt32     nParams;
-	CCmdFunction (const SFString& functionNameIn, CMDFUNC cFuncIn, CParams *paramsIn, SFInt32 nParamsIn)
+	CCmdFunction (CParams *paramsIn, SFInt32 nParamsIn)
 	{
-		functionName = functionNameIn;
-		cFunc        = cFuncIn;
 		params       = paramsIn;
 		nParams      = nParamsIn;
 	}
 	SFString options     (void) const;
 	SFString descriptions(void) const;
 	SFString purpose     (void) const;
-	SFBool   isOption    (const SFString& arg) const;
-	SFString expandOption(SFString& arg) const;
 };
+
+extern SFString expandOption(SFString& arg);
 
 #endif

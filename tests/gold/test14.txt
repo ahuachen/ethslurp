@@ -13,7 +13,6 @@ api_url=http://etherscan.io/apis
 rerun=0x682e426ea761db77bacd5acdce33ca122175daea
 
 [DISPLAY_STR]
-fmt_fieldList=
 fmt_txt_file=[{HEADER}]\n[{RECORDS}]
 fmt_txt_record=[{FIELDS}]\n
 fmt_txt_field=\t[{FIELD}]
@@ -29,19 +28,16 @@ fmt_json_field="[{p:FIELD}]":"[{FIELD}]",
 fmt_custom_file=file:custom_format_file.html
 fmt_custom_record=fmt_html_record
 fmt_custom_field=fmt_html_field
-
-[FIELD_STR]
-timeStamp=date
 fmt_custom_file=file:custom_format_file.html
 fmt_custom_record=fmt_html_record
 fmt_custom_field=fmt_html_field
 [FIELD_STR]
 timeStamp=date
-../ethslurp -r -f:custom 
-Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-Reading from binary cache...record 5 of 15
-Reading from binary cache...record 10 of 15
-Reading from binary cache...record 15 of 15
+Processing: -t -r -f:custom 
+	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
+	Reading from binary cache...record 5 of 15
+	Reading from binary cache...record 10 of 15
+	Reading from binary cache...record 15 of 15
 
 <!DOCTYPE html>
 <html>
@@ -88,6 +84,10 @@ Reading from binary cache...record 15 of 15
 		<td>to</td>
 		<td>transactionIndex</td>
 		<td>value</td>
+		<td>date</td>
+		<td>ether</td>
+		<td>hitLimit</td>
+		<td>inputLen</td>
 
 </tr>
 <tr>
@@ -106,6 +106,10 @@ Reading from binary cache...record 15 of 15
 		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
 		<td>0</td>
 		<td>990000000000000000</td>
+		<td>2016-05-10 11:39:56 UTC</td>
+		<td>0.990000000000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0xae9664c41d42a5de3989cd0186aff8d54a3677603670bc3d7b81c23b74eca958</td>
@@ -123,6 +127,10 @@ Reading from binary cache...record 15 of 15
 		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
 		<td>0</td>
 		<td>210631973080000000000</td>
+		<td>2016-05-10 11:44:21 UTC</td>
+		<td>210.631973080000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0x25efe249e85f2ccd7f2beca969ffa9b9b1e5f39b545e06605e9da10bf89d694b</td>
@@ -140,6 +148,10 @@ Reading from binary cache...record 15 of 15
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>1</td>
 		<td>10000000000000000000</td>
+		<td>2016-05-10 12:33:26 UTC</td>
+		<td>10.000000000000000000</td>
+		<td>TRUE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0x2b7feaa26516698c340573a2b8e4506b4e4f6ba9f271894eb7c45db78a4a6006</td>
@@ -157,8 +169,12 @@ Reading from binary cache...record 15 of 15
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>0</td>
 		<td>10000000000000000000</td>
+		<td>2016-05-10 12:44:35 UTC</td>
+		<td>10.000000000000000000</td>
+		<td>TRUE</td>
+		<td>2</td>
 </tr>
-Exporting record 5 of 15 records
+	Exporting record 5 of 15 records
 <tr>
 		<td>0x0c01f973ccbbcd7768694f9c16ef1c6e8bb93722375f38d9d7a7abbf7e7ac6c6</td>
 		<td>1491752</td>
@@ -175,6 +191,10 @@ Exporting record 5 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>0</td>
 		<td>10000000000000000000</td>
+		<td>2016-05-10 12:45:26 UTC</td>
+		<td>10.000000000000000000</td>
+		<td>TRUE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0xd1c7f5a67660305cd7a3cd471f81178e2a38b36d7c3f65de01fc4df40e299a3a</td>
@@ -192,6 +212,10 @@ Exporting record 5 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>0</td>
 		<td>20000000000000000000</td>
+		<td>2016-05-10 12:45:47 UTC</td>
+		<td>20.000000000000000000</td>
+		<td>TRUE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba</td>
@@ -209,6 +233,10 @@ Exporting record 5 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>3</td>
 		<td>10000000000000000000</td>
+		<td>2016-05-10 12:53:17 UTC</td>
+		<td>10.000000000000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0x65483762ffcce0850ca66cde81c873f36205c37c77b7ff347bdd382f8bab4bde</td>
@@ -226,6 +254,10 @@ Exporting record 5 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>11</td>
 		<td>201600000000000000000</td>
+		<td>2016-05-10 12:55:45 UTC</td>
+		<td>201.600000000000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0x6240e3b5b4e7f2b643fa182d2a7cc4a69280b35392feac2d4859d05fb84ee585</td>
@@ -243,8 +275,12 @@ Exporting record 5 of 15 records
 		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
 		<td>0</td>
 		<td>15990000000000000000</td>
+		<td>2016-05-19 15:11:38 UTC</td>
+		<td>15.990000000000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
-Exporting record 10 of 15 records
+	Exporting record 10 of 15 records
 <tr>
 		<td>0x40b3016476a6bce30059ba8272c5cd42c5d36eaadab2deda0fdc44663e4c6a2c</td>
 		<td>1546609</td>
@@ -261,6 +297,10 @@ Exporting record 10 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>1</td>
 		<td>16000000000000000000</td>
+		<td>2016-05-19 15:15:25 UTC</td>
+		<td>16.000000000000000000</td>
+		<td>TRUE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0x2db805f88fd6384274c1962469dacbae4bf5cedb097a10ca0aa6dfc8a534be10</td>
@@ -278,6 +318,10 @@ Exporting record 10 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>0</td>
 		<td>16000000000000000000</td>
+		<td>2016-05-19 15:16:04 UTC</td>
+		<td>16.000000000000000000</td>
+		<td>TRUE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0x101d897952044bc08f406a239f4443bafd5a1df6d38ae3522cf6dbf30f595abc</td>
@@ -295,6 +339,10 @@ Exporting record 10 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>1</td>
 		<td>16000000000000000000</td>
+		<td>2016-05-19 15:16:47 UTC</td>
+		<td>16.000000000000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0xaa563920abd7bb8783ecfc26cdb0ced5108be34441db996b056feb686a057e72</td>
@@ -312,6 +360,10 @@ Exporting record 10 of 15 records
 		<td>0x682e426ea761db77bacd5acdce33ca122175daea</td>
 		<td>1</td>
 		<td>116281545710000000000</td>
+		<td>2016-05-28 06:47:20 UTC</td>
+		<td>116.281545710000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
 <tr>
 		<td>0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e</td>
@@ -329,8 +381,12 @@ Exporting record 10 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>6</td>
 		<td>116000000000000000000</td>
+		<td>2016-05-28 06:57:12 UTC</td>
+		<td>116.000000000000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
-Exporting record 15 of 15 records
+	Exporting record 15 of 15 records
 <tr>
 		<td>0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e</td>
 		<td>1598704</td>
@@ -347,6 +403,10 @@ Exporting record 15 of 15 records
 		<td>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</td>
 		<td>7</td>
 		<td>280000000000000000</td>
+		<td>2016-05-28 06:57:12 UTC</td>
+		<td>0.280000000000000000</td>
+		<td>FALSE</td>
+		<td>2</td>
 </tr>
 
 

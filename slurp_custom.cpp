@@ -4,11 +4,10 @@
  * All Rights Reserved
  *
  *------------------------------------------------------------------------*/
-
-#include "manage.h"
 #include "slurp.h"
 
 // EXISTING_CODE
+#include "ethslurp.h"
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
@@ -78,7 +77,7 @@ SFBool CSlurp::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, vo
 			cnt += transactions[i].isShowing();
 			if (cnt && !(cnt%5))
 			{
-				outErr << "Exporting record " << cnt << " of " << nVisible;
+				outErr << "\tExporting record " << cnt << " of " << nVisible;
 				outErr << (transactions.getCount()!=nVisible?" visible":"") << " records" << (isTesting?"\n":"\r"); outErr.Flush();
 			}
 			ctx << transactions[i].Format(displayString);
@@ -118,7 +117,7 @@ SFInt32 CSlurp::readFromFile(CSharedResource& file)
 	for (int i=0;i<nRecords;i++)
 	{
 		transactions[i].readFromFile(file);
-		if (!(++nRead%5)) { outErr << "Reading from binary cache...record " << nRead << " of " << nRecords << (isTesting?"\n":"\r"); outErr.Flush(); }
+		if (!(++nRead%5)) { outErr << "\tReading from binary cache...record " << nRead << " of " << nRecords << (isTesting?"\n":"\r"); outErr.Flush(); }
 		SFInt32 curBlock = transactions[i].blockNumber;
 		maxBlock = MAX(maxBlock,curBlock);
 	}

@@ -18,6 +18,7 @@ fieldlist.cpp \
 runtimeclass.cpp \
 sfarchive.cpp \
 sfdate.cpp \
+sffile.cpp \
 sfos.cpp \
 sfstring.cpp \
 sftime.cpp \

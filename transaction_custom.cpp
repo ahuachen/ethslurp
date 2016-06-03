@@ -4,8 +4,6 @@
  * All Rights Reserved
  *
  *------------------------------------------------------------------------*/
-
-#include "manage.h"
 #include "transaction.h"
 
 // EXISTING_CODE
@@ -39,21 +37,29 @@ SFString nextTransactionChunk_custom(const SFString& fieldIn, SFBool& force, con
 		case 'e':
 			if ( fieldIn % "ether" )
 			{
-				// because wei is a string representing 1/(10^18) ether, and because
-				// we want five decimal points, we simply remove 12 digits from the end.
-				// if the thirteeth is '5' or greater we should round, but we truncate
-				SFString wei = tra->value;
-				wei.Reverse();
-				SFString remove = wei.Left(13);
-				wei.Replace(remove,EMPTY);
-				wei.Reverse();
-				SFString ether = wei;
-				ether = SFString(ether.GetAt(0)) + "." + ether.Mid(1,1000);
-				if (ether.IsEmpty())
-					ether = "0.00000";
-				ether = padRight(ether,5).Substitute(" ","0");
+				// Make sure the wei number is at least 18 characters long. Once it is,
+				// reverse it, put a decimal at the 18th position, reverse it back,
+				// strip leading '0's except the tens digit.
+				SFString ether = tra->value;
+				if (ether.GetLength()<18)
+					ether = padLeft(tra->value,18).Substitute(" ","0");
+				ether.Reverse();
+				ether = ether.Left(18) + "." + ether.Mid(18,1000);
+				ether.Reverse();
+				ether = StripLeading(ether, '0');
+				if (ether.startsWith('.'))
+					ether = "0" + ether;
 				return ether;
 			}
+			break;
+//		case 'f':
+//			if ( fieldIn % "function" ) return tra->inputToFunction();
+//			break;
+		case 'h':
+			if ( fieldIn % "hitLimit" ) return ((tra->gas == tra->gasUsed) ? "TRUE" : "FALSE");
+			break;
+		case 'i':
+			if ( fieldIn % "inputLen" ) return asString(tra->input.GetLength());
 			break;
 		// EXISTING_CODE
 		default:
@@ -184,5 +190,20 @@ SFInt32 CTransaction::parseJson(SFString& strIn)
 SFTime CTransaction::getDate(void) const
 {
 	return snagDate(Format("[{DATE}]").Substitute("-","").Substitute(":", "").Substitute(" ", ""));
+}
+
+//---------------------------------------------------------------------------
+SFString CTransaction::inputToFunction(void) const
+{
+	SFString voteFunc("0xc9d27afe");
+	SFInt32  voteLen = voteFunc.GetLength();
+	if (input.Left(voteLen)==voteFunc)
+	{
+		SFString proposal = StripLeading(input.Mid(10,64),'0');
+		SFString vote = StripLeading(input.Mid(75,1000),'0');
+		vote = (vote.IsEmpty()?"no":"yes");
+		return "vote|" + proposal + "|" + vote;
+	}
+	return "||";
 }
 // EXISTING_CODE

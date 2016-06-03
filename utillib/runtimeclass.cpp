@@ -98,7 +98,8 @@ void ghRuntimeClass::AddField(const SFString& fieldName, SFInt32 dataType, SFInt
 		m_FieldList = new CFieldList;
 	ASSERT(m_FieldList);
 
-	m_FieldList->AddTail(new CFieldData("", fieldName, "", "", dataType, FALSE, fieldID));
+	CFieldData *field = new CFieldData("", fieldName, fieldName, "", dataType, FALSE, fieldID);
+	m_FieldList->AddTail(field);
 }
 
 //-------------------------------------------------------------------------

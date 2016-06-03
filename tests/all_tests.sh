@@ -47,8 +47,9 @@ echo "test9: extract expense records only"                               | tee p
 ./copyTestFolder 9
 sleep 1s
 
-echo "[FIELD_STR]"    >>~/.ethslurp.test/config.dat
-echo "timeStamp=date" >>~/.ethslurp.test/config.dat
+cat ~/.ethslurp.test/config.dat | grep -v fmt_fieldList >file
+mv -f file ~/.ethslurp.test/config.dat
+echo "fmt_fieldList=timeStamp|date|from|nonce|value|ether|input|inputLen|gasUsed|gas|hitLimit|gasPrice|blockNumber|transactionIndex|cumulativeGasUsed|blockHash|hash" >>~/.ethslurp.test/config.dat
 echo "test10: test date option fail"                                     | tee proposed/test10_fail.txt
 ../ethslurp -t -d -r -f:txt 0x713B73c3994442b533e6A083eC968e40606810Ec       >>proposed/test10_fail.txt
 echo "test10: test date option less than"                                | tee proposed/test10_lessthan.txt
@@ -56,13 +57,21 @@ echo "test10: test date option less than"                                | tee p
 echo "test10: test date option greater than"                             | tee proposed/test10_greaterthan.txt
 ../ethslurp -t -d:20160510123300 -r -f:txt                                   >>proposed/test10_greaterthan.txt
 echo "test10: test date option range"                                    | tee proposed/test10_range.txt
+cat ~/.ethslurp.test/config.dat | grep -v fmt_fieldList >file
+mv -f file ~/.ethslurp.test/config.dat
+echo "[DISPLAY_STR]"                               >~/.ethslurp.test/0x682e426ea761db77bacd5acdce33ca122175daea.dat
+echo "fmt_fieldList=from|value|ether|blockNumber" >>~/.ethslurp.test/0x682e426ea761db77bacd5acdce33ca122175daea.dat
+cat ~/.ethslurp.test/*.dat | grep -v api_key                                 >>proposed/test2.txt
 ../ethslurp -t -d:20160510:20160519151605 -r -f:txt                          >>proposed/test10_range.txt
 ./copyTestFolder 10
+rm ~/.ethslurp.test/0x682e426ea761db77bacd5acdce33ca122175daea.dat
 
 echo "test11: test open config file"                                     | tee proposed/test11.txt
 ../ethslurp -t -o -r -f                                                      >>proposed/test11.txt
 ./copyTestFolder 11
 
+cat ~/.ethslurp.test/config.dat | grep -v fmt_fieldList >file
+mv -f file ~/.ethslurp.test/config.dat
 echo "test12: test block number option fail"                             | tee proposed/test12_fail.txt
 ../ethslurp -t -b -r -f                                                      >>proposed/test12_fail.txt
 echo "test12: test block number option less than"                        | tee proposed/test12_lessthan.txt

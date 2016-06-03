@@ -1,6 +1,6 @@
 all:
 	@cd .. ; make
-	@./all_tests 
+	@./all_tests.sh
 
 clean:
 	@cd .. ; make clean

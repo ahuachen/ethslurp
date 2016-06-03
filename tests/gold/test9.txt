@@ -1,14 +1,14 @@
 test9: extract expense records only
-../ethslurp -e -f 0x682e426ea761db77bacd5acdce33ca122175daea 
-Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-Reading from binary cache...record 5 of 15
-Reading from binary cache...record 10 of 15
-Reading from binary cache...record 15 of 15
+Processing: -t -v -e -f 0x682e426ea761db77bacd5acdce33ca122175daea 
+	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
+	Reading from binary cache...record 5 of 15
+	Reading from binary cache...record 10 of 15
+	Reading from binary cache...record 15 of 15
 
-skipping inflow 0x515735de46790a8326a909f622122df3c9a57613e39831e47451b978b47745fe
-skipping inflow 0xf159cca7246933b5c3e31d850ee2c8e08d080c288f4e19b40f219d33d59acf34
-skipping inflow 0xaf50938c5e69fbc0456259047646693d863db618419c434da57362c8b3d9b270
-skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc61
+	skipping inflow 0x515735de46790a8326a909f622122df3c9a57613e39831e47451b978b47745fe
+	skipping inflow 0xf159cca7246933b5c3e31d850ee2c8e08d080c288f4e19b40f219d33d59acf34
+	skipping inflow 0xaf50938c5e69fbc0456259047646693d863db618419c434da57362c8b3d9b270
+	skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc61
 
         {
             "blockHash": "0x25efe249e85f2ccd7f2beca969ffa9b9b1e5f39b545e06605e9da10bf89d694b",
@@ -25,7 +25,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1462883606",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "1",
-            "value": "10000000000000000000"
+            "value": "10000000000000000000",
+            "date": "2016-05-10 12:33:26 UTC",
+            "ether": "10.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x2b7feaa26516698c340573a2b8e4506b4e4f6ba9f271894eb7c45db78a4a6006",
@@ -42,7 +46,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1462884275",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "0",
-            "value": "10000000000000000000"
+            "value": "10000000000000000000",
+            "date": "2016-05-10 12:44:35 UTC",
+            "ether": "10.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x0c01f973ccbbcd7768694f9c16ef1c6e8bb93722375f38d9d7a7abbf7e7ac6c6",
@@ -59,7 +67,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1462884326",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "0",
-            "value": "10000000000000000000"
+            "value": "10000000000000000000",
+            "date": "2016-05-10 12:45:26 UTC",
+            "ether": "10.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0xd1c7f5a67660305cd7a3cd471f81178e2a38b36d7c3f65de01fc4df40e299a3a",
@@ -76,8 +88,12 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1462884347",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "0",
-            "value": "20000000000000000000"
-        },Exporting record 5 of 11 visible records
+            "value": "20000000000000000000",
+            "date": "2016-05-10 12:45:47 UTC",
+            "ether": "20.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
+        },	Exporting record 5 of 11 visible records
 
         {
             "blockHash": "0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba",
@@ -94,7 +110,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1462884797",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "3",
-            "value": "10000000000000000000"
+            "value": "10000000000000000000",
+            "date": "2016-05-10 12:53:17 UTC",
+            "ether": "10.000000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x65483762ffcce0850ca66cde81c873f36205c37c77b7ff347bdd382f8bab4bde",
@@ -111,7 +131,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1462884945",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "11",
-            "value": "201600000000000000000"
+            "value": "201600000000000000000",
+            "date": "2016-05-10 12:55:45 UTC",
+            "ether": "201.600000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x40b3016476a6bce30059ba8272c5cd42c5d36eaadab2deda0fdc44663e4c6a2c",
@@ -128,7 +152,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1463670925",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "1",
-            "value": "16000000000000000000"
+            "value": "16000000000000000000",
+            "date": "2016-05-19 15:15:25 UTC",
+            "ether": "16.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x2db805f88fd6384274c1962469dacbae4bf5cedb097a10ca0aa6dfc8a534be10",
@@ -145,7 +173,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1463670964",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "0",
-            "value": "16000000000000000000"
+            "value": "16000000000000000000",
+            "date": "2016-05-19 15:16:04 UTC",
+            "ether": "16.000000000000000000",
+            "hitLimit": "TRUE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x101d897952044bc08f406a239f4443bafd5a1df6d38ae3522cf6dbf30f595abc",
@@ -162,8 +194,12 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1463671007",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "1",
-            "value": "16000000000000000000"
-        },Exporting record 10 of 11 visible records
+            "value": "16000000000000000000",
+            "date": "2016-05-19 15:16:47 UTC",
+            "ether": "16.000000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
+        },	Exporting record 10 of 11 visible records
 
         {
             "blockHash": "0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e",
@@ -180,7 +216,11 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1464418632",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "6",
-            "value": "116000000000000000000"
+            "value": "116000000000000000000",
+            "date": "2016-05-28 06:57:12 UTC",
+            "ether": "116.000000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
         {
             "blockHash": "0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e",
@@ -197,6 +237,10 @@ skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc
             "timeStamp": "1464418632",
             "to": "0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
             "transactionIndex": "7",
-            "value": "280000000000000000"
+            "value": "280000000000000000",
+            "date": "2016-05-28 06:57:12 UTC",
+            "ether": "0.280000000000000000",
+            "hitLimit": "FALSE",
+            "inputLen": "2"
         },
 

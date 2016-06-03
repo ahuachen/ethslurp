@@ -565,11 +565,15 @@ void CConfig::mergeConfig(CConfig *configIn)
 			while (kPos)
 			{
 				SFKey *key = group->m_keys.GetNext(kPos);
-				SetProfileString(group->getName(), key->getName(), key->getValue());
+				SFString groupName = group->getName(), keyName = key->getName();
+				SetProfileString(groupName, keyName, key->getValue());
 
-				// The key may be deleted so we want to make sure its not delete
-				// in the resulting file if it is present in the source file
-				unDeleteKey(group->getName(), key->getName());
+				// The key in the merging file may be deleted, but we don't want
+				// that to force a delete in this config. Here we make sure we
+				// don't inadverantly delete the key (unless it's already deleted)
+				SFKey *k = findKey(groupName, keyName);
+				if (k && !k->isDeleted())
+					unDeleteKey(groupName, keyName);
 			}
 		}
 	}
