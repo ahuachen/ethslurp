@@ -3,6 +3,10 @@ cflags=-Wall -O2 -DLINUX -I../utillib
 product=etherlib.a
 
 src= \
+slurp.cpp \
+slurp_custom.cpp \
+transaction.cpp \
+transaction_custom.cpp \
 webapi.cpp
 
 #-------------------------------------------------

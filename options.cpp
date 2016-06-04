@@ -56,17 +56,17 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 		} else if (arg == "-l" || arg == "-list")
 		{
 			SFInt32 nFiles=0;
-			SFos::listFilesOrFolders(nFiles, NULL, PATH_TO_SLURPS+"*.*");
+			SFos::listFilesOrFolders(nFiles, NULL, cachePath("*.*"));
 			if (nFiles)
 			{
 				SFString *files = new SFString[nFiles];
-				SFos::listFilesOrFolders(nFiles, files, PATH_TO_SLURPS+"*.*");
+				SFos::listFilesOrFolders(nFiles, files, cachePath("*.*"));
 				for (int i=0;i<nFiles;i++)
 					outScreen << files[i] << "\n";
 				delete [] files;
 			} else
 			{
-				outScreen << "No files found in cache folder '" << PATH_TO_SLURPS << "'\n";
+				outScreen << "No files found in cache folder '" << cachePath() << "'\n";
 			}
 			exit(0);
 
@@ -140,7 +140,7 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 			// open command stuff
 			openFile = TRUE;
 			if (isTesting)
-				outScreen << "Testing only for open command:\n" << asciiFileToString(PATH_TO_ETH_SLURP+"config.dat") << "\n";
+				outScreen << "Testing only for open command:\n" << asciiFileToString(configPath("config.dat")) << "\n";
 			else
 				system("open ~/.ethslurp/config.dat");
 			exit(0);
@@ -150,7 +150,7 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 			if (isTesting)
 			{
 				SFString unused1, unused2;
-				SFos::removeFolder(PATH_TO_SLURPS, unused1, unused2, TRUE);
+				SFos::removeFolder(cachePath(), unused1, unused2, TRUE);
 				outErr << "Cached slurp files were cleared\n";
 			} else
 			{
@@ -218,7 +218,7 @@ int usage(const SFString& errMsg)
 CParams::CParams( const SFString& nameIn, const SFString& descr )
 {
 	SFString name = nameIn;
-	
+
 	description = descr;
 	if (!name.IsEmpty())
 	{
@@ -230,7 +230,7 @@ CParams::CParams( const SFString& nameIn, const SFString& descr )
 			name.Replace("{","|{");
 			nextTokenClear(name,'|');
 			shortName += name;
-			
+
 		} else if (name.Contains(":"))
 		{
 			nextTokenClear(name,':');
@@ -244,7 +244,7 @@ CParams::CParams( const SFString& nameIn, const SFString& descr )
 SFString options(void)
 {
 	SFString required;
-	
+
 	CStringExportContext ctx;
 	ctx << "[";
 	for (int i=0;i<nParams;i++)
@@ -252,7 +252,7 @@ SFString options(void)
 		if (params[i].shortName.startsWith('~'))
 		{
 			required += (" " + params[i].longName.Mid(1));
-			
+
 		} else if (!params[i].shortName.IsEmpty())
 		{
 			ctx << params[i].shortName << "|";
@@ -260,7 +260,7 @@ SFString options(void)
 	}
 	ctx << "-t|-v|-h]";
 	ctx << required;
-	
+
 	return ctx.str;
 }
 
@@ -271,7 +271,7 @@ SFString purpose(void)
 	for (int i=0;i<nParams;i++)
 		if (params[i].shortName.IsEmpty())
 			purpose += ("\n           " + params[i].description);
-	
+
 	CStringExportContext ctx;
 	if (!purpose.IsEmpty())
 	{
@@ -286,7 +286,7 @@ SFString purpose(void)
 SFString descriptions(void)
 {
 	SFString required;
-	
+
 	SFBool usesT = FALSE;
 	CStringExportContext ctx;
 	for (int i=0;i<nParams;i++)
@@ -294,7 +294,7 @@ SFString descriptions(void)
 		if (params[i].shortName.startsWith('~'))
 		{
 			required += ("\t" + padRight(params[i].longName,22) + params[i].description).Substitute("~",EMPTY) + " (required)\n";
-			
+
 		} else if (!params[i].shortName.IsEmpty())
 		{
 			ctx << "\t" << padRight(params[i].shortName,3) << padRight((params[i].longName.IsEmpty() ? "" : " (or "+params[i].longName+")"),18) << params[i].description << "\n";
@@ -314,26 +314,31 @@ SFString descriptions(void)
 SFString expandOption(SFString& arg)
 {
 	SFString ret = arg;
-	if (!arg.startsWith('-')) // not an option
+
+	// Not an option
+	if (!arg.startsWith('-'))
 	{
 		arg=EMPTY;
 		return ret;
 	}
-	
-	if (arg.GetLength()==2) // single option
+
+	// Single option
+	if (arg.GetLength()==2)
 	{
 		arg=EMPTY;
 		return ret;
 	}
-	
-	if (arg.Contains(":")) // one of the range commands. These must be alone on the line, so fail if necassary
+
+	// One of the range commands. These must be alone on
+	// the line (this is a bug for -rf:txt for example)
+	if (arg.Contains(":"))
 	{
 		arg=EMPTY;
 		return ret;
 	}
-	
-	// This is a double (or more) option, so we need to pull it apart
-	// by returning the first two chars, and saving the rest for later.
+
+	// This is a ganged-up option. We need to pull it apart by returning
+	// the first two chars, and saving the rest for later.
 	ret = arg.Left(2);
 	arg = "-"+arg.Mid(2,1000);
 	return ret;
@@ -359,4 +364,3 @@ SFBool isTesting = FALSE;
 CFileExportContext   outScreen;
 CErrorExportContext  outErr_internal;
 CFileExportContext&  outErr = outErr_internal;
-

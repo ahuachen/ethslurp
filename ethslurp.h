@@ -19,13 +19,14 @@ private:
 	CWebAPI   api;
 
 public:
-	CSlurp    theSlurp;
-	
+	CSlurp    theAccount;
+
               CSlurperApp (void) : config(NULL) { };
              ~CSlurperApp (void) {  }
-	
-	int       Initialize  (COptions& options);
+
+	SFBool    Initialize  (COptions& options, SFString& message);
 	SFBool    Slurp       (COptions& options, SFString& message);
+	SFBool    Filter      (COptions& options, SFString& message);
 	SFBool    Display     (COptions& options, SFString& message);
 
 private:
@@ -37,12 +38,12 @@ private:
 extern SFString getHomeFolder(void);
 
 //---------------------------------------------------------------------------------------------------
-extern SFBool establish_folders(CConfig& config, const SFString& vers);
-extern void   findBlockRange   (const SFString& contents, SFInt32& minBlock, SFInt32& maxBlock);
+extern SFBool establishFolders(CConfig& config, const SFString& vers);
+extern void   findBlockRange  (const SFString& contents, SFInt32& minBlock, SFInt32& maxBlock);
 
 //---------------------------------------------------------------------------------------------------
-#define PATH_TO_ETH_SLURP  SFString(getHomeFolder() + ".ethslurp" + (isTesting?".test":EMPTY) + "/")
-#define PATH_TO_SLURPS     SFString(PATH_TO_ETH_SLURP + "slurps/")
+extern SFString configPath(const SFString& part=EMPTY);
+extern SFString cachePath (const SFString& part=EMPTY);
 
 //--------------------------------------------------------------------------------
 extern SFBool verbose;

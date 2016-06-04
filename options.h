@@ -49,4 +49,8 @@ extern SFString purpose     (void);
 extern int      sortParams  (const void *c1, const void *c2);
 extern SFString expandOption(SFString& arg);
 
+//--------------------------------------------------------------------------------
+extern CParams params[];
+extern SFInt32 nParams;
+
 #endif

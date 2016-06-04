@@ -10,6 +10,9 @@ Processing: -t -fsr
 
 	Download contains blocks from 1491486 to 1598704
 	Searching transactions after block 1598704
+	Filtering record 5 of 15
+	Filtering record 10 of 15
+	Filtering record 15 of 15
 
         {
             "blockHash": "0xa6857a2a6c90bd2701c67bd31c697b87a607421a9c75559141a7757ff02915c2",

@@ -11,6 +11,9 @@ Processing: -t 0x713B73c3994442b533e6A083eC968e40606810Ec
 	Found new transaction at block 1467463. Importing...
 
 	Writing 16 new records to cache
+	Filtering record 5 of 16
+	Filtering record 10 of 16
+	Filtering record 15 of 16
 
         {
 "blockHash":"0xcc480deb89134f611d6be9b35ee405fdd785028ee1b20cc768f2370414635fe4","blockNumber":"1387025","contractAddress":"","cumulativeGasUsed":"201757","from":"0xbdace480953fc8260184bd625389ea20bbd0da9f","gas":"3000000","gasPrice":"20000000000","gasUsed":"180757","hash":"0x872cf8712a15da1af2bfc44b938a6f92c6b95cbf76701e299a27a84a0c701325","input":"0x3ffbd47f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000b54686f6d617320527573680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020492077617320686572652e20457468657265756d206576657279776865726521","nonce":"18","timeStamp":"1461381888","to":"0x713b73c3994442b533e6a083ec968e40606810ec","transactionIndex":"1","value":"10000000000000000","date":"2016-04-23 03:24:48 UTC","ether":"0.010000000000000000","hitLimit":"FALSE","inputLen":"394"
@@ -71,8 +74,7 @@ Processing: -t 0x713B73c3994442b533e6A083eC968e40606810Ec
 ;------------------------------------------------------------------------------
 
 [SETTINGS]
-datapath=/Users/jrush/.ethslurp.test/slurps/
-focus=189
+cachePath=/Users/jrush/.ethslurp.test/slurps/
 api_provider=EtherScan
 api_url=http://etherscan.io/apis
 rerun=0x713b73c3994442b533e6a083ec968e40606810ec
@@ -103,8 +105,7 @@ fmt_fieldList=from|value|ether|blockNumber
 ;------------------------------------------------------------------------------
 
 [SETTINGS]
-datapath=/Users/jrush/.ethslurp.test/slurps/
-focus=189
+cachePath=/Users/jrush/.ethslurp.test/slurps/
 api_provider=EtherScan
 api_url=http://etherscan.io/apis
 rerun=0x682e426ea761db77bacd5acdce33ca122175daea

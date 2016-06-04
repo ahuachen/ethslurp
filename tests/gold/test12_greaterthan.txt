@@ -5,6 +5,8 @@ Processing: -t -b:1491788 -r -f
 	Reading from binary cache...record 10 of 15
 	Reading from binary cache...record 15 of 15
 
+	Filtering record 5 of 15
+	Filtering record 10 of 15
 
         {
             "blockHash": "0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba",

@@ -13,9 +13,9 @@
 //-------------------------------------------------------------------------
 CVersion::CVersion(void)
 {
-	m_Major = FALSE;
-	m_Minor = FALSE;
-	m_Build = FALSE;
+	m_Major = VERSION_MAJOR;
+	m_Minor = VERSION_MINOR;
+	m_Build = VERSION_BUILD;
 }
 
 //-------------------------------------------------------------------------
@@ -125,9 +125,9 @@ SFString getVersionString(char sep, SFBool incBuild)
 //-------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------
-SFString CVersion::toString(char sep) const                  
-{        
-	CStringExportContext ctx;        
+SFString CVersion::toString(char sep) const
+{
+	CStringExportContext ctx;
 	ctx << m_Major << sep << m_Minor << sep << m_Build;
 	return ctx.str;
 }

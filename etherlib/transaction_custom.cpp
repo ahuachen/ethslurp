@@ -65,7 +65,7 @@ SFString nextTransactionChunk_custom(const SFString& fieldIn, SFBool& force, con
 		default:
 			break;
 	}
-	
+
 #pragma unused(tr)
 #pragma unused(tra)
 
@@ -113,7 +113,7 @@ SFInt32 CTransaction::writeToFile(CSharedResource& file) const
 {
 	file.Write( isDeleted() );
 	file.Write( getSchema() );
-	file.Write( TRUE ); // don't store this--let the filters decide );
+	file.Write( isShowing() );
 	file.Write( ((CTransaction*)this)->getClassName() );
 	file.Write( blockHash );
 	file.Write( blockNumber );

@@ -56,7 +56,7 @@ public:
 				return (*m_CreateFunc)();
 			return NULL;
 		}
-	
+
 //	virtual SFBool SetFieldValue(const SFString& fieldName, void *val);
 	virtual CFieldData *FindField(const SFString& fieldName)
 		{
@@ -98,7 +98,7 @@ public: \
     virtual SFBool   handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
     virtual void     Format_base       (CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
     virtual SFString Format            (const SFString& fmtIn) const { CStringExportContext ctx;Format_base(ctx, fmtIn, NULL);return ctx.str;} \
-	        SFString getClassName      (void); \
+	        SFString getClassName      (void) const; \
 	static  void     registerClass     (void);
 
 //---------------------------------------------------------------------------
@@ -140,7 +140,7 @@ public: \
 #define IMPLEMENT_NODE(CLASS_NAME, BASECLASS_NAME, SCHEMA) \
 	ghRuntimeClass  CLASS_NAME::class##CLASS_NAME; \
 	ghRuntimeClass *CLASS_NAME::getRuntimeClass(void) const { return &CLASS_NAME::class##CLASS_NAME; } \
-	SFString        CLASS_NAME::getClassName   (void)       { return CLASS_NAME::class##CLASS_NAME.getClassNamePtr(); } \
+	SFString        CLASS_NAME::getClassName   (void) const { return CLASS_NAME::class##CLASS_NAME.getClassNamePtr(); } \
 	CBaseNode*      CLASS_NAME::CreateObject   (void)       { return new CLASS_NAME; } \
 	static CBuiltIn _bi##CLASS_NAME(&CLASS_NAME::class##CLASS_NAME, #CLASS_NAME, sizeof(CLASS_NAME), CLASS_NAME::CreateObject, GETRUNTIME_CLASS(BASECLASS_NAME), SCHEMA);
 

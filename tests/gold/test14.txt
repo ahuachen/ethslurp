@@ -6,8 +6,7 @@ test14: test custom display strings, file: format and fmt_ format
 ;------------------------------------------------------------------------------
 
 [SETTINGS]
-datapath=/Users/jrush/.ethslurp.test/slurps/
-focus=189
+cachePath=/Users/jrush/.ethslurp.test/slurps/
 api_provider=EtherScan
 api_url=http://etherscan.io/apis
 rerun=0x682e426ea761db77bacd5acdce33ca122175daea
@@ -39,6 +38,9 @@ Processing: -t -r -f:custom
 	Reading from binary cache...record 10 of 15
 	Reading from binary cache...record 15 of 15
 
+	Filtering record 5 of 15
+	Filtering record 10 of 15
+	Filtering record 15 of 15
 <!DOCTYPE html>
 <html>
   <head>

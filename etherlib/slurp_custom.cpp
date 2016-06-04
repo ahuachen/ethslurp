@@ -32,7 +32,7 @@ SFString nextSlurpChunk_custom(const SFString& fieldIn, SFBool& force, const voi
 		default:
 			break;
 	}
-	
+
 #pragma unused(sl)
 #pragma unused(slu)
 
@@ -50,7 +50,7 @@ SFBool CSlurp::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, vo
 	if (!fmtIn.Contains("{RECORDS}") || transactions.getCount()==0)
 	{
 		SFString fmt = fmtIn;
-		
+
 		CSlurpNotify dn(this);
 		while (!fmt.IsEmpty())
 			ctx << getNextChunk(fmt, nextSlurpChunk, &dn);
@@ -59,12 +59,12 @@ SFBool CSlurp::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, vo
 		SFString postFmt = fmtIn;
 		postFmt.Replace("{RECORDS}","|");
 		SFString preFmt = nextTokenClear(postFmt,'|');
-		
+
 		// We assume here that the token was properly formed. For the pre-text we
 		// have to clear out the start '[', and for the post text we clear out the ']'
 		preFmt.ReplaceReverse("[","");
 		postFmt.Replace("]","");
-		
+
 		// We handle the display in three parts: pre, records, and post so as
 		// to avoid building the entire record list into an ever-growing and
 		// ever-slowing string
@@ -107,12 +107,12 @@ SFInt32 CSlurp::readFromFile(CSharedResource& file)
 	file.Read( pageSize );
 	file.Read( lastPage );
 	file.Read( lastBlock );
-	
+
 	// Now read the array
 	SFInt32 nRecords;
 	file.Read( nRecords );
 	transactions.Grow(nRecords+1); // resets size of array
-	
+
 	SFInt32 nRead=0, maxBlock=0;
 	for (int i=0;i<nRecords;i++)
 	{
@@ -124,7 +124,7 @@ SFInt32 CSlurp::readFromFile(CSharedResource& file)
 	outErr << "\n";
 	if (maxBlock != lastBlock)
 	{ outErr << "Previously stored lastBlock '" << lastBlock << "' not equal to maxBlock '" << maxBlock << "'\n"; }
-	
+
 	return TRUE;
 }
 

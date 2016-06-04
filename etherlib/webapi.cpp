@@ -20,10 +20,10 @@ SFBool CWebAPI::checkKey(CConfig& config)
 	key      = config.GetProfileStringGH("SETTINGS", "api_key",      EMPTY);
 	provider = config.GetProfileStringGH("SETTINGS", "api_provider", "EtherScan");
 	url      = config.GetProfileStringGH("SETTINGS", "api_url",      "http://etherscan.io/apis");
-	
+
 	if (!key.IsEmpty())
 		return TRUE;
-	
+
 	// Most web APIs require an API key. You will have to get one of these yourself. The
 	// program will ask for an api key until it gets one. You only need to provide it once.
 	char buffer[256];
@@ -39,7 +39,7 @@ SFBool CWebAPI::checkKey(CConfig& config)
 	key = buffer;
 	if (key % "exit" || key % "quit")
 		exit(0);
-	
+
 	// TODO: extend this to allow for other APIs
 
 	// save the key for later

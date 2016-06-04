@@ -4,7 +4,7 @@
 ; file version=0:7:5
 ;------------------------------------------------------------------------------
 [SETTINGS]
-datapath=/Users/jrush/.ethslurp.test/slurps/
+cachePath=/Users/jrush/.ethslurp.test/slurps/
 api_key=68E1BQYW85ETVNHKWV27B8N5HYICEHEPH1
 focus=189
 api_provider=EtherScan

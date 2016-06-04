@@ -5,6 +5,8 @@ Processing: -t -d:20160510:20160519151605 -r -f:txt
 	Reading from binary cache...record 10 of 15
 	Reading from binary cache...record 15 of 15
 
+	Filtering record 5 of 15
+	Filtering record 10 of 15
 	from	value	ether	blockNumber
 0x32be343b94f860124dc4fee278fdcbd38c102d88	990000000000000000	0.990000000000000000	1491486
 0x32be343b94f860124dc4fee278fdcbd38c102d88	210631973080000000000	210.631973080000000000	1491506
