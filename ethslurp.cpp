@@ -81,11 +81,12 @@ int main(int argc, const char * argv[])
 
 			COptions options;
 			// Parse the command line
-			if (options.parseArguments(nArgs, args) != RETURN_OK)
-				return RETURN_FAIL;
+			if (!options.parseArguments(nArgs, args))
+				return FALSE;
 
-			if (slurper.Init(options) != RETURN_OK)
-				return RETURN_FAIL;
+			if (!slurper.Initialize(options))
+				return FALSE;
+
 			// Slurp...
 			SFString message;
 			if (!slurper.Slurp(options, message))
@@ -96,48 +97,23 @@ int main(int argc, const char * argv[])
 				return usage(message);
 		}
 	}
-	return RETURN_OK;
+	return TRUE;
 }
 
 //---------------------------------------------------------------------------------------------------
-int CSlurperApp::Init(COptions& options)
+int CSlurperApp::Initialize(COptions& options)
 {
 	CSlurp::registerClass();
 	CTransaction::registerClass();
 
-	version.setVersion(FILE_MAJOR_VERSION, FILE_MINOR_VERSION, FILE_BUILD_VERSION);
+	version.setVersion(VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD);
 	config.setFilename(PATH_TO_ETH_SLURP+"config.dat");
 
 	// If this is the first time we've ever run, build the config file
 	if (!establish_folders(config, version.toString()))
 		return usage("Unable to create data folders at " + PATH_TO_SLURPS);
 
-	// The web APIs require an API key. You will have to get one of these yourself. The
-	// program will ask for an api key until it gets one. You only need to provide it once.
-	api_key      = config.GetProfileStringGH("SETTINGS", "api_key",      EMPTY);
-	api_provider = config.GetProfileStringGH("SETTINGS", "api_provider", "EtherScan");
-	api_url      = config.GetProfileStringGH("SETTINGS", "api_url",      "http://etherscan.io/apis");
-	while (api_key.IsEmpty())
-	{
-		cerr
-			<< conRed << "\n  ***Warning***" << conOff << "\n"
-			<< "  " << conYellow << "ethslurp" << conOff << " needs an api_key from " + api_provider + " in order to work. You may get one at\n"
-			<< "  " + api_url + ". See our online help file for more information.\n"
-			<< "  Please provide an API key or type 'exit'\n"
-			<< "  > ";
-		cerr.flush();
-		char buffer[256];
-		cin >> buffer;
-		api_key = buffer;
-		if (api_key % "exit" || api_key % "quit")
-			exit(0);
-		
-		// save the API key for later
-		config.SetProfileString("SETTINGS", "api_key",      api_key);
-		config.SetProfileString("SETTINGS", "api_provider", "EtherScan");
-		config.SetProfileString("SETTINGS", "api_url",      "http://etherscan.io/apis");
-		config.writeFile(version.toString());
-	}
+	api.checkKey(config); // Note this may not return
 	
 	// If we are told to get the address from the rerun address, do so...
 	if (options.addr.IsEmpty() && options.rerun)
@@ -176,7 +152,7 @@ int CSlurperApp::Init(COptions& options)
 	outErr << "\tSlurping " << theSlurp.addr << "\n";
 
 	// Finished
-	return RETURN_OK;
+	return TRUE;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -234,7 +210,7 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 			"&address=" + options.addr +
 			"&page="    + asString(page) +
 			"&offset="  + asString(options.pageSize) +
-			"&apikey="  + api_key;
+			"&apikey="  + api.getKey();
 			
 			// Grab a page of data
 			SFString thisPage = urlToString(url);
@@ -245,7 +221,7 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 			{
 				if (message.Contains("{\"status\":\"0\",\"message\":\"No transactions found\",\"result\":"))
 					message = "No transactions were found for address '" + options.addr + "'. Is it correct?";
-				return RETURN_FAIL;
+				return FALSE;
 			}
 			
 			contents += thisPage;

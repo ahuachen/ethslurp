@@ -4,50 +4,37 @@
  * Copyright 2013 - Great Hill Corporation.
  --------------------------------------------------------------------------------*/
 
-#include <iostream>
 #include "utillib.h"
+#include "ethlib.h"
 #include "options.h"
 #include "slurp.h"
 #include "transaction.h"
-#include "limits.h"
-
-using namespace std;
 
 //---------------------------------------------------------------------------------------------------
 class CSlurperApp
 {
-public:
+private:
 	CVersion  version;
 	CConfig   config;
+	CWebAPI   api;
 
-	static    CParams params[];
-	static    SFInt32 nParams;
-	
-	SFString  api_key;
-	SFString  api_provider;
-	SFString  api_url;
+public:
 	CSlurp    theSlurp;
 	
-	CSlurperApp(void) : config(NULL) { };
-	~CSlurperApp(void) {  }
+              CSlurperApp (void) : config(NULL) { };
+             ~CSlurperApp (void) {  }
 	
-	void     buildDisplayStrings (COptions& options);
-	SFString getFormatString     (COptions& options, const SFString& name);
-	
-	int    Init   (COptions& options);
-	SFBool Slurp  (COptions& options, SFString& message);
-	SFBool Display(COptions& options, SFString& message);
+	int       Initialize  (COptions& options);
+	SFBool    Slurp       (COptions& options, SFString& message);
+	SFBool    Display     (COptions& options, SFString& message);
+
+private:
+	void      buildDisplayStrings (COptions& options);
+	SFString  getFormatString     (COptions& options, const SFString& name);
 };
 
 //--------------------------------------------------------------------------------
-extern int           usage        (const SFString& errMsg=nullString);
-extern int           sortCommand  (const void *c1, const void *c2);
-extern SFString      getHomeFolder(void);
-
-//--------------------------------------------------------------------------------
-// Return codes for functions
-#define RETURN_OK   TRUE
-#define RETURN_FAIL FALSE
+extern SFString getHomeFolder(void);
 
 //---------------------------------------------------------------------------------------------------
 extern SFBool establish_folders(CConfig& config, const SFString& vers);

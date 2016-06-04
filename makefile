@@ -1,8 +1,8 @@
-cflags=-Wall -O2 -DLINUX -I. -I./utillib
+cflags=-Wall -O2 -DLINUX -I. -I./utillib -I./etherlib
 
 product=ethslurp
 
-libs=utillib/utillib.a /usr/lib/libcurl.dylib
+libs=etherlib/etherlib.a utillib/utillib.a /usr/lib/libcurl.dylib
 
 src= \
 ethslurp.cpp \
@@ -19,6 +19,7 @@ objects = $(patsubst %.cpp,objs/%.o,$(src))
 
 all:
 	cd utillib; make; cd ..
+	cd etherlib; make; cd ..
 	@echo "$(product) build started"
 	@echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	@make $(product)
@@ -41,4 +42,5 @@ cleanall:
 
 clean:
 	@cd utillib; make clean; cd ..
+	@cd etherlib; make clean; cd ..
 	-@$(RM) -f $(product) $(objects) 2> /dev/null

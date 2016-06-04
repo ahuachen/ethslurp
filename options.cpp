@@ -4,7 +4,7 @@
 #include "ethslurp.h"
 
 //---------------------------------------------------------------------------------------------------
-CParams CSlurperApp::params[] =
+CParams params[] =
 {
 	CParams("~addr",	"the address of the account or contract to slurp" ),
 	CParams("-archive",	"filename of output (stdout otherwise)" ),
@@ -21,13 +21,7 @@ CParams CSlurperApp::params[] =
 	CParams("-clear",	"clear all previously cached slurps" ),
 	CParams( "",		"Fetches data off the Ethereum blockchain for an arbitrary account or smart contract. Optionally formats the output to your specification.\n" ),
 };
-SFInt32 CSlurperApp::nParams = sizeof(CSlurperApp::params) / sizeof(CParams);
-
-//--------------------------------------------------------------------------------
-CCmdFunction funcs[] =
-{
-	CCmdFunction( CSlurperApp::params, CSlurperApp::nParams ),
-};
+SFInt32 nParams = sizeof(params) / sizeof(CParams);
 
 //---------------------------------------------------------------------------------------------------
 SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
@@ -177,7 +171,7 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 		}
 	}
 
-	return RETURN_OK;
+	return TRUE;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -211,13 +205,13 @@ COptions::~COptions(void)
 int usage(const SFString& errMsg)
 {
 	SFString cmd = "ethslurp";
-	//		qsort(cmdFunc->params, cmdFunc->nParams, sizeof(CParams), sortCommand);
+	//		qsort(cmdFunc->params, cmdFunc->nParams, sizeof(CParams), sortParams);
 	outErr << "\n" << (!errMsg.IsEmpty() ? "  " + errMsg + "\n\n" : "");
-	outErr << "  Usage:   " + cmd + " " << funcs[0].options() << "\n";
-	outErr << funcs[0].purpose();
-	outErr << funcs[0].descriptions() << "\n";
+	outErr << "  Usage:   " + cmd + " " << options() << "\n";
+	outErr << purpose();
+	outErr << descriptions() << "\n";
 	outErr << "  Portions of this software are Powered by Etherscan.io APIs\n\n";
-	return RETURN_FAIL;
+	return FALSE;
 }
 
 //--------------------------------------------------------------------------------
@@ -247,7 +241,7 @@ CParams::CParams( const SFString& nameIn, const SFString& descr )
 }
 
 //--------------------------------------------------------------------------------
-SFString CCmdFunction::options(void) const
+SFString options(void)
 {
 	SFString required;
 	
@@ -271,7 +265,7 @@ SFString CCmdFunction::options(void) const
 }
 
 //--------------------------------------------------------------------------------
-SFString CCmdFunction::purpose(void) const
+SFString purpose(void)
 {
 	SFString purpose;
 	for (int i=0;i<nParams;i++)
@@ -289,7 +283,7 @@ SFString CCmdFunction::purpose(void) const
 }
 
 //--------------------------------------------------------------------------------
-SFString CCmdFunction::descriptions(void) const
+SFString descriptions(void)
 {
 	SFString required;
 	
@@ -346,7 +340,7 @@ SFString expandOption(SFString& arg)
 }
 
 //--------------------------------------------------------------------------------
-int sortCommand(const void *c1, const void *c2)
+int sortParams(const void *c1, const void *c2)
 {
 	CParams *p1 = (CParams*)c1;
 	CParams *p2 = (CParams*)c2;

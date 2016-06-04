@@ -14,8 +14,8 @@
 
 // Syntactic sugar
 #define VERSION_MAJOR  FILE_MAJOR_VERSION
-#define VERSION_MINOR1 FILE_MINOR_VERSION
-#define VERSION_MINOR2 FILE_BUILD_VERSION
+#define VERSION_MINOR  FILE_MINOR_VERSION
+#define VERSION_BUILD  FILE_BUILD_VERSION
 
 //-------------------------------------------------------------------------
 // Stores version info and does simple calculations

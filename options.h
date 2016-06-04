@@ -30,9 +30,6 @@ public:
 };
 
 //--------------------------------------------------------------------------------
-typedef SFInt32 (*USAGEFUNC)(const SFString& errMsg);
-
-//--------------------------------------------------------------------------------
 class CParams
 {
 public:
@@ -43,22 +40,13 @@ public:
 };
 
 //--------------------------------------------------------------------------------
-class CCmdFunction
-{
-	CCmdFunction( void ) {}
-public:
-	CParams    *params;
-	SFInt32     nParams;
-	CCmdFunction (CParams *paramsIn, SFInt32 nParamsIn)
-	{
-		params       = paramsIn;
-		nParams      = nParamsIn;
-	}
-	SFString options     (void) const;
-	SFString descriptions(void) const;
-	SFString purpose     (void) const;
-};
+extern int      usage        (const SFString& errMsg=nullString);
+extern SFString options     (void);
+extern SFString descriptions(void);
+extern SFString purpose     (void);
 
+//--------------------------------------------------------------------------------
+extern int      sortParams  (const void *c1, const void *c2);
 extern SFString expandOption(SFString& arg);
 
 #endif
