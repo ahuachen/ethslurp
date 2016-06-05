@@ -16,7 +16,7 @@ tests/cache
 tests/files
 data
 ghc
-
+TODO.txt
 
 # Precompiled Headers
 *.gch

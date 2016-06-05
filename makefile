@@ -6,11 +6,7 @@ libs=etherlib/etherlib.a utillib/utillib.a /usr/lib/libcurl.dylib
 
 src= \
 ethslurp.cpp \
-options.cpp \
-transaction.cpp \
-transaction_custom.cpp \
-slurp.cpp \
-slurp_custom.cpp
+options.cpp
 
 #-------------------------------------------------
 # probably don't have to change below this line

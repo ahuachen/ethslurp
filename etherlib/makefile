@@ -1,4 +1,4 @@
-cflags=-Wall -O2 -DLINUX -I../utillib
+cflags=-Wall -O2 -DLINUX -I../utillib -I../ -I./
 
 product=etherlib.a
 

@@ -462,7 +462,8 @@ void CSlurperApp::buildDisplayStrings(COptions& options)
 	ASSERT(!fmtForFields.IsEmpty());
 
 	// The user may have customized the field list, so look in config first
-	SFString fieldList = config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList", EMPTY);
+	SFString defList = config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList", EMPTY);
+	SFString fieldList = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+options.exportFormat+"_fieldList", defList);
 	if (fieldList.IsEmpty())
 		fieldList = GETRUNTIME_CLASS(CTransaction)->listOfFields();
 	SFString origList = fieldList;

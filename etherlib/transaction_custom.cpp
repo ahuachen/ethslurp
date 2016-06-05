@@ -52,9 +52,9 @@ SFString nextTransactionChunk_custom(const SFString& fieldIn, SFBool& force, con
 				return ether;
 			}
 			break;
-//		case 'f':
-//			if ( fieldIn % "function" ) return tra->inputToFunction();
-//			break;
+		case 'f':
+			if ( fieldIn % "function" ) return tra->inputToFunction();
+			break;
 		case 'h':
 			if ( fieldIn % "hitLimit" ) return ((tra->gas == tra->gasUsed) ? "TRUE" : "FALSE");
 			break;
@@ -192,18 +192,14 @@ SFTime CTransaction::getDate(void) const
 	return snagDate(Format("[{DATE}]").Substitute("-","").Substitute(":", "").Substitute(" ", ""));
 }
 
+//extern CConfig *exConfig;
 //---------------------------------------------------------------------------
 SFString CTransaction::inputToFunction(void) const
 {
-	SFString voteFunc("0xc9d27afe");
-	SFInt32  voteLen = voteFunc.GetLength();
-	if (input.Left(voteLen)==voteFunc)
-	{
-		SFString proposal = StripLeading(input.Mid(10,64),'0');
-		SFString vote = StripLeading(input.Mid(75,1000),'0');
-		vote = (vote.IsEmpty()?"no":"yes");
-		return "vote|" + proposal + "|" + vote;
-	}
-	return "||";
+	return EMPTY;
+//	SFString function = exConfig->GetProfileStringGH("FUNCTIONS", input.Mid(2,8), EMPTY);
+//	if (!function.IsEmpty())
+//		return function + "|" + input.Mid(10,input.GetLength());
+//	return input == "0x" ? "<0>" : "|"+input;
 }
 // EXISTING_CODE

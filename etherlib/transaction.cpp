@@ -203,13 +203,16 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "ether", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CTransaction, "hitLimit", T_RADIO, ++fieldNum);
 	ADD_FIELD(CTransaction, "inputLen", T_NUMBER, ++fieldNum);
-//	ADD_FIELD(CTransaction, "function", T_TEXT, ++fieldNum);
+	ADD_FIELD(CTransaction, "function", T_TEXT, ++fieldNum);
 
 	// Hide fields we don't want to show by default
 	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "schema"        ); if(f) f->setHidden(TRUE); }
 	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "deleted"       ); if(f) f->setHidden(TRUE); }
 	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "handle"        ); if(f) f->setHidden(TRUE); }
 	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "confirmations" ); if(f) f->setHidden(TRUE); }
+//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "hitLimit"      ); if(f) f->setHidden(TRUE); }
+//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "inputLen"      ); if(f) f->setHidden(TRUE); }
+	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "function"      ); if(f) f->setHidden(TRUE); }
 	// EXISTING_CODE
 }
 
