@@ -1,26 +1,26 @@
 /*--------------------------------------------------------------------------------
-The MIT License (MIT)
+ The MIT License (MIT)
 
-Copyright (c) 2016 Great Hill Corporation
+ Copyright (c) 2016 Great Hill Corporation
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
---------------------------------------------------------------------------------*/
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ --------------------------------------------------------------------------------*/
 #include "transaction.h"
 
 //---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ void CTransaction::Format_base(CExportContext& ctx, const SFString& fmtIn, void 
 
 	if (handleCustomFormat(ctx, fmtIn, data))
 		return;
-
+	
 	SFString fmt = fmtIn;
 
 	CTransactionNotify dn(this);
@@ -52,12 +52,12 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 	SFString ret = nextChunk_common(fieldIn, getString("cmd"), tra);
 	if (!ret.IsEmpty())
 		return ret;
-
+	
 	// Now give customized code a chance to override
 	ret = nextTransactionChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())
 		return ret;
-
+	
 	switch (tolower(fieldIn[0]))
 	{
 		case 'b':
@@ -83,6 +83,8 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 			break;
 		case 'i':
 			if ( fieldIn % "input" ) return tra->input;
+			if ( fieldIn % "isInternalTx" ) return asString(tra->isInternalTx);
+			if ( fieldIn % "isError" ) return asString(tra->isError);
 			break;
 		case 'n':
 			if ( fieldIn % "nonce" ) return tra->nonce;
@@ -96,7 +98,7 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 			if ( fieldIn % "value" ) return tra->value;
 			break;
 	}
-
+	
 	return "<span class=warning>Field not found: [{" + fieldIn + "}]</span>\n";
 }
 
@@ -128,6 +130,8 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 			break;
 		case 'i':
 			if ( fieldName % "input" ) { input = fieldValue;return TRUE; }
+			if ( fieldName % "isInternalTx" ) { isInternalTx = toLong(fieldValue);return TRUE; }
+			if ( fieldName % "isError" ) { isError = toLong(fieldValue);return TRUE; }
 			break;
 		case 'n':
 			if ( fieldName % "nonce" ) { nonce = fieldValue;return TRUE; }
@@ -142,8 +146,8 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 			break;
 	}
 
-	//SFString msg = "Unknown field: " + fieldName + " encountered.\n";
-	//fprintf(stderr, "%s", (const char*)msg);
+	SFString msg = "Unknown field: " + fieldName + " encountered.\n";
+	fprintf(stderr, "%s", (const char*)msg);
 	return FALSE;
 }
 
@@ -170,6 +174,8 @@ void CTransaction::Serialize(SFArchive& archive)
 		archive >> to;
 		archive >> transactionIndex;
 		archive >> value;
+		archive >> isInternalTx;
+		archive >> isError;
 
 	} else
 	{
@@ -190,6 +196,8 @@ void CTransaction::Serialize(SFArchive& archive)
 		archive << to;
 		archive << transactionIndex;
 		archive << value;
+		archive << isInternalTx;
+		archive << isError;
 
 	}
 	SERIALIZE_END();
@@ -218,6 +226,8 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "to", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "transactionIndex", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CTransaction, "value", T_TEXT, ++fieldNum);
+	ADD_FIELD(CTransaction, "isInternalTx", T_RADIO, ++fieldNum);
+	ADD_FIELD(CTransaction, "isError", T_RADIO, ++fieldNum);
 	// EXISTING_CODE
 	ADD_FIELD(CTransaction, "date", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "ether", T_NUMBER, ++fieldNum);
@@ -233,6 +243,8 @@ void CTransaction::registerClass(void)
 //	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "hitLimit"      ); if(f) f->setHidden(TRUE); }
 //	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "inputLen"      ); if(f) f->setHidden(TRUE); }
 	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "function"      ); if(f) f->setHidden(TRUE); }
+//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "isInternalTx"  ); if(f) f->setHidden(TRUE); }
+//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "isError"       ); if(f) f->setHidden(TRUE); }
 	// EXISTING_CODE
 }
 
