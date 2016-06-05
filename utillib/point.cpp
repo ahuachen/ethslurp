@@ -1,5 +1,3 @@
-#ifndef _TRANSACTION_CUSTOM_H_
-#define _TRANSACTION_CUSTOM_H_
 /*--------------------------------------------------------------------------------
 The MIT License (MIT)
 
@@ -23,12 +21,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --------------------------------------------------------------------------------*/
+#include "basetypes.h"
 
-// EXISTING_CODE
-// EXISTING_CODE
+#include "point.h"
 
-//---------------------------------------------------------------------------
-extern SFString nextTransactionChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
-extern void     finishParse(CTransaction *transaction);
+SFString CDoublePoint::ToString(void) const
+{
+  SFString str;
+  str.Format("%3.4f %3.4f\n", x, y);
+  return str;
+}
 
-#endif
+CDoublePoint RotatePoint(const CDoublePoint& pt, double angle, const CDoublePoint& center, double fac)
+{
+  if (angle == 0.0)
+    return pt;
+
+  CDoublePoint pt1 = pt;
+
+  // Move the point to the origin
+  //pt1.Offset(-center);
+
+  // Rotate the point about the origin
+  double radians = (double)(angle*PI)/180.0;
+  double cosine = cos(radians);
+  double sine   = sin(radians);
+  double x, y;
+
+  double ffxadd;
+  double ffyadd;
+
+  ffxadd = center.x + (-center.x * cosine) - (center.y * sine);
+  ffyadd = center.y + ( center.x * sine  ) - (center.y * cosine);
+
+  x = ((double)pt1.x * cosine * fac + (double)pt1.y * sine   + ffxadd) / fac;
+  y =  (double)pt1.x * -sine  * fac + (double)pt1.y * cosine + ffyadd;
+
+  // Move it back
+  pt1 = CDoublePoint((long)x, (long)y);
+  //pt1.Offset(center);
+
+  return pt1;
+}

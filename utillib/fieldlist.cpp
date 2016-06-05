@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "fielddata.h"
@@ -123,7 +140,7 @@ const CFieldData *CFieldList::getFieldByName(const SFString& fieldString) const
 			SFString token      = nextTokenClear(fieldMap2, '|');
 			if (fieldName % importName)
 			{
-				// this is bogus - this is shared global data but we will 
+				// this is bogus - this is shared global data but we will
 				// copy it out in the caller in about a ten-billionth
 				// of a second.  Only would be a problem under .dll version and
 				// only if both users are hitting the program -- for import --
@@ -148,7 +165,7 @@ const CFieldData *CFieldList::getFieldByName(const SFString& fieldString) const
 
 			if (fieldName % importName)
 			{
-				// this is bogus - this is shared global data but we will 
+				// this is bogus - this is shared global data but we will
 				// copy it out in the caller in about a ten-billionth
 				// of a second.  Only would be a problem under .dll version and
 				// only if both users are hitting the program -- for import --

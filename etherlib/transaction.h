@@ -1,7 +1,28 @@
 #ifndef _TRANSACTION_H_
 #define _TRANSACTION_H_
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
 
-//---------------------------------------------------------------------------
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "utillib.h"
 
 //--------------------------------------------------------------------------
@@ -51,7 +72,7 @@ public:
 	DECLARE_NODE (CTransaction);
 
 	// EXISTING_CODE
-	SFInt32 parseJson(SFString& strIn);
+	char   *parseJson(char *in, SFInt32& nFields);
 	SFInt32 writeToFile(CSharedResource& file) const;
 	SFBool  readFromFile(CSharedResource& file);
 	SFTime  getDate(void) const;
@@ -185,31 +206,7 @@ inline SFInt32 CTransaction::getHandle(void) const
 extern SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void *data);
 
 //---------------------------------------------------------------------------
-inline SFArchive& operator<<(SFArchive& archive, CTransactionArray& array)
-{
-	SFInt32 count = array.getCount();
-	if (!archive.writeDeleted())
-	{
-		for (int i=0;i<array.getCount();i++)
-		{
-			if (array[i].isDeleted())
-				count--;
-		}
-	}
-	archive << count;
-	for (int i=0;i<array.getCount();i++)
-		array[i].Serialize(archive);
-	return archive;
-}
-inline SFArchive& operator>>(SFArchive& archive, CTransactionArray& array)
-{
-	SFInt32 count;
-	archive >> count;
-	for (int i=0;i<count;i++)
-		array[i].Serialize(archive);
-	return archive;
-}
-
+IMPLEMENT_ARCHIVE_ARRAY(CTransactionArray);
 IMPLEMENT_ARCHIVE_LIST(CTransactionList);
 
 //---------------------------------------------------------------------------

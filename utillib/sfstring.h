@@ -1,12 +1,28 @@
 #ifndef _SFSTRING_H
 #define _SFSTRING_H
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
 
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 extern char nullString[];
@@ -481,7 +497,7 @@ public:
 
 	SFBool          LoadString(SFInt32 nID);
 	void			markAtOccurenceOf(char c, SFInt32 nOcc);
-	
+
 protected:
   //<nodoc>------------------------------------------------------------
   // <dd>Reinitialize the string.
@@ -827,7 +843,7 @@ inline SFString asBitmap(unsigned long value)
 	for (int i=31;i>-1;i--)
 	{
 		SFBool isOn = (value & (1<<i));
-		if (isOn) 
+		if (isOn)
 			ret += "1";
 		else
 			ret += "0";
@@ -838,7 +854,7 @@ inline SFString asBitmap(unsigned long value)
 inline SFString nextToken(SFString& line, char delim)
 {
 	SFString ret;
-	
+
 	SFInt32 find = line.Find(delim);
 	if (find!=-1)
 	{
@@ -846,14 +862,14 @@ inline SFString nextToken(SFString& line, char delim)
 		line = line.Mid(find+1);
 	} else if (!line.IsEmpty())
 		ret  = line;
-	
+
 	return ret;
 }
 
 inline SFString nextTokenClear(SFString& line, char delim)
 {
 	SFString ret;
-	
+
 	SFInt32 find = line.Find(delim);
 	if (find!=-1)
 	{
@@ -864,7 +880,7 @@ inline SFString nextTokenClear(SFString& line, char delim)
 		ret  = line;
 		line = "";
 	}
-	
+
 	return ret;
 }
 
@@ -1146,7 +1162,6 @@ inline SFInt32 stringFromBinaryBuffer(char *s, SFString& ret)
 	return sizeof(SFInt32) + len;
 }
 
-#define STRIP_DROP(sss) ((sss % LoadStringGH("No Value") || sss % "select...") ? EMPTY : sss);
 #define truncPad(str, size) (size == BAD_NUMBER ? str : padRight(str.Left(size), size))
 
 //-----------------------------------------------------------------------------------------
@@ -1162,8 +1177,6 @@ inline SFString TrimAt(const SFString& str, const SFString& findStr)
 		return str;
 	return str.Left(str.Find(findStr));
 }
-
-#define sendOSXNotification(mmsg, ttitle) SFos::doCommand(SFString("/usr/bin/terminal-notifier -message \"")+mmsg+"\" -title \""+ttitle+"\"")
 
 //-----------------------------------------------------------------------------------------
 extern SFString whichBadChar(const SFString& checkStr, const SFString& disallowStr=";| \n\t\r");

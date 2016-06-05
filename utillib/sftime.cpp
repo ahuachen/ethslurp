@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "sftime.h"
@@ -18,12 +35,12 @@ SFTime::SFTime()
 {
   m_nSeconds = _I64_MIN;
 }
-  
+
 //----------------------------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------------------------
 SFTime::SFTime(const SFTime& date)
-{                                 
+{
   m_nSeconds  = date.m_nSeconds;
 }
 
@@ -33,7 +50,7 @@ SFTime::SFTime(const SFTime& date)
 SFTime::SFTime(SFInt32 year, SFInt32 month, SFInt32 day, SFInt32 hour, SFInt32 min, SFInt32 sec)
 {
   *this = SFTime(SFDate(year, month, day), SFTimeOfDay(hour, min, sec));
-}                                            
+}
 
 //----------------------------------------------------------------------------------------------------
 //
@@ -42,27 +59,20 @@ SFTime::SFTime(SFInt32 year, SFInt32 month, SFInt32 weekInMonth, SFInt32 dayOfWe
 {
   *this = SFTime(SFDate(year, month, weekInMonth, dayOfWeek), SFTimeOfDay(hour, min, sec));
 }
-               
+
 //----------------------------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------------------------
 SFTime::SFTime(SFInt32 days, SFInt32 hour, SFInt32 min, SFInt32 sec)
 {
   *this = SFTime(SFDate(days), SFTimeOfDay(hour, min, sec));
-} 
-
-//----------------------------------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------------------------------
-SFTime::SFTime(SFInt32 unix_time_stamp)
-{
 }
 
 //----------------------------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------------------------
 SFTime::SFTime(const SFDate& datePart, const SFTimeOfDay& timePart)
-{ 
+{
 	m_nSeconds = SFInt64(datePart.GetTotalDays()) * SECS_PER_DAY + SFInt64(timePart.GetTotalSeconds());
 }
 
@@ -81,7 +91,7 @@ SFTime::SFTime(const SFString& dateStr, const SFString& fmtStr)
 //
 //----------------------------------------------------------------------------------------------------
 SFTime::SFTime(const SF_TIMESTRUCT& st, SFBool useDayOfWeek)
-{ 
+{
 	SF_TIMESTRUCT sysTime = st;
 	if (!sysTime.tm_year)
 		sysTime.tm_year = (int)Now().GetYear();
@@ -94,16 +104,16 @@ SFTime::SFTime(const SF_TIMESTRUCT& st, SFBool useDayOfWeek)
   {
 	  *this = SFTime(SFDate(sysTime), SFTimeOfDay(sysTime));
   }
-} 
+}
 
 //----------------------------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------------------------
-SFTime& SFTime::operator=(const SFTime& d) 
+SFTime& SFTime::operator=(const SFTime& d)
 {
   m_nSeconds  = d.m_nSeconds;
   return *this;
-}              
+}
 
 /*
 //------
@@ -115,7 +125,7 @@ SFTime& SFTime::operator=(const SFTime& d)
 SFBool SFTime::isDST()
 {
   ASSERT(IsValid());
-  SFBool ret;  
+  SFBool ret;
   SFTimeFrame OldTF = getTimeFrame();
   ret = setTimeFrame(LOCAL);
   ret = ret && DST();
@@ -163,12 +173,12 @@ SFBool SFTime::DST()
     }
 
     SFTime EndDST(tzi.StandardDate, UTC, useDayOfWeek);
-  
+
     ret = ret && (*this > BeginDST && *this < EndDST);
 
     m_TimeFrame = OldTF;
   }
-  
+
   return ret;
 }
 
@@ -295,7 +305,7 @@ void SFTime::CheckForValidLocalDate()
       BeginStandardTime = SFTime(ThisYear, tzi.StandardDate.wMonth, tzi.StandardDate.wDay, (WORD)(tzi.StandardDate.wDayOfWeek+1),
                             tzi.StandardDate.wHour, tzi.StandardDate.wMinute, tzi.StandardDate.wSecond, UTC);
     else
-      BeginStandardTime = SFTime(tzi.StandardDate.wYear, tzi.StandardDate.wMonth, tzi.StandardDate.wDay, tzi.StandardDate.wHour, 
+      BeginStandardTime = SFTime(tzi.StandardDate.wYear, tzi.StandardDate.wMonth, tzi.StandardDate.wDay, tzi.StandardDate.wHour,
                             tzi.StandardDate.wMinute, tzi.StandardDate.wSecond, UTC);
 
 
@@ -310,7 +320,7 @@ void SFTime::CheckForValidLocalDate()
       SFTime StartNonUnique(BeginDaylightTime - SFTimeSpan(0, 0, (SFInt32) tzi.DaylightBias, 0));
       if ((*this >= StartNonUnique) && (*this < BeginDaylightTime))
       {
-//        TRACE0("DTime Warning: A SFTime using a LOCAL timeframe tried to be constructed which represents a non unique absolute time\n"); 
+//        TRACE0("DTime Warning: A SFTime using a LOCAL timeframe tried to be constructed which represents a non unique absolute time\n");
 				m_nSeconds = _I64_MIN;
         m_TimeFrame = LOCAL;
         return;
@@ -332,7 +342,7 @@ void SFTime::CheckForValidLocalDate()
       SFTime EndSkip(BeginDaylightTime + SFTimeSpan(0, 0, (SFInt32) -tzi.DaylightBias, 0));
       if ((*this > BeginDaylightTime) && (*this < EndSkip))
       {
-        TRACE0("A SFTime using a LOCAL timeframe tried to be constructed which does not occur\n"); 
+        TRACE0("A SFTime using a LOCAL timeframe tried to be constructed which does not occur\n");
 				m_nSeconds = _I64_MIN;
         m_TimeFrame = LOCAL;
         return;
@@ -340,10 +350,10 @@ void SFTime::CheckForValidLocalDate()
 
       //A SFTime which specifies a date which occurs twice
       SFTime StartNonUnique(BeginStandardTime - SFTimeSpan(0, 0, (SFInt32) -tzi.DaylightBias, 0));
-      if ((*this >= StartNonUnique) && 
+      if ((*this >= StartNonUnique) &&
           (*this <= BeginStandardTime) )
       {
-        TRACE0("DTime Warning: A SFTime using a LOCAL timeframe tried to be constructed which represents a non unique absolute time\n"); 
+        TRACE0("DTime Warning: A SFTime using a LOCAL timeframe tried to be constructed which represents a non unique absolute time\n");
         m_TimeFrame = LOCAL;
         return;
       }
@@ -357,7 +367,7 @@ void SFTime::CheckForValidLocalDate()
 */
 
 //----------------------------------------------------------------------------------------------------
-// 
+//
 // %a    Abbreviated weekday name
 // %A    Full weekday name
 // %b    Abbreviated month name
@@ -370,32 +380,32 @@ void SFTime::CheckForValidLocalDate()
 // %p    a/p indicator
 // %U    Week of year as decimal number
 // %w    Weekday as decimal number (1 - 7; Sunday is 1)
-// %x    Date representation for current locale,  namely 
+// %x    Date representation for current locale,  namely
 //         Date representation + " " + Time Representation for current locale
 // %y    Year without century, as decimal number (00 - 99)
 // %Y    Year with century, as decimal number
 // %c    Year displayed using C.E.(Current Epoch) / B.C.E (Before Current Epoch) convention e.g. -1023 = 1022 BCE
-// 
+//
 // %H    Hours in the day
 // %h    12 Hour format Hours in (00 - 12)
 // %M    Minutes in the hour
 // %S    Seconds in the minute
 // %Q    Seconds so far this day
-// %%    Percent sign        
-// 
-// 
-// //may also need to include full windows escape character
-// 
 // %%    Percent sign
-// 
-// As in the printf function, the # flag may prefix any formatting code. 
+//
+//
+// //may also need to include full windows escape character
+//
+// %%    Percent sign
+//
+// As in the printf function, the # flag may prefix any formatting code.
 // In that case, the meaning of the format code is changed as follows.
-// 
+//
 // Format Code Meaning
 // %#x Long date representation, appropriate to current locale, namely
 //       Long Date representation + " " + Time Representation for current locale
-// 
-// 
+//
+//
 // %#d, %#j, %#m, %#U, %#w, %#y, %#H, %#h, %#M, %#S  Remove leading zeros (if any).
 //----------------------------------------------------------------------------------------------------
 SFString SFTime::Format(const SFString& sFormat) const
@@ -641,7 +651,7 @@ SFString SFTime::Format(const SFString& sFormat) const
 }
 
 SFString SFTime::Format(SFInt32 fmt) const
-{ 
+{
 	return SFTime::Format(getFormatString(fmt, SFos::isEuropean(), SFos::isMilitary(), SFos::getDateSep(), SFos::getTimeSep()));
 }
 
@@ -755,4 +765,3 @@ SFString getFormatString(SFInt32 fmt, SFBool euro, SFBool mil, const SFString& d
 
 	return str;
 }
-

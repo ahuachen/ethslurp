@@ -15,6 +15,8 @@ exportcontext.cpp \
 importcontext.cpp \
 fielddata.cpp \
 fieldlist.cpp \
+point.cpp \
+rect.cpp \
 runtimeclass.cpp \
 sfarchive.cpp \
 sfdate.cpp \

@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "utillib.h"
 #include "fielddata.h"
 #include "editableobject.h"
@@ -85,7 +102,7 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 
 	if (!fmtOut.startsWith('['))
 	{
-		// We've encountered plain text outside of a token. There is more to process so grab 
+		// We've encountered plain text outside of a token. There is more to process so grab
 		// the next chunk and then prepare the remaining chunk by prepending the token.
 		// The next time through we will hit the token.
 		chunk  = nextToken(fmtOut, '[');
@@ -94,7 +111,7 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 	}
 
 	// We've hit a token, toss the start token, look for a field and toss the last token
-	// leaving the remainder of the format in fmtOut.  A field is found if we find a pair 
+	// leaving the remainder of the format in fmtOut.  A field is found if we find a pair
 	// of squigglies).  Save text inside the start token and outside the field in pre and post
 	ASSERT(fmtOut.startsWith('['));
 
@@ -113,18 +130,18 @@ SFString getNextChunk(SFString& fmtOut, NEXTCHUNKFUNC func, const void *data)
 		post = nextToken(fmtOut, ']');
 	}
 
-	// Either no squigglies were found or an empty pair of squigglies were found.  In either 
+	// Either no squigglies were found or an empty pair of squigglies were found.  In either
 	// case return surrounding text (text inside the token and outside the squiggles)
 	if (fieldName.IsEmpty())
 		return pre + post;
-	
+
 	// We have a field so lets process it.
 	ASSERT(fieldName.GetLength()>=2);
 	SFBool  isPrompt = FALSE;
 	SFInt32 maxWidth = BAD_NUMBER;
 
 	// The fieldname may contain p: or w:width: or both.  If it contains either it
-	// must contain them at the beginning of the string (before the fieldName).  Anything 
+	// must contain them at the beginning of the string (before the fieldName).  Anything
 	// left after the last ':' is considered the fieldName
 	SFString promptName = fieldName;
 	if (fieldName.ContainsI("p:"))
@@ -193,4 +210,3 @@ SFString CServerBase::getStringBase(const SFString& fieldName, const SFString& d
 {
     return ""; //getString_unSafe(fieldName, defVal);
 }
-

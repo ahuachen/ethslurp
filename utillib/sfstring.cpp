@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "sfstring.h"
@@ -36,7 +53,7 @@ SFString::~SFString()
 SFString::SFString(const char *str, SFInt32 start, SFInt32 len)
 {
 	Initialize();
-	
+
 	SFInt32 strLen = ((str) ? strlen(str) : 0);
 
 	len = ((len < 0) ? strLen : len);
@@ -183,7 +200,7 @@ char *SFString::GetBuffer(SFInt32 minBufferLen)
 void SFString::ReleaseBuffer(void)
 {
 	ASSERT(m_Values);
-	
+
 	long len = strlen(m_Values);
 	ASSERT(len <= m_buffSize);
 
@@ -205,14 +222,14 @@ SFString SFString::Extract(SFInt32 start, SFInt32 len) const
 {
 	ASSERT(start >= 0);
 	ASSERT(len   >= 0);
-	ASSERT((char*)(start+start+len) <= (char*)((long)m_Values+strlen(m_Values)));	
+	ASSERT((char*)(start+start+len) <= (char*)((long)m_Values+strlen(m_Values)));
 
 	start = MAX((SFInt32)0, start); // must be positive
 	len   = MAX((SFInt32)0, len);
 
 	SFInt32 strStart = (SFInt32)m_Values;
 	strStart += start;
-	
+
 	SFString ret;
 	if (ret.ResizeBuffer(len))
 		memcpy(ret.m_Values, (char *)strStart, len);
@@ -379,7 +396,7 @@ void SFString::ReplaceAll(const SFString& what, const SFString& with)
 		ReplaceAll(SFString((char)0x5), with);
 		return;
 	}
-	
+
 	SFInt32 i = Find(what);
 	while (i != -1)
 	{
@@ -401,7 +418,7 @@ void SFString::ReplaceAllI(const SFString& what, const SFString& with)
 		ReplaceAllI("]QXXQX[", with);
 		return;
 	}
-	
+
 	SFInt32 i = FindI(what);
 	while (i != -1)
 	{
@@ -492,7 +509,7 @@ void SFString::ReplaceAllExact(const SFString& what, const SFString& with, char 
 		ReplaceAllExact("]QXXQX[", with, sep, replaceables);
 		return;
 	}
-	
+
 	SFInt32 i = FindExact(what, sep, replaceables);
 	while (i != -1)
 	{
@@ -514,7 +531,7 @@ void SFString::ReplaceAllExactI(const SFString& what, const SFString& with, char
 		ReplaceAllExactI("]QXXQX[", with, sep, replaceables);
 		return;
 	}
-	
+
 	SFInt32 i = FindExactI(what, sep, replaceables);
 	while (i != -1)
 	{
@@ -774,7 +791,7 @@ void SFString::Reverse()
 	char tmp;
 	unsigned int i,j;
 	unsigned int n = (unsigned int)m_nValues ;
-	
+
 	for( i=0,j=n-1; i < n/2; i++,j-- )
 	{
 		tmp = m_Values[i];
@@ -789,11 +806,11 @@ SFString unquoteLine(char *buff, char delim, const SFString& replace)
 {
 	SFString ret;
 	ret.ResizeBuffer(strlen(buff)+1);
-	
+
 #define NORMAL 0
 #define INQUOTE 1
 	SFInt32 state = NORMAL;
-	
+
 	char *s = buff;
 	while (*s)
 	{
@@ -817,7 +834,7 @@ SFString unquoteLine(char *buff, char delim, const SFString& replace)
 		}
 		s++;
 	}
-	
+
 	// ends with a delimiter
 	ret.ReplaceAll("\n", replace);
 	ret.ReplaceAll("\r", "");
@@ -849,7 +866,7 @@ SFInt32 SFString::Hash(SFInt32 max) const
 	SFInt32 ret = 0;
 	for (SFInt32 i=0;i<GetLength();i++)
 		ret += (long)(char)m_Values[i];
-	return (ret % max);		
+	return (ret % max);
 }
 
 //---------------------------------------------------------------------------------------
@@ -863,7 +880,7 @@ SFString RemoveOne(const SFString& path, char delim)
 	// strip trailing chars
 	if (ret.endsWith(delim))
 		ret = ret.Left(ret.GetLength()-1);
-	
+
 	// There better be at least one internal character of interest
 	ASSERT(ret.ReverseFind(delim) != -1);
 
@@ -1088,7 +1105,7 @@ SFBool SFString::FindExact(const SFString& search, char sep, const SFString& rep
 
 	// Surround the stringa with sep to handle boundary cases
 	SFString tS = sepStr + *this  + sepStr;
-	SFString qS = sepStr + search + sepStr; 
+	SFString qS = sepStr + search + sepStr;
 
 	// we will replace everything but the separator
 	SFString replaceables = repables;

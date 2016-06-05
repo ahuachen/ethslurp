@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "sfos.h"
@@ -143,7 +160,7 @@ static void addVersionGroup(CConfig *cfg, const SFString& version)
 	// Let's not make it worse by creating another one - this file is messed up so let them call for help
 	if (cfg->findGroup("CONFIGFILE"))
 		return;
-		
+
 	cfg->WriteLine("[CONFIGFILE]\n");
 	cfg->WriteLine(";------------------------------------------------------------------------------\n");
 	cfg->WriteLine("; Copyright (c) by Great Hill Corporation. All Rights Reserved.\n");
@@ -157,7 +174,7 @@ SFBool CConfig::writeFile(const SFString& version)
 		(m_removeFunc)(this, m_removeData);
 
 	CVersion tVersion;
-	
+
 	if (Lock(m_filename, asciiWriteCreate, LOCK_CREATE)) // wait for lock, delete existing contents, open for writing
 	{
 		ASSERT(isOpen());
@@ -168,7 +185,7 @@ SFBool CConfig::writeFile(const SFString& version)
 			addVersionGroup(this, version);
 
 		SFBool first = TRUE;
-		
+
 		LISTPOS gPos = m_groups.GetHeadPosition();
 		while (gPos)
 		{
@@ -201,8 +218,8 @@ SFBool CConfig::writeFile(const SFString& version)
 							name = ";" + name;
 							if (val.IsEmpty())
 								equals="";
-						
-							if (name.Find("Version 1.0.1") != -1 || 
+
+							if (name.Find("Version 1.0.1") != -1 ||
 									name.Find("file version") != -1 ||
 									name.Find("file_version") != -1)
 								name = "; file version=" + version;
@@ -318,7 +335,7 @@ SFString SFKey::ToString(void) const
 		ctx << ";";
 
 	ctx << getName();
-	
+
 	if (!isCommented() || !getValue().IsEmpty()) // draw '=' only if not commented or value is not empty
 		ctx << "=" << getValue();
 
@@ -339,7 +356,7 @@ SFString getValueFromConfigFile(const SFString& filename, const SFString& groupN
 	// Note: if groupName is EMPTY then won't match in a file that
 	// that has groups except for values that are not contained in a group
 	SFString currentGroup;
-	
+
 	SFString value = def;
 
 	CSharedResource lock;
@@ -360,7 +377,7 @@ SFString getValueFromConfigFile(const SFString& filename, const SFString& groupN
 					currentGroup = line;
 					currentGroup.ReplaceAny("][", "");
 				}
-				
+
 				if (groupName.IsEmpty() || currentGroup % groupName)
 				{
 					SFInt32 find = line.Find(stringName + "=");
@@ -590,7 +607,7 @@ SFBool CConfig::saveAndReload(void)
 SFBool CConfig::loadFile(const SFString& filename)
 {
 	Clear();
-	
+
 	SFString curGroup;
 	if (Lock(filename, asciiReadOnly, LOCK_WAIT)) // wait for lock before opening for read
 	{
@@ -612,7 +629,7 @@ SFBool CConfig::loadFile(const SFString& filename)
 			SFInt32 len = line.GetLength();
 			if (len)
 			{
-				
+
 				SFBool commented = FALSE;
 				if (line[0] == ';')
 				{

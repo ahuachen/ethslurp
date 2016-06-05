@@ -1,16 +1,32 @@
 #ifndef _EDITABLE_OBJECT_BASE_H
 #define _EDITABLE_OBJECT_BASE_H
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
 
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 class CFieldList;
 
 //-------------------------------------------------------------------------
-// CEditableObject - WARNING! -- if the format of this class is changed you 
+// CEditableObject - WARNING! -- if the format of this class is changed you
 // have ruined backward compatibility.  Do not change the number of functions
 // either because this might break the format of the underlying data.
 //
@@ -38,7 +54,7 @@ public:
 	virtual	SFString  toAscii             (const SFString& format) const = 0;
 	virtual	void      fromAscii           (const SFString& in, const CVersion& version) = 0;
 };
-// CEditableObject - WARNING! -- if the format of this class is changed you 
+// CEditableObject - WARNING! -- if the format of this class is changed you
 // have ruined backward compatibility.  Do not change the number of functions
 // either because this might break the format of the underlying data.
 

@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2015 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "slurp.h"
 
 //---------------------------------------------------------------------------
@@ -17,7 +34,7 @@ void CSlurp::Format_base(CExportContext& ctx, const SFString& fmtIn, void *data)
 
 	if (handleCustomFormat(ctx, fmtIn, data))
 		return;
-	
+
 	SFString fmt = fmtIn;
 
 	CSlurpNotify dn(this);
@@ -35,12 +52,12 @@ SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data
 	SFString ret = nextChunk_common(fieldIn, getString("cmd"), slu);
 	if (!ret.IsEmpty())
 		return ret;
-	
+
 	// Now give customized code a chance to override
 	ret = nextSlurpChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())
 		return ret;
-	
+
 	switch (tolower(fieldIn[0]))
 	{
 		case 'a':
@@ -75,7 +92,7 @@ SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data
 #endif
 			break;
 	}
-	
+
 	return "<span class=warning>Field not found: [{" + fieldIn + "}]</span>\n";
 }
 

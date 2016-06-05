@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "dates.h"
@@ -29,7 +46,7 @@ SFDate::SFDate(const SFDate& date)
 //
 //-------------------------------------------------------------------------
 SFDate::SFDate(SFInt32 y, SFInt32 m, SFInt32 d)
-{ 
+{
   setValues(y,m,d);
 }
 
@@ -166,7 +183,7 @@ SFDate& SFDate::setValues(SFInt32 y, SFInt32 m, SFInt32 d)
 
   if (m >= JANUARY && m <= DECEMBER && d <= DaysInMonth(y, m))
   {
-	  //The following algorithm has been taken from from an article in 
+	  //The following algorithm has been taken from from an article in
 		//the March 1993 issue of the Windows / Dos Developers Journal.
 
 	  m_nDays = (y-1) * 365 + lfloor(y-1, 4L);
@@ -182,7 +199,7 @@ SFDate& SFDate::setValues(SFInt32 y, SFInt32 m, SFInt32 d)
 
 		m_nDays += (d + 1999422264L); //ensure all usable date values are positive by adding 2 billion to m_ldays
 	}
-  
+
   return *this;
 }
 
@@ -277,12 +294,12 @@ SFDateStruct SFDate::getDateStruct() const
 //
 //-------------------------------------------------------------------------
 SFString SFDate::Format(const SFString& fmt) const
-{ 
+{
   SFString fmtStr = fmt;
 	ASSERT(!fmtStr.IsEmpty());
-	
+
 	char sBuffer[512];
-	
+
 	SFString ret;
   if (IsValid())
   {
@@ -357,7 +374,7 @@ SFString SFDate::Format(const SFString& fmt) const
               sprintf(sBuffer, "%ld", getDayOfWeek(*this));
               ret += sBuffer;
               break;
-            }                                   
+            }
             case 'y':
             {
               sprintf(sBuffer, "%.02ld", get2Digit(labs(GetYear())));
@@ -404,7 +421,7 @@ SFString SFDate::Format(const SFString& fmt) const
                     sprintf(sBuffer, "%ld", getWeekOfYear(tm));
                     ret += sBuffer;
                     break;
-                  }                                    
+                  }
                   case 'y':
                   {
 			              sprintf(sBuffer, "%ld", get2Digit(labs(GetYear())));

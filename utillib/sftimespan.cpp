@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "sftimespan.h"
@@ -35,7 +52,7 @@ SFTimeSpan::SFTimeSpan(const SFTimeOfDay& tod)
 {
 	m_nSeconds = SFInt64(0)*SECS_PER_DAY + SFInt64(tod.GetHour())*SECS_PER_HOUR + SFInt64(tod.GetMinute())*SECS_PER_MIN + tod.GetSecond();
 }
-      
+
 //-------------------------------------------------------------------------
 SFTimeSpan::SFTimeSpan(SFInt64 s)
 {
@@ -44,7 +61,7 @@ SFTimeSpan::SFTimeSpan(SFInt64 s)
 
 //-------------------------------------------------------------------------
 SFTimeSpan& SFTimeSpan::operator=(const SFTimeSpan& ts)
-{ 
+{
 	m_nSeconds = ts.m_nSeconds;
 	return *this;
 }
@@ -88,7 +105,7 @@ SFInt32 SFTimeSpan::getDaysAbs() const
 	{
 		SFTimeSpan n(*this);n.Negate();
 		return n.getDaysAbs();
-	}  
+	}
 }
 
 //-------------------------------------------------------------------------
@@ -103,7 +120,7 @@ SFInt32 SFTimeSpan::getHoursAbs() const
 	{
 		SFTimeSpan n(*this);n.Negate();
 		return n.getHoursAbs();
-	}  
+	}
 }
 
 //-------------------------------------------------------------------------
@@ -118,7 +135,7 @@ SFInt32 SFTimeSpan::getMinutesAbs() const
 	{
 		SFTimeSpan n(*this);n.Negate();
 		return n.getMinutesAbs();
-	}  
+	}
 }
 
 //-------------------------------------------------------------------------
@@ -133,8 +150,8 @@ SFInt32 SFTimeSpan::getSecondsAbs() const
 	{
 		SFTimeSpan n(*this);n.Negate();
 		return n.getSecondsAbs();
-	}  
-}                             
+	}
+}
 
 //-----------------------------------------------------------------------------
 SFString getTimeSpanString(const SFTimeSpan& ts)
@@ -155,7 +172,7 @@ SFString getTimeSpanString(const SFTimeSpan& ts)
 }
 
 //-----------------------------------------------------------------------------
-// The Following Format parameters are supported        
+// The Following Format parameters are supported
 // %D							Total days in this SFTimeSpan
 // %H							Hours in this SFTimeSpan (00 - 23)
 // %M							Minutes in the current hour in this SFTimeSpan (00 - 59)
@@ -164,10 +181,10 @@ SFString getTimeSpanString(const SFTimeSpan& ts)
 // %#H, %#M, %#S	Remove leading zeros (if any).
 //-----------------------------------------------------------------------------
 SFString SFTimeSpan::Format(const SFString& fmt) const
-{ 
+{
   SFString sFormat = fmt;
 	ASSERT(!sFormat.IsEmpty());
-		
+
 	SFString ret;
   if (IsValid())
   {
@@ -262,7 +279,7 @@ SFString SFTimeSpan::Format(const SFString& fmt) const
       }
     }
   }
-  
+
   return ret;
 }
 

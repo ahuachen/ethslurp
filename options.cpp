@@ -1,6 +1,26 @@
 /*--------------------------------------------------------------------------------
- * Copyright 2016 - Great Hill Corporation.
- --------------------------------------------------------------------------------*/
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "ethslurp.h"
 
 //---------------------------------------------------------------------------------------------------
@@ -32,10 +52,14 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 		SFString arg = args[i];
 		if (arg == "-i" || arg == "-income")
 		{
+			if (expenseOnly)
+				return usage("Only one of -income or -expense may be specified.");
 			incomeOnly = TRUE;
 
 		} else if (arg == "-e" || arg == "-expense")
 		{
+			if (incomeOnly)
+				return usage("Only one of -income or -expense may be specified.");
 			expenseOnly = TRUE;
 
 		} else if (arg == "-f")
@@ -72,21 +96,21 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 
 		} else if (arg == "-b")
 		{
-			return usage("Invalid option -b. This option must include a :firstBlock or :first:lastBlock range.");
+			return usage("Invalid option -b. This option must include :firstBlock or :first:lastBlock range.");
 
 		} else if (arg.Left(3) == "-b:" || arg.Left(8) == "-blocks:")
 		{
 			arg = arg.Substitute("-b:",EMPTY).Substitute("-blocks:",EMPTY);
-			firstBlock = MAX(0,toLong(arg));
+			firstBlock2Read = MAX(0,toLong(arg));
 			if (arg.Contains(":"))
 			{
 				nextTokenClear(arg,':');
-				lastBlock = MAX(firstBlock, toLong(arg));
+				lastBlock2Read = MAX(firstBlock2Read, toLong(arg));
 			}
 
 		} else if (arg == "-d")
 		{
-			return usage("Invalid option -d. This option must include a :firstDate or :first:lastDate range.");
+			return usage("Invalid option -d. This option must include :firstDate or :first:lastDate range.");
 
 		} else if (arg.Left(3) == "-d:" || arg.Left(8) == "-dates:")
 		{
@@ -183,8 +207,8 @@ COptions::COptions(void)
 	incomeOnly      = FALSE;
 	expenseOnly     = FALSE;
 	openFile        = FALSE;
-	firstBlock      = 0;
-	lastBlock       = LONG_MAX;
+	firstBlock2Read = 0;
+	lastBlock2Read  = LONG_MAX;
 	firstDate       = earliestDate;
 	lastDate        = latestDate;
 	maxTransactions = 100000;

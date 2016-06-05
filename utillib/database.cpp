@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "database.h"
@@ -56,13 +73,13 @@ SFBool CSharedResource::createLock(SFBool createOnFail)
 		return TRUE;
 
 	SFString lockFilename = m_filename + ".lck";
-	
+
 	int i=0;
 	while (i < maxSecondsLock)
 	{
 		if (!SFos::fileExists(lockFilename))
 			return createLockFile(lockFilename);
-		SFos::sleep(1.0); 
+		SFos::sleep(1.0);
 		i++;
 	}
 
@@ -85,13 +102,13 @@ SFBool CSharedResource::waitOnLock(SFBool deleteOnFail) const
 		return TRUE;
 
 	SFString lockFilename = m_filename + ".lck";
-	
+
 	int i=0;
 	while (i < maxSecondsLock)
 	{
 		if (!SFos::fileExists(lockFilename))
 			return TRUE;
-		SFos::sleep(1.0); 
+		SFos::sleep(1.0);
 		i++;
 	}
 
@@ -112,9 +129,9 @@ SFBool CSharedResource::waitOnLock(SFBool deleteOnFail) const
 //----------------------------------------------------------------------
 static SFBool isAscii(const SFString& mode)
 {
-	return (mode % asciiReadOnly || 
+	return (mode % asciiReadOnly ||
 					mode % asciiReadWrite ||
-					mode % asciiWriteCreate || 
+					mode % asciiWriteCreate ||
 					mode % asciiWriteAppend);
 }
 
@@ -123,12 +140,12 @@ SFBool CSharedResource::ReLock(const SFString& mode)
 {
 	ASSERT(isOpen());
 	ASSERT(m_ownsLock);
-	
+
 	// Close and re-open the file without relinqishing the lock
 	Close();
 	m_fp = fopen((const char *)m_filename, mode);
 	m_isascii = ::isAscii(mode);
-	
+
 	return isOpen();
 }
 
@@ -136,7 +153,7 @@ SFBool CSharedResource::ReLock(const SFString& mode)
 SFBool CSharedResource::Lock(const SFString& fn, const SFString& mode, SFBool lockType)
 {
 	ASSERT(!isOpen());
-	
+
 	m_filename = fn;
 	m_mode     = mode;
 	m_fp       = NULL;
@@ -145,8 +162,8 @@ SFBool CSharedResource::Lock(const SFString& fn, const SFString& mode, SFBool lo
 	// it under one of the create modes then do not create a lock, do not open the file,
 	// and let the user know.
 	if (!SFos::fileExists(m_filename) &&
-				(m_mode != asciiWriteCreate && 
-				 m_mode != asciiWriteAppend && 
+				(m_mode != asciiWriteCreate &&
+				 m_mode != asciiWriteAppend &&
 				 m_mode != binaryWriteCreate))
 	{
 		m_error    = LK_FILE_NOT_EXIST;
@@ -155,19 +172,19 @@ SFBool CSharedResource::Lock(const SFString& fn, const SFString& mode, SFBool lo
 	}
 
 	SFBool openIt = TRUE; //FALSE;
-	
-	if (m_mode == binaryReadOnly || 
+
+	if (m_mode == binaryReadOnly ||
 			m_mode == asciiReadOnly)
 	{
 
 		// Wait for lock to clear...
 		if (lockType == LOCK_WAIT)
 			waitOnLock(TRUE);
-			
+
 		// ... proceed even if it doesn't....
 		openIt = TRUE;
-					
-	} else if (m_mode == binaryReadWrite || 
+
+	} else if (m_mode == binaryReadWrite ||
 							m_mode == binaryWriteCreate ||
 							m_mode == asciiReadWrite ||
 							m_mode == asciiWriteAppend ||
@@ -183,7 +200,7 @@ SFBool CSharedResource::Lock(const SFString& fn, const SFString& mode, SFBool lo
 		m_errorMsg = "Bad file open mode: " + m_mode;
 		return FALSE;
 	}
-	
+
 	if (openIt)
 	{
 		m_fp = fopen((const char *)m_filename, (const char *)m_mode);  // operator on event database
@@ -337,7 +354,7 @@ SFInt32 CSharedResource::Read(SFString& str)
 
 	SFInt32 len;
 	Read(&len, sizeof(SFInt32), 1);
-	
+
 	if (len < 8192)
 	{
 		char buff[8192];
@@ -471,7 +488,7 @@ SFInt32 stringToPDF(const SFString& fileName, const SFString& contents)
 	SFString tmpName = "/tmp/toPDF.txt";
 	SFString pdfName = "/tmp/toPDF.pdf";
 	stringToAsciiFile(tmpName, contents);
-	
+
 	SFString cmd = "/Users/jrush/source/toPDF \"" + tmpName + "\" \"" + pdfName + "\" 2>/dev/null";
 	SFos::doCommand(cmd);
 	SFos::copyFile_Special(pdfName, fileName);
@@ -505,4 +522,3 @@ SFInt32 appendToAsciiFile(const SFString& fileName, const SFString& addContents)
     stringToAsciiFile(fileName, existing + addContents);
     return TRUE;
 }
-

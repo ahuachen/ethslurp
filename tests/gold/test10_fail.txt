@@ -1,7 +1,7 @@
 test10: test date option fail
 Processing: -t -d -r -f:txt 0x713B73c3994442b533e6A083eC968e40606810Ec 
 
-  Invalid option -d. This option must include a :firstDate or :first:lastDate range.
+  Invalid option -d. This option must include :firstDate or :first:lastDate range.
 
   Usage:   ethslurp [-a|-b|-d|-m|-r|-s|-f|-i|-e|-o|-l|-c|-t|-v|-h] addr
   Purpose: Fetches data off the Ethereum blockchain for an arbitrary account or smart contract. Optionally formats the output to your specification.

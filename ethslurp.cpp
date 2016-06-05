@@ -1,6 +1,26 @@
 /*--------------------------------------------------------------------------------
- * Copyright 2016 - Great Hill Corporation.
- --------------------------------------------------------------------------------*/
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "ethslurp.h"
 
 //--------------------------------------------------------------------------------
@@ -204,7 +224,8 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 	if (options.slurp || (now - fileTime) > SFTimeSpan(0,0,0,nSeconds))
 	{
 		// This is how many records we currently have
-		SFInt32 origCount = theAccount.transactions.getCount();
+		SFInt32 origCount  = theAccount.transactions.getCount();
+		SFInt32 nNewBlocks = 0;
 		SFInt32 nextRecord = origCount;
 
 		outErr << "\tSlurping new transactions from blockchain...\n";
@@ -276,29 +297,32 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 			outErr << " after block " << theAccount.lastBlock;
 		outErr << "\n";
 
-		SFInt32 lastBlock=0;
-		while (!contents.IsEmpty())
+		if (!contents.IsEmpty())
 		{
-			CTransaction trans;
-
-			SFString oneTransaction = nextTokenClear(contents, '}');
-			if (trans.parseJson(oneTransaction))
+			SFInt32 lastBlock=0;
+			char *p = (char *)(const char*)contents;
+			while (*p)
 			{
-				static SFInt32 cnt=0;
-				SFInt32 transBlock = trans.blockNumber;
-				if (transBlock > theAccount.lastBlock) // add the new transaction if it's in a new block
+				CTransaction trans;SFInt32 nFields=0;
+				p = trans.parseJson(p,nFields);
+				if (nFields)
 				{
-					theAccount.transactions[nextRecord++] = trans;
-					lastBlock = transBlock;
+					SFInt32 transBlock = trans.blockNumber;
+					if (transBlock > theAccount.lastBlock) // add the new transaction if it's in a new block
+					{
+						theAccount.transactions[nextRecord++] = trans;
+						lastBlock = transBlock;
+						if (!(++nNewBlocks%5))
+						{
+							outErr << "\tFound new transaction at block " << transBlock << ". Importing..." << (isTesting?"\n":"\r");
+							outErr.Flush();
+						}
+					}
 				}
-				if (lastBlock)
-					if (!((cnt+1)%5)) { outErr << "\tFound new transaction at block " << lastBlock << ". Importing..." << (isTesting?"\n":"\r"); outErr.Flush(); }
-				cnt++;
 			}
+			if (!isTesting && nNewBlocks) { outErr << "\tFound new transaction at block " << lastBlock << ". Importing...\n"; outErr.Flush(); }
+			theAccount.lastBlock = lastBlock;
 		}
-		if (lastBlock)
-			outErr << "\n";
-		theAccount.lastBlock = lastBlock;
 
 		// Write the data if we got new data
 		SFInt32 newRecords = (theAccount.transactions.getCount() - origCount);
@@ -350,10 +374,10 @@ SFBool CSlurperApp::Filter(COptions& options, SFString& message)
 			SFBool isVisible = (date >= options.firstDate && date <= options.lastDate);
 			trans->setShowing(isVisible);
 
-		} else if (options.firstBlock!=0||options.lastBlock!=LONG_MAX)
+		} else if (options.firstBlock2Read!=0||options.lastBlock2Read!=LONG_MAX)
 		{
 			SFInt32 bN = trans->blockNumber;
-			SFBool isVisible = (bN >= options.firstBlock && bN <= options.lastBlock);
+			SFBool isVisible = (bN >= options.firstBlock2Read && bN <= options.lastBlock2Read);
 			trans->setShowing(isVisible);
 		}
 
@@ -374,7 +398,7 @@ SFBool CSlurperApp::Filter(COptions& options, SFString& message)
 
 		theAccount.nVisible += trans->isShowing();
 		SFInt32 nFiltered = (theAccount.nVisible+1);
-		if (!(nFiltered%5)) { outErr << "\tFiltering record " << nFiltered << " of " << theAccount.transactions.getCount() << (isTesting?"\n":"\r"); outErr.Flush(); }
+		if (!(nFiltered%5)) { outErr << "\t" << "Filtering..." << nFiltered << " records passed." << (isTesting?"\n":"\r"); outErr.Flush(); }
 	}
 
 	if (!isTesting)
@@ -461,9 +485,8 @@ void CSlurperApp::buildDisplayStrings(COptions& options)
 	const SFString fmtForFields  = getFormatString(options, "field");
 	ASSERT(!fmtForFields.IsEmpty());
 
-	// The user may have customized the field list, so look in config first
 	SFString defList = config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList", EMPTY);
-	SFString fieldList = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+options.exportFormat+"_fieldList", defList);
+	SFString fieldList = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+options.exportFormat+"_fxieldList", defList);
 	if (fieldList.IsEmpty())
 		fieldList = GETRUNTIME_CLASS(CTransaction)->listOfFields();
 	SFString origList = fieldList;

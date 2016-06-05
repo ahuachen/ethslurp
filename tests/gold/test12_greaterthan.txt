@@ -1,12 +1,11 @@
 test12: test block number option greater than
 Processing: -t -b:1491788 -r -f 
 	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-	Reading from binary cache...record 5 of 15
-	Reading from binary cache...record 10 of 15
-	Reading from binary cache...record 15 of 15
-
-	Filtering record 5 of 15
-	Filtering record 10 of 15
+	Reading from cache...record 5 of 15
+	Reading from cache...record 10 of 15
+	Reading from cache...record 15 of 15
+	Filtering...5 records passed.
+	Filtering...10 records passed.
 
         {
             "blockHash": "0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba",

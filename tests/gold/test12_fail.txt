@@ -1,7 +1,7 @@
 test12: test block number option fail
 Processing: -t -b -r -f 
 
-  Invalid option -b. This option must include a :firstBlock or :first:lastBlock range.
+  Invalid option -b. This option must include :firstBlock or :first:lastBlock range.
 
   Usage:   ethslurp [-a|-b|-d|-m|-r|-s|-f|-i|-e|-o|-l|-c|-t|-v|-h] addr
   Purpose: Fetches data off the Ethereum blockchain for an arbitrary account or smart contract. Optionally formats the output to your specification.

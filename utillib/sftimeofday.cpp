@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "sfos.h"
@@ -24,7 +41,7 @@ SFTimeOfDay::SFTimeOfDay()
 SFTimeOfDay::SFTimeOfDay(const SFTimeOfDay& tod)
 {
 	m_nSeconds = tod.m_nSeconds;
-}                                
+}
 
 //-------------------------------------------------------------------------
 //
@@ -33,7 +50,7 @@ SFTimeOfDay::SFTimeOfDay(SFInt32 h, SFInt32 m, SFInt32 s)
 {
   m_nSeconds = h * SECS_PER_HOUR + m * SECS_PER_MIN + s;
   m_nSeconds = MIN(SECS_PER_DAY, m_nSeconds); // make it invalid of overrun
-}    
+}
 
 //-------------------------------------------------------------------------
 //
@@ -42,13 +59,13 @@ SFTimeOfDay::SFTimeOfDay(SFInt32 secs)
 {
   m_nSeconds = secs;
   m_nSeconds = MIN(SECS_PER_DAY, m_nSeconds); // make it invalid of overrun
-}                                
+}
 
 //-------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------
 SFTimeOfDay::SFTimeOfDay(const SF_TIMESTRUCT& sysTime)
-{        
+{
   m_nSeconds = sysTime.tm_hour * SECS_PER_HOUR + sysTime.tm_min * SECS_PER_MIN + sysTime.tm_sec;
   m_nSeconds = MIN(SECS_PER_DAY, m_nSeconds); // make it invalid of overrun
 }
@@ -57,7 +74,7 @@ SFTimeOfDay::SFTimeOfDay(const SF_TIMESTRUCT& sysTime)
 //
 //-------------------------------------------------------------------------
 SFTimeOfDay& SFTimeOfDay::operator=(const SFTimeOfDay& tod)
-{               
+{
   m_nSeconds = tod.m_nSeconds;
   return *this;
 }
@@ -144,7 +161,7 @@ SFTimeOfDay::SFTimeOfDay(const SFString& timeStr, const SFString& fmtStr)
 
 //-------------------------------------------------------------------------
 //
-// The Following Format parameters are supported        
+// The Following Format parameters are supported
 //
 // %H    Hours in the current day
 // %M    Minutes in the current hour
@@ -152,14 +169,14 @@ SFTimeOfDay::SFTimeOfDay(const SFString& timeStr, const SFString& fmtStr)
 // %P    AM / PM indicator
 // %p    AM / PM indicator
 // %S    Seconds in the current minute
-// %%    Percent sign       
+// %%    Percent sign
 // %#H, %#h, %#M, %#S  Remove leading zeros (if any).
 //-------------------------------------------------------------------------
 SFString SFTimeOfDay::Format(const SFString& fmt) const
-{ 
+{
   SFString sFormat = fmt;
 	ASSERT(!sFormat.IsEmpty());
-	
+
 	SFString ret;
   if (IsValid())
   {

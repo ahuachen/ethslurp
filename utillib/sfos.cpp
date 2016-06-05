@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "sfos.h"
@@ -74,7 +91,7 @@ int SFos::copyFile( const SFString& fromIn, const SFString& toIn )
 
 	if (!SFos::fileExists(from))
 		return 0;
-		
+
 	SFString toPath = to;
 	nextTokenClearReverse(toPath, '/');
 	if (!SFos::folderExists(toPath))
@@ -100,7 +117,7 @@ static void doGlob(SFInt32& nStrs, SFString *strs, const SFString& maskIn, SFBoo
 	ASSERT(!strs || nStrs);
 
 	glob_t globBuf;
-    
+
     SFString mask = maskIn;
 
 	// should check return code
@@ -266,7 +283,7 @@ SFString SFos::asciiDateNames(SFInt32 which)
 		n = 7;
 
 	SFString ret;
-	
+
 	for (int i=0;i<n;i++)
 	{
 		switch(which)
@@ -445,7 +462,7 @@ int SFos::moveFile( const SFString& from, const SFString& to )
 {
 	if (from % to)
 		return TRUE;
-		
+
 	if (copyFile(from, to))
 		return !removeFile(from); // remove file returns '0' on success
 	return FALSE;
@@ -474,9 +491,9 @@ char *SFos::encrypt(char *in, char *out, int maxlen)
 
 	ASSERT(strlen(in)+2 < (unsigned)maxlen);
 
-	// since no valid string will have (char)1 in it we use this character to 
+	// since no valid string will have (char)1 in it we use this character to
 	// show this string as being encrypted
-	out[0] = 1; 
+	out[0] = 1;
 	out[1] = 4; // random number to add to each character
 
 	unsigned char *s    = (unsigned char *)in;
@@ -511,7 +528,7 @@ char *SFos::decrypt(char *in, char *out, int maxlen)
 		out[len] = '\0';
 		return out;
 	}
-	
+
 	unsigned char *s    = (unsigned char *)&in[2];
 	unsigned char *sout = (unsigned char *)out;
 
@@ -542,7 +559,7 @@ int SFos::folderEmpty(const SFString& folder)
 {
 	if (!SFos::fileExists(folder))
 		return TRUE;
-		
+
 	SFInt32 nFiles = 0;
 	SFos::listFiles(nFiles, NULL, folder + "*");
 	if (nFiles == 0)
@@ -574,7 +591,7 @@ int SFos::folderExists(const SFString& folderName)
 {
 	if (folderName.IsEmpty())
 		return FALSE;
-		
+
 	SFString folder = folderName;
 	if (!folder.endsWith('/'))
 		folder += '/';
@@ -637,7 +654,7 @@ SFString unEscapeString(const char *in)
 	int j;
 	for(i=0, j=0; dup[j]; ++i, ++j)
 	{
-	    if((dup[i] = dup[j]) == '%') 
+	    if((dup[i] = dup[j]) == '%')
 	    {
 		dup[i] = hex2Ascii(&dup[j+1]);
 		j+=2;
@@ -660,8 +677,8 @@ SFString parseQueryString(const SFString& queryString, const SFString& fieldName
 
 	// Look for the name surrounded by &name= first (this eliminates finding
 	// johnsmith= when looking just for smith= for example).
-	// Note: we add a leading '&' to make the following easier 
-	// (i.e. there is no special case for the first item in the 
+	// Note: we add a leading '&' to make the following easier
+	// (i.e. there is no special case for the first item in the
  	// name/value pairs
 
 	SFInt32 start = queryString.Find("&"+fieldName+"=");
@@ -714,7 +731,7 @@ static SFBool isKnownFiletype(const SFString& filename)
 			filename % DELETEDFILENAME   ||
 			filename % COMPACTFILENAME   ||
 
-			filename % "calweb.ini"      || 
+			filename % "calweb.ini"      ||
 			filename % "events.dat"      ||
 			filename % "drops.dat"       ||
 			filename % "contacts.dat"    ||
@@ -726,7 +743,7 @@ static SFBool isKnownFiletype(const SFString& filename)
 			filename % "dialogs.dat"     ||
 			filename % "Upgrade.css"     ||
 			filename % "report.txt"      ||
-			filename % "readme.htm"      || 
+			filename % "readme.htm"      ||
 
 			filename.Contains("export")  ||
 			filename.Contains("import")  ||
@@ -748,7 +765,7 @@ int SFos::removeFolder(const SFString& folderIn, SFString& removedList, SFString
 	if (!folder.endsWith('/'))
 		folder += "/";
 	ASSERT(folder.endsWith('/'));
-	
+
 	if (!SFos::folderEmpty(folder))
 	{
 		SFInt32 nFiles=0;
@@ -766,7 +783,7 @@ int SFos::removeFolder(const SFString& folderIn, SFString& removedList, SFString
                 SFBool didRemove = FALSE;
                 if (shouldRemove)
                     didRemove = !SFos::removeFile(filename); // returns '0' on sucess
-                
+
                 if (!didRemove)
 				{
 					// it was not removed
@@ -778,7 +795,7 @@ int SFos::removeFolder(const SFString& folderIn, SFString& removedList, SFString
 				}
 			}
 		}
-		
+
 		if (files)
 			delete [] files;
 	}
@@ -846,7 +863,7 @@ void SFos::fileLastModifyDate(const SFString& filename, SFTime *ret)
 {
 	if (!SFos::fileExists(filename))
 		return;
-	
+
 	struct stat statBuf;
 	stat( filename, &statBuf );
 
@@ -910,7 +927,7 @@ SFInt32 countImages(const SFString& p, SFString *strs)
 	SFos::listFiles(nGIFs, strs,               path + "*.gif");
 	SFos::listFiles(nJPGs, &strs[nGIFs],       path + "*.jpg");
 	SFos::listFiles(nPNGs, &strs[nGIFs+nJPGs], path + "*.png");
-	
+
 	return nGIFs + nJPGs + nPNGs;
 }
 
@@ -1064,4 +1081,3 @@ SFBool isFileOlder(const SFString& file1, const SFString& file2)
 		return FALSE;
 	return !isFileNewer(file1, file2);
 }
-

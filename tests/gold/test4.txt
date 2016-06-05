@@ -1,13 +1,12 @@
 test4: test prettyPrint flag
 Processing: -t -r -f 
 	Slurping 0x713b73c3994442b533e6a083ec968e40606810ec
-	Reading from binary cache...record 5 of 16
-	Reading from binary cache...record 10 of 16
-	Reading from binary cache...record 15 of 16
-
-	Filtering record 5 of 16
-	Filtering record 10 of 16
-	Filtering record 15 of 16
+	Reading from cache...record 5 of 16
+	Reading from cache...record 10 of 16
+	Reading from cache...record 15 of 16
+	Filtering...5 records passed.
+	Filtering...10 records passed.
+	Filtering...15 records passed.
 
         {
             "blockHash": "0xcc480deb89134f611d6be9b35ee405fdd785028ee1b20cc768f2370414635fe4",

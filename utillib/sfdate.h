@@ -1,18 +1,34 @@
 #ifndef __SFDATE_H__
 #define __SFDATE_H__
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
 
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "datetypes.h"
 
 class SFDate
 {
 private:
-	// Count of days since 15 October 1582 (start of Gregorian Calendar) 
+	// Count of days since 15 October 1582 (start of Gregorian Calendar)
 	SFUint32   m_nDays;
 
 public:
@@ -23,7 +39,7 @@ private:
 // Everything is private because on the SFTime class (which is exposed to end users and
 // is a 'friend' can use this class
 						 SFDate                 (SFInt32 year, SFInt32 month, SFInt32 day);
-						 SFDate                 (SFInt32 year, SFInt32 month, SFInt32 weekInMonth, SFInt32 dayOfWeek); 
+						 SFDate                 (SFInt32 year, SFInt32 month, SFInt32 weekInMonth, SFInt32 dayOfWeek);
 						 SFDate                 (SFInt32 days);
 						 SFDate                 (const SF_TIMESTRUCT& sysTime);
 						 SFDate                 (const SFString& dateStr, const SFString& fmtStr);
@@ -54,9 +70,9 @@ private:
   SFBool     operator<=             (const SFDate& date) const;
 
   SFString   Format                 (const SFString& fmt=nullString) const;
-  
-  SFBool     IsValid                (void) const;          
-                                        
+
+  SFBool     IsValid                (void) const;
+
 	SFDate&      setValues              (SFInt32 y, SFInt32 m, SFInt32 date);
   SFDateStruct getDateStruct          (void) const;
 

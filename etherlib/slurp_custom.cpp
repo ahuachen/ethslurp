@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2015 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "slurp.h"
 
 // EXISTING_CODE
@@ -81,6 +98,8 @@ SFBool CSlurp::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, vo
 				outErr << (transactions.getCount()!=nVisible?" visible":"") << " records" << (isTesting?"\n":"\r"); outErr.Flush();
 			}
 			ctx << transactions[i].Format(displayString);
+			if (cnt>=nVisible)
+				continue; // no need to keep spinning if we've shown them all
 		}
 		ctx << "\n";
 		while (!postFmt.IsEmpty())
@@ -117,13 +136,16 @@ SFInt32 CSlurp::readFromFile(CSharedResource& file)
 	for (int i=0;i<nRecords;i++)
 	{
 		transactions[i].readFromFile(file);
-		if (!(++nRead%5)) { outErr << "\tReading from binary cache...record " << nRead << " of " << nRecords << (isTesting?"\n":"\r"); outErr.Flush(); }
+		if (!(++nRead%5)) { outErr << "\tReading from cache...record " << nRead << " of " << nRecords << (isTesting?"\n":"\r"); outErr.Flush(); }
 		SFInt32 curBlock = transactions[i].blockNumber;
 		maxBlock = MAX(maxBlock,curBlock);
 	}
-	outErr << "\n";
+
+	if (!isTesting)
+		outErr << "\tReading from cache...record " << nRecords << " of " << nRecords << "\n";
 	if (maxBlock != lastBlock)
-	{ outErr << "Previously stored lastBlock '" << lastBlock << "' not equal to maxBlock '" << maxBlock << "'\n"; }
+		outErr << "Previously stored lastBlock '" << lastBlock << "' not equal to maxBlock '" << maxBlock << "\n";
+	outErr.Flush();
 
 	return TRUE;
 }

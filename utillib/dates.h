@@ -1,12 +1,28 @@
 #ifndef _H_DUTILITY
 #define _H_DUTILITY
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
 
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "sftime.h"
 
 // Adding viewtypes:
@@ -91,7 +107,7 @@ extern SFString getShortDayName   (SFInt32 dow);
 extern SFString getMonthName      (SFInt32 month);
 extern SFString getShortMonthName (SFInt32 month);
 
-extern SFInt32  getWeekOfYear     (const SFTime& date); 
+extern SFInt32  getWeekOfYear     (const SFTime& date);
 extern SFInt32  getDayOfYear      (const SFTime& date);
 
 extern SFInt32  getDayOfWeek      (const SFDate& date);
@@ -227,7 +243,7 @@ inline SFBool isReportType(SFInt32 vt)
 inline SFBool isDayType(SFInt32 vt)
 {
 	ASSERT(vt>VT_FIRST && vt<VT_LAST);
-	return (vt == VT_DAYGRID || 
+	return (vt == VT_DAYGRID ||
 						vt == VT_DAYLIST ||
 						vt == VT_DAYPLANNER ||
 						vt == VT_DAYREPORT
@@ -237,8 +253,8 @@ inline SFBool isDayType(SFInt32 vt)
 inline SFBool isWeekType(SFInt32 vt)
 {
 	ASSERT(vt>VT_FIRST && vt<VT_LAST);
-	return (vt == VT_WEEKGRID || 
-						vt == VT_WEEKLIST || 
+	return (vt == VT_WEEKGRID ||
+						vt == VT_WEEKLIST ||
 						vt == VT_WEEKPLANNER ||
 						vt == VT_WEEKREPORT
 						);
@@ -247,7 +263,7 @@ inline SFBool isWeekType(SFInt32 vt)
 inline SFBool isMonthType(SFInt32 vt)
 {
 	ASSERT(vt>VT_FIRST && vt<VT_LAST);
-	return (vt == VT_MONTHGRID || 
+	return (vt == VT_MONTHGRID ||
 						vt == VT_MONTHLIST ||
 						vt == VT_MONTHPLANNER ||
 						vt == VT_MONTHREPORT
@@ -384,11 +400,11 @@ inline void SetMonth(SFTime& date, SFInt32 val)
 {
 	ASSERT(date.IsValid());
 	SFInt32 m = MIN(12, MAX(1, val));
-	date = SFTime(date.GetYear(), 
-								m, 
+	date = SFTime(date.GetYear(),
+								m,
 								MIN(DaysInMonth(date.GetYear(), m), date.GetDay()),
-								date.GetHour(), 
-								date.GetMinute(), 
+								date.GetHour(),
+								date.GetMinute(),
 								0);
 	ASSERT(date.IsValid());
 }
@@ -396,11 +412,11 @@ inline void SetMonth(SFTime& date, SFInt32 val)
 inline void SetDay(SFTime& date, SFInt32 val)
 {
 	ASSERT(date.IsValid());
-	date = SFTime(date.GetYear(), 
-								date.GetMonth(), 
-								MIN(DaysInMonth(date.GetYear(), date.GetMonth()), MAX(1, val)), 
-								date.GetHour(), 
-								date.GetMinute(), 
+	date = SFTime(date.GetYear(),
+								date.GetMonth(),
+								MIN(DaysInMonth(date.GetYear(), date.GetMonth()), MAX(1, val)),
+								date.GetHour(),
+								date.GetMinute(),
 								0);
 	ASSERT(date.IsValid());
 }
@@ -412,8 +428,8 @@ inline void SetYear(SFTime& date, SFInt32 val)
 	SFInt32 m = date.GetMonth();
 	SFInt32 d = MIN(DaysInMonth(y, m), date.GetDay());
 	date = SFTime(y, m, d,
-								date.GetHour(), 
-								date.GetMinute(), 
+								date.GetHour(),
+								date.GetMinute(),
 								0);
 	ASSERT(date.IsValid());
 }
@@ -422,10 +438,10 @@ inline void SetHour(SFTime& date, SFInt32 val)
 {
 	ASSERT(date.IsValid());
 	date = SFTime(date.GetYear(),
-								date.GetMonth(), 
-								date.GetDay(), 
-								MIN(23, MAX(0, val)), 
-								date.GetMinute(), 
+								date.GetMonth(),
+								date.GetDay(),
+								MIN(23, MAX(0, val)),
+								date.GetMinute(),
 								0);
 	ASSERT(date.IsValid());
 }
@@ -434,10 +450,10 @@ inline void SetMinute(SFTime& date, SFInt32 val)
 {
 	ASSERT(date.IsValid());
 	date = SFTime(date.GetYear(),
-								date.GetMonth(), 
-								date.GetDay(), 
+								date.GetMonth(),
+								date.GetDay(),
 								date.GetHour(),
-								MIN(59, MAX(0, val)), 
+								MIN(59, MAX(0, val)),
 								0);
 	ASSERT(date.IsValid());
 }
@@ -505,7 +521,7 @@ inline SFTime addWeeks(const SFTime& date, SFInt32 nWeeks)
 				day -= nDays;
 			}
 		}
-		return SFTime(year,month,day,date.GetHour(),date.GetMinute(),date.GetSecond()); 
+		return SFTime(year,month,day,date.GetHour(),date.GetMinute(),date.GetSecond());
 	} else
 	{
 		// multiples
@@ -548,7 +564,7 @@ inline SFTime addMonths(const SFTime& date, SFInt32 nMonths)
 		// go to last day of month if there is no such day
 		SFInt32 nDays = DaysInMonth(SFTime(year,month,1,0,0,0));
 		day = MIN(nDays, day);
-		return SFTime(year,month,day,date.GetHour(),date.GetMinute(),date.GetSecond()); 
+		return SFTime(year,month,day,date.GetHour(),date.GetMinute(),date.GetSecond());
 	} else
 	{
 		// multiples
@@ -573,7 +589,7 @@ inline SFTime addYears(const SFTime& date, SFInt32 nYears)
 	long nDays = DaysInMonth(SFTime(year,month,1,0,0,0));
 	day = MIN(nDays, day);
 
-	return SFTime(year,month,day,date.GetHour(),date.GetMinute(),date.GetSecond()); 
+	return SFTime(year,month,day,date.GetHour(),date.GetMinute(),date.GetSecond());
 }
 
 inline SFTime makeSameTime(const SFTime& date, const SFTime& time)
@@ -591,11 +607,11 @@ inline SFTime makeSameDay(const SFTime& date, long origDay)
 		return newDate;
 	ASSERT(origDay>day);
 	day = MIN(origDay, DaysInMonth(newDate));
-	return SFTime(newDate.GetYear(), 
-				newDate.GetMonth(), 
-				day, 
-				newDate.GetHour(), 
-				newDate.GetMinute(), 
+	return SFTime(newDate.GetYear(),
+				newDate.GetMonth(),
+				day,
+				newDate.GetHour(),
+				newDate.GetMinute(),
 				newDate.GetSecond());
 }
 
@@ -672,7 +688,7 @@ inline SFTime laterOf(const SFTime& one, const SFTime& two)
 }
 
 inline SFBool periodsOverlap(
-	const SFTime& eStart, const SFTime& eStop, 
+	const SFTime& eStart, const SFTime& eStop,
 	const SFTime& cStart, const SFTime& cStop)
 {
 	if (eStart > cStop)
@@ -700,7 +716,7 @@ inline SFTime snapToStart(const SFTime& start, const SFTime& date, SFInt32 perLe
 
 	SFTime d = date;
 	SFTime s = start;
-	
+
 	SFTimeSpan span = d - s;
 	SFInt32 mins = SFInt32(span.getSeconds_double() / 60.);
 	SFInt32 pers = mins / perLen;

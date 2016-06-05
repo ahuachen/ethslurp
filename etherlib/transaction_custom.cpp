@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2015 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "transaction.h"
 
 // EXISTING_CODE
@@ -136,16 +153,14 @@ SFInt32 CTransaction::writeToFile(CSharedResource& file) const
 }
 
 //---------------------------------------------------------------------------
-SFInt32 CTransaction::parseJson(SFString& strIn)
+char *CTransaction::parseJson(char *s, SFInt32& nFields)
 {
-#define SEARCHING     0
-#define IN_FIELDNAME  1
-#define IN_FIELDVALUE 2
-
-	SFInt32 nFields=0;
+#define SEARCHING      0
+#define IN_FIELDNAME   1
+#define IN_FIELDVALUE  2
+#define DONE_SEARCHING 3
 
 	SFInt32 state=SEARCHING;
-	char *s = (char*)(const char*)strIn;
 	char *fieldName=NULL;
 	char *fieldVal=NULL;
 	while (*s)
@@ -157,10 +172,16 @@ SFInt32 CTransaction::parseJson(SFString& strIn)
 			{
 				fieldName = s+1;
 				state=IN_FIELDNAME;
+
 			} else if (*s == '\"')
 			{
 				fieldVal = s+1;
 				state=IN_FIELDVALUE;
+			} else if (*s == '}')
+			{
+				*s = '\0';
+				state = DONE_SEARCHING;
+				return s+1;
 			}
 			break;
 		case IN_FIELDNAME:
@@ -183,7 +204,7 @@ SFInt32 CTransaction::parseJson(SFString& strIn)
 		}
 		s++;
 	}
-	return nFields;
+	return NULL;
 }
 
 //---------------------------------------------------------------------------
@@ -192,14 +213,9 @@ SFTime CTransaction::getDate(void) const
 	return snagDate(Format("[{DATE}]").Substitute("-","").Substitute(":", "").Substitute(" ", ""));
 }
 
-//extern CConfig *exConfig;
 //---------------------------------------------------------------------------
 SFString CTransaction::inputToFunction(void) const
 {
 	return EMPTY;
-//	SFString function = exConfig->GetProfileStringGH("FUNCTIONS", input.Mid(2,8), EMPTY);
-//	if (!function.IsEmpty())
-//		return function + "|" + input.Mid(10,input.GetLength());
-//	return input == "0x" ? "<0>" : "|"+input;
 }
 // EXISTING_CODE

@@ -1,9 +1,26 @@
-/*-------------------------------------------------------------------------
- * This source code is confidential proprietary information which is
- * Copyright (c) 1999, 2016 by Great Hill Corporation.
- * All Rights Reserved
- *
- *------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2016 Great Hill Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------*/
 #include "basetypes.h"
 
 #include "dates.h"
@@ -53,7 +70,7 @@ SFInt32 DaysInYear(SFInt32 year)
 
 //---------------------------------------------------------------------------------------
 SFInt32 DaysInYear(const SFTime& date)
-{ 
+{
   return DaysInYear(date.GetYear());
 }
 
@@ -62,7 +79,7 @@ SFTime AddOneDay(const SFTime& date)
 {
 	if (date >= latestDate)
 		return latestDate;
-		
+
 	SFInt32 day   = date.GetDay();
 	SFInt32 month = date.GetMonth();
 	SFInt32 year  = date.GetYear();
@@ -77,15 +94,15 @@ SFTime AddOneDay(const SFTime& date)
 		{
 		 month = 1;
 		 year  += 1;
-		 return SFTime(year,month,1,hour,min,sec); 
+		 return SFTime(year,month,1,hour,min,sec);
 		} else
 		{
 		 month += 1;
-		 return SFTime(year,month,1,hour,min,sec); 
+		 return SFTime(year,month,1,hour,min,sec);
 		}
-	} 
+	}
 
-	return SFTime(year,month,day+1,hour,min,sec); 
+	return SFTime(year,month,day+1,hour,min,sec);
 }
 
 //---------------------------------------------------------------------------------------
@@ -107,15 +124,15 @@ SFTime SubtractOneDay(const SFTime& date)
 		{
 		 month = 12;
 		 year  -= 1;
-		 return SFTime(year,month,DaysInMonth(year, month),hour,min,sec); 
+		 return SFTime(year,month,DaysInMonth(year, month),hour,min,sec);
 		} else
 		{
 		 month -= 1;
-		 return SFTime(year,month,DaysInMonth(year, month),hour,min,sec); 
+		 return SFTime(year,month,DaysInMonth(year, month),hour,min,sec);
 		}
-	} 
+	}
 
-	return SFTime(year,month,day-1,hour,min,sec); 
+	return SFTime(year,month,day-1,hour,min,sec);
 }
 
 //---------------------------------------------------------------------------------------
@@ -231,14 +248,14 @@ SFTime DecrementDate(SFInt32 vt, const SFTime& date, SFInt32 n)
 SFInt32 WeeksInMonth(const SFTime& date)
 {
   SFInt32 extraDays = DaysInMonth(date) - 28;
-  
+
   // days in first week
   SFTime bom = BOM(date);
   SFInt32 days = 8 - bom.GetDayOfWeek();
 
   if (extraDays == 0 && days == 7)
 		return 4;
-		
+
 	SFBool n = (4 + ((extraDays > days) ? 2 : 1));
   return n;
 }
@@ -254,12 +271,12 @@ SFTime FirstDayofMonth(const SFTime& date)
 
 //---------------------------------------------------------------------------------------
 SFTime LastDayofMonth(const SFTime& date)
-{ 
+{
 	SFTime firstDay = FirstDayofMonth(date);
 
 	SFInt32 month = firstDay.GetMonth();
   SFInt32 year  = firstDay.GetYear();
-	
+
 	return SFTime(year,month,DaysInMonth(date),23,59,59);
 }
 
@@ -445,7 +462,7 @@ static SFInt32 JulianDay(const SFTime& date)
 	SFInt32 y = year = 4800 - a;
 	SFInt32 m = month + (12 * a) - 3;
 
-	SFInt32 JD = day + 
+	SFInt32 JD = day +
 								(((153 * m) + 2) / 5) +
 								(365 * y) +
 								(y / 4) -
@@ -462,7 +479,7 @@ static SFInt32 finalCheck(SFInt32 d, SFInt32 w, const SFTime& date)
 
 	if (BOY(date).GetDayOfWeek() < 5 || BOY(date).GetDayOfWeek() == 7)
 		add = 1;
-	
+
 	if (w >= 1 && w <= 52)
 		return w + add;
 
@@ -488,7 +505,7 @@ SFInt32 getDayOfYear(const SFTime& dtIn)
 
 //---------------------------------------------------------------------------------------
 SFInt32 getWeekOfYear(const SFTime& dt)
-{               
+{
 	if (BOW(dt) < BOY(dt))
 		return (BOY(dt).GetDayOfWeek() < 5);
 
@@ -496,16 +513,16 @@ SFInt32 getWeekOfYear(const SFTime& dt)
 
 	SFInt32 jb = JulianDay(BOY(dt));
 	SFInt32 jt = JulianDay(date);
-	
+
 	SFInt32 d = (jb + 3) % 7;
 	SFInt32 w = (jt + d - jb + 4) / 7; //expect integer division
-	
+
 	if (w != 0)
 		return finalCheck(d, w, dt);
 
 	jb = JulianDay(BOY(EOPY(date)));
 	jt = JulianDay(date);
-	
+
 	d = (jb + 3) % 7;
 	w = (jt + d - jb + 4) / 7; //expect integer division
 
@@ -514,7 +531,7 @@ SFInt32 getWeekOfYear(const SFTime& dt)
 
 //---------------------------------------------------------------------------------------
 SFInt32 getWeekOfMonth(const SFTime& date)
-{                  
+{
   ASSERT(date.IsValid());
   return getWeekOfYear(date) - getWeekOfYear(BOM(date)) + 1;
 }
@@ -547,10 +564,10 @@ SFInt32 getDayOfWeek(const SFDate& date)
 SFTime GetDay(const SFTime& date, SFInt32 row, SFInt32 col)
 {
 	SFTime ret = date;
-	
+
 	row++;
 	col++;
-	
+
 	// row>0 and col>0
 	SFInt32 dow    = BOM(date).GetDayOfWeek();
 	SFInt32 dayNum = ((col - dow + 1) + ((row - 1) * 7));
@@ -560,7 +577,7 @@ SFTime GetDay(const SFTime& date, SFInt32 row, SFInt32 col)
 		// Dead day in previous month
 		dayNum = DaysInMonth(EOPM(date)) + dayNum;
 		ret    = BOM(EOPM(date));
-	
+
 	} else if (dayNum > DaysInMonth(date))
 	{
 		// Dead day in next month
@@ -664,7 +681,7 @@ void SetDate(SFTime& date, const SFString& dStr)
 {
 	if (dStr.IsEmpty())
 		return;
-		
+
 	SFString dateStr = dStr;
 	dateStr.MakeLower();
 
@@ -693,7 +710,7 @@ void SetTime(SFTime& date, const SFString& tStr)
 	timeStr.MakeLower();
 	timeStr.Replace("p", " p"); // need at least one space between time and meridian
 	timeStr.Replace("a", " a"); // need at least one space between time and meridian
-	
+
 	SFString format = getFormatString(FMT_TIME, SFos::isEuropean(), SFos::isMilitary(), SFos::getDateSep(), SFos::getTimeSep());
 
 	// convert to "hms:" or "hms-"
@@ -731,7 +748,7 @@ void SFTime::fromSortStr(const SFString& vStr)
 	if (vStr.IsEmpty())
 		return;
 
-	// This is required because some pre 2.5.1 data contains 
+	// This is required because some pre 2.5.1 data contains
 	// junky stuff in this field - if it doesn't at least
 	// start with a digit its definitely junk
 	char first = vStr[0];
@@ -757,9 +774,9 @@ void SFTime::fromSortStr(const SFString& vStr)
 SFTime newNow = SFTime(2006,2,1,12,0,0);
 //---------------------------------------------------------------------------------------
 SFTime Now(void)
-{   
+{
 	SFInt32 tzOffset = SFos::getTimeZone();
-	
+
 	SFTime ret;
 #ifdef TESTING
 	if (g_unitTesting)
@@ -783,8 +800,9 @@ SFTime snagDate(const SFString& strIn, const SFTime& def, SFBool dir)
 {
 	if (strIn.IsEmpty())
 		return def;
-	
+
 	SFString str = strIn;
+	str.ReplaceAll(";",EMPTY);
 	if (str.GetLength() != 14)
 	{
 		if (dir==-1) str += "000001";
