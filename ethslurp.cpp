@@ -121,7 +121,7 @@ int main(int argc, const char * argv[])
 				return usage(message);
 		}
 	}
-	return TRUE;
+	return FALSE;
 }
 
 //---------------------------------------------------------------------------------------------------
