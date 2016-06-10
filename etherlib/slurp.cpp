@@ -1,41 +1,40 @@
 /*--------------------------------------------------------------------------------
-The MIT License (MIT)
+ The MIT License (MIT)
 
-Copyright (c) 2016 Great Hill Corporation
+ Copyright (c) 2016 Great Hill Corporation
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
---------------------------------------------------------------------------------*/
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ --------------------------------------------------------------------------------*/
 #include "slurp.h"
 
 //---------------------------------------------------------------------------
 IMPLEMENT_NODE(CSlurp, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-void CSlurp::Format_base(CExportContext& ctx, const SFString& fmtIn, void *data) const
+void CSlurp::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
 {
 	if (!isShowing())
 		return;
 
-	if (handleCustomFormat(ctx, fmtIn, data))
+	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn);;
+	if (handleCustomFormat(ctx, fmt, data))
 		return;
-
-	SFString fmt = fmtIn;
 
 	CSlurpNotify dn(this);
 	while (!fmt.IsEmpty())
@@ -52,12 +51,12 @@ SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data
 	SFString ret = nextChunk_common(fieldIn, getString("cmd"), slu);
 	if (!ret.IsEmpty())
 		return ret;
-
+	
 	// Now give customized code a chance to override
 	ret = nextSlurpChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())
 		return ret;
-
+	
 	switch (tolower(fieldIn[0]))
 	{
 		case 'a':
@@ -65,6 +64,15 @@ SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data
 			break;
 		case 'd':
 			if ( fieldIn % "displayString" ) return slu->displayString;
+			break;
+		case 'f':
+			if ( fieldIn % "functions" )
+			{
+				SFString ret = "\n";
+				for (int i=0;i<slu->functions.getCount();i++)
+					ret += slu->functions[i].Format();
+				return ret;
+			}
 			break;
 		case 'h':
 			if ( fieldIn % "handle" ) return asString(slu->handle);
@@ -82,24 +90,53 @@ SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data
 			break;
 		case 't':
 			if ( fieldIn % "transactions" )
-#if 0
 			{
 				SFString ret = "\n";
 				for (int i=0;i<slu->transactions.getCount();i++)
-					ret += slu->transactions[i].Format("\t\t"+slu->transactions[i].asHTML());
+					ret += slu->transactions[i].Format();
 				return ret;
 			}
-#endif
 			break;
 	}
-
+	
 	return "<span class=warning>Field not found: [{" + fieldIn + "}]</span>\n";
 }
 
 //---------------------------------------------------------------------------------------------------
 SFBool CSlurp::setValueByName(const SFString& fieldName, const SFString& fieldValue)
 {
-	return TRUE;
+	switch (tolower(fieldName[0]))
+	{
+		case 'a':
+			if ( fieldName % "addr" ) { addr = fieldValue; return TRUE; }
+			break;
+		case 'd':
+			if ( fieldName % "displayString" ) { displayString = fieldValue; return TRUE; }
+			break;
+		case 'f':
+			if ( fieldName % "functions" ) return TRUE;
+			break;
+		case 'h':
+			if ( fieldName % "handle" ) { handle = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "header" ) { header = fieldValue; return TRUE; }
+			break;
+		case 'l':
+			if ( fieldName % "lastPage" ) { lastPage = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "lastBlock" ) { lastBlock = toLong(fieldValue); return TRUE; }
+			break;
+		case 'n':
+			if ( fieldName % "nVisible" ) { nVisible = toLong(fieldValue); return TRUE; }
+			break;
+		case 'p':
+			if ( fieldName % "pageSize" ) { pageSize = toBool(fieldValue); return TRUE; }
+			break;
+		case 't':
+			if ( fieldName % "transactions" ) return TRUE;
+			break;
+		default:
+			break;
+	}
+	return FALSE;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -117,6 +154,7 @@ void CSlurp::Serialize(SFArchive& archive)
 		archive >> lastBlock;
 		archive >> nVisible;
 		archive >> transactions;
+		archive >> functions;
 
 	} else
 	{
@@ -129,6 +167,7 @@ void CSlurp::Serialize(SFArchive& archive)
 		archive << lastBlock;
 		archive << nVisible;
 		archive << transactions;
+		archive << functions;
 
 	}
 	SERIALIZE_END();
@@ -149,6 +188,15 @@ void CSlurp::registerClass(void)
 	ADD_FIELD(CSlurp, "lastBlock", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CSlurp, "nVisible", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CSlurp, "transactions", T_TEXT|TS_ARRAY, ++fieldNum);
+	ADD_FIELD(CSlurp, "functions", T_TEXT|TS_ARRAY, ++fieldNum);
+
+	// Hide our internal fields, user can turn them on if they like
+	HIDE_FIELD(CSlurp, "schema");
+	HIDE_FIELD(CSlurp, "deleted");
+	HIDE_FIELD(CSlurp, "handle");
+
+	// EXISTING_CODE
+	// EXISTING_CODE
 }
 
 //---------------------------------------------------------------------------

@@ -39,6 +39,7 @@ extern int sortTransactionByID    (const void *rr1, const void *rr2);
 extern int isDuplicateTransaction (const void *rr1, const void *rr2);
 
 // EXISTING_CODE
+class CSlurp;
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
@@ -74,11 +75,11 @@ public:
 	DECLARE_NODE (CTransaction);
 
 	// EXISTING_CODE
-	char   *parseJson(char *in, SFInt32& nFields);
 	SFInt32 writeToFile(CSharedResource& file) const;
 	SFBool  readFromFile(CSharedResource& file);
 	SFTime  getDate(void) const;
 	SFString inputToFunction(void) const;
+	CSlurp *slurp;
 	// EXISTING_CODE
 
 private:

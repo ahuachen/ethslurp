@@ -1,12 +1,9 @@
 test9: extract expense records only
 Processing: -t -v -e -f 0x682e426ea761db77bacd5acdce33ca122175daea 
 	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-	Reading from cache...record 5 of 15
 	Reading from cache...record 10 of 15
-	Reading from cache...record 15 of 15
 	skipping inflow 0x515735de46790a8326a909f622122df3c9a57613e39831e47451b978b47745fe
 	skipping inflow 0xf159cca7246933b5c3e31d850ee2c8e08d080c288f4e19b40f219d33d59acf34
-	Filtering...5 records passed.
 	skipping inflow 0xaf50938c5e69fbc0456259047646693d863db618419c434da57362c8b3d9b270
 	Filtering...10 records passed.
 	skipping inflow 0x3d02e43d55e44ec40d68896f7aabc12063c5ad3a4ded17b48bd7be4b7bd2dc61
@@ -103,8 +100,7 @@ Processing: -t -v -e -f 0x682e426ea761db77bacd5acdce33ca122175daea
             "ether": "20.000000000000000000",
             "hitLimit": "TRUE",
             "inputLen": "2"
-        },	Exporting record 5 of 11 visible records
-
+        },
         {
             "blockHash": "0xf89a95c153bf4225d074d0817e7a8c4653bbbc941d825d645fcebef8361da7ba",
             "blockNumber": "1491788",

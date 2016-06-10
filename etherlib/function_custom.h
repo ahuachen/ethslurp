@@ -1,5 +1,5 @@
-#ifndef _SLURP_CUSTOM_H_
-#define _SLURP_CUSTOM_H_
+#ifndef _FUNCTION_CUSTOM_H_
+#define _FUNCTION_CUSTOM_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -27,7 +27,7 @@
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
-extern SFString nextSlurpChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
-extern void     finishParse(CSlurp *slurp);
+extern SFString nextFunctionChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
+extern void     finishParse(CFunction *function);
 
 #endif

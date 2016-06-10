@@ -1,12 +1,8 @@
 test4: test prettyPrint flag
 Processing: -t -r -f 
 	Slurping 0x713b73c3994442b533e6a083ec968e40606810ec
-	Reading from cache...record 5 of 16
 	Reading from cache...record 10 of 16
-	Reading from cache...record 15 of 16
-	Filtering...5 records passed.
 	Filtering...10 records passed.
-	Filtering...15 records passed.
 
         {
             "blockHash": "0xcc480deb89134f611d6be9b35ee405fdd785028ee1b20cc768f2370414635fe4",
@@ -99,8 +95,7 @@ Processing: -t -r -f
             "ether": "0.010000000000000000",
             "hitLimit": "FALSE",
             "inputLen": "394"
-        },	Exporting record 5 of 16 records
-
+        },
         {
             "blockHash": "0x0fb7d45310c5f6f70b1dd816db6ef178dd6ca970b3ee5eb2f50181a0e7183f4a",
             "blockNumber": "1390841",
@@ -331,8 +326,7 @@ Processing: -t -r -f
             "ether": "0.010000000000000000",
             "hitLimit": "FALSE",
             "inputLen": "394"
-        },	Exporting record 15 of 16 records
-
+        },
         {
             "blockHash": "0x5c58e4f6d0e2718fe632913ce7907c2f769d7aca6b4614644894555da1b1f456",
             "blockNumber": "1467463",

@@ -7,6 +7,10 @@ slurp.cpp \
 slurp_custom.cpp \
 transaction.cpp \
 transaction_custom.cpp \
+function.cpp \
+function_custom.cpp \
+parameter.cpp \
+parameter_custom.cpp \
 webapi.cpp
 
 #-------------------------------------------------

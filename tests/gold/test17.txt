@@ -1,17 +1,13 @@
 test17: test chunked commands (test,fmt,slurp,re-run)
 Processing: -t -fsr 
 	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-	Reading from cache...record 5 of 15
 	Reading from cache...record 10 of 15
-	Reading from cache...record 15 of 15
 	Slurping new transactions from blockchain...
 	Downloaded 15 potentially new transactions.
 
 	Download contains blocks from 1491486 to 1598704
 	Searching transactions after block 1598704
-	Filtering...5 records passed.
 	Filtering...10 records passed.
-	Filtering...15 records passed.
 
         {
             "blockHash": "0xa6857a2a6c90bd2701c67bd31c697b87a607421a9c75559141a7757ff02915c2",
@@ -104,8 +100,7 @@ Processing: -t -fsr
             "ether": "10.000000000000000000",
             "hitLimit": "TRUE",
             "inputLen": "2"
-        },	Exporting record 5 of 15 records
-
+        },
         {
             "blockHash": "0x0c01f973ccbbcd7768694f9c16ef1c6e8bb93722375f38d9d7a7abbf7e7ac6c6",
             "blockNumber": "1491752",
@@ -336,8 +331,7 @@ Processing: -t -fsr
             "ether": "116.000000000000000000",
             "hitLimit": "FALSE",
             "inputLen": "2"
-        },	Exporting record 15 of 15 records
-
+        },
         {
             "blockHash": "0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e",
             "blockNumber": "1598704",

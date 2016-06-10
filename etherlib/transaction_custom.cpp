@@ -153,69 +153,19 @@ SFInt32 CTransaction::writeToFile(CSharedResource& file) const
 }
 
 //---------------------------------------------------------------------------
-char *CTransaction::parseJson(char *s, SFInt32& nFields)
-{
-#define SEARCHING      0
-#define IN_FIELDNAME   1
-#define IN_FIELDVALUE  2
-#define DONE_SEARCHING 3
-
-	SFInt32 state=SEARCHING;
-	char *fieldName=NULL;
-	char *fieldVal=NULL;
-	while (*s)
-	{
-		switch (state)
-		{
-		case SEARCHING:
-			if (*s == '\"' && !fieldName)
-			{
-				fieldName = s+1;
-				state=IN_FIELDNAME;
-
-			} else if (*s == '\"')
-			{
-				fieldVal = s+1;
-				state=IN_FIELDVALUE;
-			} else if (*s == '}')
-			{
-				*s = '\0';
-				state = DONE_SEARCHING;
-				return s+1;
-			}
-			break;
-		case IN_FIELDNAME:
-			if (*s == '\"')
-			{
-				*s = '\0';
-				state=SEARCHING;
-			}
-			break;
-		case IN_FIELDVALUE:
-			if (*s == '\"')
-			{
-				*s = '\0';
-				setValueByName(fieldName, fieldVal);
-				fieldName = fieldVal = NULL;
-				state=SEARCHING;
-				nFields++;
-			}
-			break;
-		}
-		s++;
-	}
-	return NULL;
-}
-
-//---------------------------------------------------------------------------
 SFTime CTransaction::getDate(void) const
 {
 	return snagDate(Format("[{DATE}]").Substitute("-","").Substitute(":", "").Substitute(" ", ""));
 }
 
+#include "slurp.h"
 //---------------------------------------------------------------------------
 SFString CTransaction::inputToFunction(void) const
 {
-	return EMPTY;
+	for (int i=0;i<nFunctions;i++)
+		if (funcTable[i].func)
+			if (input.Mid(2,8) == funcTable[i].func->encoding)
+				return funcTable[i].name;
+	return "";
 }
 // EXISTING_CODE

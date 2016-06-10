@@ -38,6 +38,7 @@ CParams params[] =
 	CParams("-expense",	"include expenditures only" ),
 	CParams("-open",	"open the configuration file for editing" ),
 	CParams("-list",	"list previously slurped addresses in cache" ),
+	CParams("@--sleep",	"sleep for :x seconds" ),
 	CParams("-clear",	"clear all previously cached slurps" ),
 	CParams( "",		"Fetches data off the Ethereum blockchain for an arbitrary account or smart contract. Optionally formats the output to your specification.\n" ),
 };
@@ -133,6 +134,16 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 		{
 			rerun = TRUE;
 
+		} else if (arg.startsWith("--sleep:"))
+		{
+			nextTokenClearI(arg, ':');
+			SFInt32 wait = toLong(arg);
+			if (wait)
+			{
+				outErr << "Sleeping " << wait << " seconds\n";
+				SFos::sleep(wait);
+			}
+			
 		} else if (arg.startsWith("-m"))
 		{
 			SFString val = arg;
@@ -277,6 +288,10 @@ SFString options(void)
 		{
 			required += (" " + params[i].longName.Mid(1));
 
+		} else if (params[i].shortName.startsWith('@'))
+		{
+			// invisible option
+			
 		} else if (!params[i].shortName.IsEmpty())
 		{
 			ctx << params[i].shortName << "|";
@@ -318,6 +333,10 @@ SFString descriptions(void)
 		if (params[i].shortName.startsWith('~'))
 		{
 			required += ("\t" + padRight(params[i].longName,22) + params[i].description).Substitute("~",EMPTY) + " (required)\n";
+
+		} else if (params[i].shortName.startsWith('@'))
+		{
+			// invisible option
 
 		} else if (!params[i].shortName.IsEmpty())
 		{

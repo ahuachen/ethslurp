@@ -6,9 +6,7 @@ Processing: -t -v -i -f 0x682e426ea761db77bacd5acdce33ca122175daea
 
 	Download contains blocks from 1491486 to 1598704
 	Searching transactions
-	Found new transaction at block 1491752. Importing...
 	Found new transaction at block 1546609. Importing...
-	Found new transaction at block 1598704. Importing...
 	Writing 15 new records to cache
 	skipping expenditure 0xa49fcea1151d14a92b306fb692b4285c500d61e0c1d9fdbe80254511d213990d
 	skipping expenditure 0xe9b7813bf7d1b88d0bebd9d6c5256199b3dbee84e81523892be09208c85ff352
@@ -19,11 +17,8 @@ Processing: -t -v -i -f 0x682e426ea761db77bacd5acdce33ca122175daea
 	skipping expenditure 0x4baf63f5309c3bdf8d858ef9452f18282bbb7d00f413cf330608f7ee8d7f0029
 	skipping expenditure 0xa2debb039d502ecd9a77625d23ca133b554d4d617f15273bf0701919ab7f6e47
 	skipping expenditure 0x0845bf57c94cc780ee05fb20dce30016c6de6faade95c4f637f1f45ab87efe1b
-	Filtering...5 records passed.
 	skipping expenditure 0xbc3f4de85cd60f189b1adb8eaa617745905b38d47919d722a50a29404ae37001
-	Filtering...5 records passed.
 	skipping expenditure 0x32fbd0fa57039df8e3f71155ad6bd45b9b575494a8ab981acdf62e9f82282be3
-	Filtering...5 records passed.
 
         {
             "blockHash": "0xa6857a2a6c90bd2701c67bd31c697b87a607421a9c75559141a7757ff02915c2",

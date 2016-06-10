@@ -17,6 +17,8 @@ tests/files
 data
 ghc
 TODO.txt
+curators
+abis
 
 # Precompiled Headers
 *.gch

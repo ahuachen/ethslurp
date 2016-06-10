@@ -110,6 +110,9 @@ inline SFInt32 toLong(char *str)       { return (SFInt32)strtol((const char*)(st
 #include "sfstring.h"
 
 //-------------------------------------------------------------------------
+inline SFBool toBool(const SFString& in) { return in%"true" || toLong(in)!=0; }
+
+//-------------------------------------------------------------------------
 inline void SAFE_COPY(char *to, const char *from, SFInt32 maxLen)
 {
 	strncpy(to, from, maxLen);

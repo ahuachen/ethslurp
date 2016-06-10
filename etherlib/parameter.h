@@ -1,5 +1,5 @@
-#ifndef _SLURP_H_
-#define _SLURP_H_
+#ifndef _PARAMETER_H_
+#define _PARAMETER_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -24,67 +24,55 @@
  SOFTWARE.
  --------------------------------------------------------------------------------*/
 #include "utillib.h"
-#include "transaction.h"
-#include "function.h"
 
 //--------------------------------------------------------------------------
-class CSlurp;
-typedef SFArrayBase<CSlurp>         CSlurpArray;
-typedef SFList<CSlurp*>             CSlurpList;
-typedef CNotifyClass<const CSlurp*> CSlurpNotify;
-typedef SFUniqueList<CSlurp*>       CSlurpListU;
+class CParameter;
+typedef SFArrayBase<CParameter>         CParameterArray;
+typedef SFList<CParameter*>             CParameterList;
+typedef CNotifyClass<const CParameter*> CParameterNotify;
+typedef SFUniqueList<CParameter*>       CParameterListU;
 
 //---------------------------------------------------------------------------
-extern int sortSlurp        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
-extern int sortSlurpByName  (const void *rr1, const void *rr2);
-extern int sortSlurpByID    (const void *rr1, const void *rr2);
-extern int isDuplicateSlurp (const void *rr1, const void *rr2);
+extern int sortParameter        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
+extern int sortParameterByName  (const void *rr1, const void *rr2);
+extern int sortParameterByID    (const void *rr1, const void *rr2);
+extern int isDuplicateParameter (const void *rr1, const void *rr2);
 
 // EXISTING_CODE
-extern CParameter funcTable[];
-extern SFInt32 nFunctions;
+class CFunction;
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-class CSlurp : public CBaseNode
+class CParameter : public CBaseNode
 {
 public:
 	SFInt32 handle;
-	SFString addr;
-	SFString header;
-	SFString displayString;
-	SFBool pageSize;
-	SFInt32 lastPage;
-	SFInt32 lastBlock;
-	SFInt32 nVisible;
-	CTransactionArray transactions;
-	CFunctionArray functions;
+	SFString name;
+	SFString type;
+	CFunction *func;
 
 public:
-					CSlurp  (void);
-					CSlurp  (const CSlurp& sl);
-				   ~CSlurp  (void);
-	CSlurp&	operator= 		(const CSlurp& sl);
+					CParameter  (void);
+					CParameter  (const CParameter& pa);
+				   ~CParameter  (void);
+	CParameter&	operator= 		(const CParameter& pa);
 
-	DECLARE_NODE (CSlurp);
+	DECLARE_NODE (CParameter);
 
 	// EXISTING_CODE
-	SFInt32 writeToFile(CSharedResource& file) const;
-	SFBool  readFromFile(CSharedResource& file);
-	void loadABI(void);
 	// EXISTING_CODE
 
 private:
 	void			Clear      		(void);
 	void			Init      		(void);
-	void			Copy      		(const CSlurp& sl);
+	void			Copy      		(const CParameter& pa);
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 };
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(void)
+inline CParameter::CParameter(void)
 {
 	Init();
 	// EXISTING_CODE
@@ -92,18 +80,18 @@ inline CSlurp::CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(const CSlurp& sl)
+inline CParameter::CParameter(const CParameter& pa)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
-	Copy(sl);
+	Copy(pa);
 }
 
 // EXISTING_CODE
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-inline CSlurp::~CSlurp(void)
+inline CParameter::~CParameter(void)
 {
 	Clear();
 	// EXISTING_CODE
@@ -111,64 +99,53 @@ inline CSlurp::~CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Clear(void)
+inline void CParameter::Clear(void)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Init(void)
+inline void CParameter::Init(void)
 {
 	CBaseNode::Init();
 
 	handle = 0;
-	addr = EMPTY;
-	header = EMPTY;
-	displayString = EMPTY;
-	pageSize = 0;
-	lastPage = 0;
-	lastBlock = 0;
-	nVisible = 0;
-//	transactions = ??; /* unknown type: CTransactionArray */
-//	functions = ??; /* unknown type: CFunctionArray */
+	name = EMPTY;
+	type = EMPTY;
+	func = NULL;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Copy(const CSlurp& sl)
+inline void CParameter::Copy(const CParameter& pa)
 {
 	Clear();
 
-	CBaseNode::Copy(sl);
-	handle = sl.handle;
-	addr = sl.addr;
-	header = sl.header;
-	displayString = sl.displayString;
-	pageSize = sl.pageSize;
-	lastPage = sl.lastPage;
-	lastBlock = sl.lastBlock;
-	nVisible = sl.nVisible;
-	transactions = sl.transactions;
-	functions = sl.functions;
+	CBaseNode::Copy(pa);
+	handle = pa.handle;
+	name = pa.name;
+	type = pa.type;
+//	if (func)
+//		*func = *pa.func;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp& CSlurp::operator=(const CSlurp& sl)
+inline CParameter& CParameter::operator=(const CParameter& pa)
 {
-	Copy(sl);
+	Copy(pa);
 	// EXISTING_CODE
 	// EXISTING_CODE
 	return *this;
 }
 
 //---------------------------------------------------------------------------
-inline SFString CSlurp::getValueByName(const SFString& fieldName) const
+inline SFString CParameter::getValueByName(const SFString& fieldName) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -176,7 +153,7 @@ inline SFString CSlurp::getValueByName(const SFString& fieldName) const
 }
 
 //---------------------------------------------------------------------------
-inline SFInt32 CSlurp::getHandle(void) const
+inline SFInt32 CParameter::getHandle(void) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -184,14 +161,14 @@ inline SFInt32 CSlurp::getHandle(void) const
 }
 
 //---------------------------------------------------------------------------
-extern SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data);
+extern SFString nextParameterChunk(const SFString& fieldIn, SFBool& force, const void *data);
 
 //---------------------------------------------------------------------------
-IMPLEMENT_ARCHIVE_ARRAY(CSlurpArray);
-IMPLEMENT_ARCHIVE_LIST(CSlurpList);
+IMPLEMENT_ARCHIVE_ARRAY(CParameterArray);
+IMPLEMENT_ARCHIVE_LIST(CParameterList);
 
 //---------------------------------------------------------------------------
-#include "slurp_custom.h"
+#include "parameter_custom.h"
 
 // EXISTING_CODE
 // EXISTING_CODE

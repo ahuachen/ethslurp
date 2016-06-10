@@ -1,5 +1,6 @@
 all:
-	@cd .. ; make
+	@cd .. ; make ; cd -
+	@cd abis ; make ; cd -
 	@./all_tests.sh
 
 clean:

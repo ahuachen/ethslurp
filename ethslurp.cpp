@@ -128,6 +128,8 @@ int main(int argc, const char * argv[])
 SFBool CSlurperApp::Initialize(COptions& options, SFString& message)
 {
 	// This allows us to spin through these classes' list of fields
+	CFunction::registerClass();
+	CParameter::registerClass();
 	CSlurp::registerClass();
 	CTransaction::registerClass();
 
@@ -179,10 +181,14 @@ SFBool CSlurperApp::Initialize(COptions& options, SFString& message)
 
 	// If we're not re-running, we're slurping and we need an empty transaction list
 	if (!options.rerun)
+	{
 		theAccount.transactions.Clear();
+		nFunctions=0;
+	}
 
 	// We are ready to slurp
 	theAccount.addr = addr;
+	theAccount.loadABI();
 
 	outErr << "\t" << "Slurping " << theAccount.addr << "\n";
 
@@ -230,22 +236,18 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 
 		outErr << "\tSlurping new transactions from blockchain...\n";
 
-		SFString contents;
 		SFInt32  nRequests = 0, nRead = 0;
 
 		// We already have 'page' pages, so start there.
 		SFInt32  page = MAX(theAccount.lastPage,1);
 
 		// Keep reading until we get less than a full page
+		SFString contents;
 		SFBool done = FALSE;
 		while (!done)
 		{
 			SFString url = SFString("https://api.etherscan.io/api?module=account&action=txlist&sort=asc") +
-			"&address=" + theAccount.addr +
-			"&page="    + asString(page) +
-			"&offset="  + asString(options.pageSize) +
-			"&apikey="  + api.getKey();
-
+				"&address=" + theAccount.addr + "&page="    + asString(page) + "&offset="  + asString(options.pageSize) + "&apikey="  + api.getKey();
 			// Grab a page of data from the web api
 			SFString thisPage = urlToString(url);
 
@@ -280,9 +282,6 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 			if (nRead >= options.maxTransactions)
 				done=TRUE;
 		}
-		// Clean up a littel bit
-		if (contents.endsWith("}]}"))
-			contents.SetAt(contents.GetLength()-2,'\0');
 
 		SFInt32 minBlock=0,maxBlock=0;
 		findBlockRange(contents, minBlock, maxBlock);
@@ -297,32 +296,29 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 			outErr << " after block " << theAccount.lastBlock;
 		outErr << "\n";
 
-		if (!contents.IsEmpty())
+		SFInt32 lastBlock=0;
+		char *p = (char *)(const char*)contents;
+		while (p && *p)
 		{
-			SFInt32 lastBlock=0;
-			char *p = (char *)(const char*)contents;
-			while (*p)
+			CTransaction trans;SFInt32 nFields=0;
+			p = trans.parseJson(p,nFields);
+			if (nFields)
 			{
-				CTransaction trans;SFInt32 nFields=0;
-				p = trans.parseJson(p,nFields);
-				if (nFields)
+				SFInt32 transBlock = trans.blockNumber;
+				if (transBlock > theAccount.lastBlock) // add the new transaction if it's in a new block
 				{
-					SFInt32 transBlock = trans.blockNumber;
-					if (transBlock > theAccount.lastBlock) // add the new transaction if it's in a new block
+					theAccount.transactions[nextRecord++] = trans;
+					lastBlock = transBlock;
+					if (!(++nNewBlocks%10))
 					{
-						theAccount.transactions[nextRecord++] = trans;
-						lastBlock = transBlock;
-						if (!(++nNewBlocks%5))
-						{
-							outErr << "\tFound new transaction at block " << transBlock << ". Importing..." << (isTesting?"\n":"\r");
-							outErr.Flush();
-						}
+						outErr << "\tFound new transaction at block " << transBlock << ". Importing..." << (isTesting?"\n":"\r");
+						outErr.Flush();
 					}
 				}
 			}
-			if (!isTesting && nNewBlocks) { outErr << "\tFound new transaction at block " << lastBlock << ". Importing...\n"; outErr.Flush(); }
-			theAccount.lastBlock = lastBlock;
 		}
+		if (!isTesting && nNewBlocks) { outErr << "\tFound new transaction at block " << lastBlock << ". Importing...\n"; outErr.Flush(); }
+		theAccount.lastBlock = lastBlock;
 
 		// Write the data if we got new data
 		SFInt32 newRecords = (theAccount.transactions.getCount() - origCount);
@@ -398,7 +394,7 @@ SFBool CSlurperApp::Filter(COptions& options, SFString& message)
 
 		theAccount.nVisible += trans->isShowing();
 		SFInt32 nFiltered = (theAccount.nVisible+1);
-		if (!(nFiltered%5)) { outErr << "\t" << "Filtering..." << nFiltered << " records passed." << (isTesting?"\n":"\r"); outErr.Flush(); }
+		if (!(nFiltered%10)) { outErr << "\t" << "Filtering..." << nFiltered << " records passed." << (isTesting?"\n":"\r"); outErr.Flush(); }
 	}
 
 	if (!isTesting)
@@ -417,7 +413,7 @@ SFBool CSlurperApp::Display(COptions& options, SFString& message)
 {
 	double start = vrNow();
 
-	theAccount.Format_base(outScreen, getFormatString(options, "file"));
+	theAccount.Format(outScreen, getFormatString(options, "file"));
 
 	if (!isTesting)
 	{
@@ -486,7 +482,7 @@ void CSlurperApp::buildDisplayStrings(COptions& options)
 	ASSERT(!fmtForFields.IsEmpty());
 
 	SFString defList = config.GetProfileStringGH("DISPLAY_STR", "fmt_fieldList", EMPTY);
-	SFString fieldList = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+options.exportFormat+"_fxieldList", defList);
+	SFString fieldList = config.GetProfileStringGH("DISPLAY_STR", "fmt_"+options.exportFormat+"_fieldList", defList);
 	if (fieldList.IsEmpty())
 		fieldList = GETRUNTIME_CLASS(CTransaction)->listOfFields();
 	SFString origList = fieldList;
@@ -496,13 +492,15 @@ void CSlurperApp::buildDisplayStrings(COptions& options)
 	while (!fieldList.IsEmpty())
 	{
 		SFString fieldName = nextTokenClear(fieldList, '|');
+		SFBool force = fieldName.Contains("*");fieldName.Replace("*",EMPTY);
+
 		const CFieldData *field = GETRUNTIME_CLASS(CTransaction)->FindField(fieldName);
 		if (!field)
 		{
 			outErr << "Field '" << fieldName << "' not found in fieldList '" << origList << "'. Quitting...\n";
 			exit(0);
 		}
-
+		if (field->isHidden() && force) ((CFieldData*)field)->setHidden(FALSE);
 		if (!field->isHidden())
 		{
 			SFString resolved = fieldName;

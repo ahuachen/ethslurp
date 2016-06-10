@@ -1,5 +1,5 @@
-#ifndef _SLURP_H_
-#define _SLURP_H_
+#ifndef _FUNCTION_H_
+#define _FUNCTION_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -24,67 +24,61 @@
  SOFTWARE.
  --------------------------------------------------------------------------------*/
 #include "utillib.h"
-#include "transaction.h"
-#include "function.h"
+#include "parameter.h"
 
 //--------------------------------------------------------------------------
-class CSlurp;
-typedef SFArrayBase<CSlurp>         CSlurpArray;
-typedef SFList<CSlurp*>             CSlurpList;
-typedef CNotifyClass<const CSlurp*> CSlurpNotify;
-typedef SFUniqueList<CSlurp*>       CSlurpListU;
+class CFunction;
+typedef SFArrayBase<CFunction>         CFunctionArray;
+typedef SFList<CFunction*>             CFunctionList;
+typedef CNotifyClass<const CFunction*> CFunctionNotify;
+typedef SFUniqueList<CFunction*>       CFunctionListU;
 
 //---------------------------------------------------------------------------
-extern int sortSlurp        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
-extern int sortSlurpByName  (const void *rr1, const void *rr2);
-extern int sortSlurpByID    (const void *rr1, const void *rr2);
-extern int isDuplicateSlurp (const void *rr1, const void *rr2);
+extern int sortFunction        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
+extern int sortFunctionByName  (const void *rr1, const void *rr2);
+extern int sortFunctionByID    (const void *rr1, const void *rr2);
+extern int isDuplicateFunction (const void *rr1, const void *rr2);
 
 // EXISTING_CODE
-extern CParameter funcTable[];
-extern SFInt32 nFunctions;
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-class CSlurp : public CBaseNode
+class CFunction : public CBaseNode
 {
 public:
 	SFInt32 handle;
-	SFString addr;
-	SFString header;
-	SFString displayString;
-	SFBool pageSize;
-	SFInt32 lastPage;
-	SFInt32 lastBlock;
-	SFInt32 nVisible;
-	CTransactionArray transactions;
-	CFunctionArray functions;
+	SFString name;
+	SFString type;
+	SFBool indexed;
+	SFBool anonymous;
+	SFBool constant;
+	SFString encoding;
+	CParameterArray inputs;
+	CParameterArray outputs;
 
 public:
-					CSlurp  (void);
-					CSlurp  (const CSlurp& sl);
-				   ~CSlurp  (void);
-	CSlurp&	operator= 		(const CSlurp& sl);
+					CFunction  (void);
+					CFunction  (const CFunction& fu);
+				   ~CFunction  (void);
+	CFunction&	operator= 		(const CFunction& fu);
 
-	DECLARE_NODE (CSlurp);
+	DECLARE_NODE (CFunction);
 
 	// EXISTING_CODE
-	SFInt32 writeToFile(CSharedResource& file) const;
-	SFBool  readFromFile(CSharedResource& file);
-	void loadABI(void);
+	void parseParams(SFBool input, const SFString& value);
 	// EXISTING_CODE
 
 private:
 	void			Clear      		(void);
 	void			Init      		(void);
-	void			Copy      		(const CSlurp& sl);
+	void			Copy      		(const CFunction& fu);
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 };
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(void)
+inline CFunction::CFunction(void)
 {
 	Init();
 	// EXISTING_CODE
@@ -92,18 +86,18 @@ inline CSlurp::CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(const CSlurp& sl)
+inline CFunction::CFunction(const CFunction& fu)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
-	Copy(sl);
+	Copy(fu);
 }
 
 // EXISTING_CODE
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-inline CSlurp::~CSlurp(void)
+inline CFunction::~CFunction(void)
 {
 	Clear();
 	// EXISTING_CODE
@@ -111,64 +105,62 @@ inline CSlurp::~CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Clear(void)
+inline void CFunction::Clear(void)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Init(void)
+inline void CFunction::Init(void)
 {
 	CBaseNode::Init();
 
 	handle = 0;
-	addr = EMPTY;
-	header = EMPTY;
-	displayString = EMPTY;
-	pageSize = 0;
-	lastPage = 0;
-	lastBlock = 0;
-	nVisible = 0;
-//	transactions = ??; /* unknown type: CTransactionArray */
-//	functions = ??; /* unknown type: CFunctionArray */
+	name = EMPTY;
+	type = EMPTY;
+	indexed = 0;
+	anonymous = 0;
+	constant = 0;
+	encoding = EMPTY;
+//	inputs = ??; /* unknown type: CParameterArray */
+//	outputs = ??; /* unknown type: CParameterArray */
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Copy(const CSlurp& sl)
+inline void CFunction::Copy(const CFunction& fu)
 {
 	Clear();
 
-	CBaseNode::Copy(sl);
-	handle = sl.handle;
-	addr = sl.addr;
-	header = sl.header;
-	displayString = sl.displayString;
-	pageSize = sl.pageSize;
-	lastPage = sl.lastPage;
-	lastBlock = sl.lastBlock;
-	nVisible = sl.nVisible;
-	transactions = sl.transactions;
-	functions = sl.functions;
+	CBaseNode::Copy(fu);
+	handle = fu.handle;
+	name = fu.name;
+	type = fu.type;
+	indexed = fu.indexed;
+	anonymous = fu.anonymous;
+	constant = fu.constant;
+	encoding = fu.encoding;
+	inputs = fu.inputs;
+	outputs = fu.outputs;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp& CSlurp::operator=(const CSlurp& sl)
+inline CFunction& CFunction::operator=(const CFunction& fu)
 {
-	Copy(sl);
+	Copy(fu);
 	// EXISTING_CODE
 	// EXISTING_CODE
 	return *this;
 }
 
 //---------------------------------------------------------------------------
-inline SFString CSlurp::getValueByName(const SFString& fieldName) const
+inline SFString CFunction::getValueByName(const SFString& fieldName) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -176,7 +168,7 @@ inline SFString CSlurp::getValueByName(const SFString& fieldName) const
 }
 
 //---------------------------------------------------------------------------
-inline SFInt32 CSlurp::getHandle(void) const
+inline SFInt32 CFunction::getHandle(void) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -184,14 +176,14 @@ inline SFInt32 CSlurp::getHandle(void) const
 }
 
 //---------------------------------------------------------------------------
-extern SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data);
+extern SFString nextFunctionChunk(const SFString& fieldIn, SFBool& force, const void *data);
 
 //---------------------------------------------------------------------------
-IMPLEMENT_ARCHIVE_ARRAY(CSlurpArray);
-IMPLEMENT_ARCHIVE_LIST(CSlurpList);
+IMPLEMENT_ARCHIVE_ARRAY(CFunctionArray);
+IMPLEMENT_ARCHIVE_LIST(CFunctionList);
 
 //---------------------------------------------------------------------------
-#include "slurp_custom.h"
+#include "function_custom.h"
 
 // EXISTING_CODE
 // EXISTING_CODE

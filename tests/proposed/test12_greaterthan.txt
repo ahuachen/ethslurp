@@ -1,10 +1,7 @@
 test12: test block number option greater than
 Processing: -t -b:1491788 -r -f 
 	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-	Reading from cache...record 5 of 15
 	Reading from cache...record 10 of 15
-	Reading from cache...record 15 of 15
-	Filtering...5 records passed.
 	Filtering...10 records passed.
 
         {
@@ -98,8 +95,7 @@ Processing: -t -b:1491788 -r -f
             "ether": "16.000000000000000000",
             "hitLimit": "TRUE",
             "inputLen": "2"
-        },	Exporting record 5 of 9 visible records
-
+        },
         {
             "blockHash": "0x2db805f88fd6384274c1962469dacbae4bf5cedb097a10ca0aa6dfc8a534be10",
             "blockNumber": "1546613",

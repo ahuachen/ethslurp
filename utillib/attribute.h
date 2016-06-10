@@ -58,6 +58,7 @@ public:
 	void        setValue   (const SFString& v);
 
 	void        set        (const SFString& n, const SFString& v);
+	SFString    Format     (void) const { return "name:" + getName() + ":value" + getValue(); }
 };
 
 inline SFString SFAttribute::getName(void) const

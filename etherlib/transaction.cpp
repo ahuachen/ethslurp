@@ -27,15 +27,14 @@
 IMPLEMENT_NODE(CTransaction, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-void CTransaction::Format_base(CExportContext& ctx, const SFString& fmtIn, void *data) const
+void CTransaction::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
 {
 	if (!isShowing())
 		return;
 
-	if (handleCustomFormat(ctx, fmtIn, data))
+	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn);;
+	if (handleCustomFormat(ctx, fmt, data))
 		return;
-	
-	SFString fmt = fmtIn;
 
 	CTransactionNotify dn(this);
 	while (!fmt.IsEmpty())
@@ -55,7 +54,7 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 	
 	// Now give customized code a chance to override
 	ret = nextTransactionChunk_custom(fieldIn, force, data);
-	if (!ret.IsEmpty())
+	if (!ret.IsEmpty()||fieldIn=="function")
 		return ret;
 	
 	switch (tolower(fieldIn[0]))
@@ -108,46 +107,45 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 	switch (tolower(fieldName[0]))
 	{
 		case 'b':
-			if ( fieldName % "blockHash" ) { blockHash = fieldValue;return TRUE; }
-			else if ( fieldName % "blockNumber" ) { blockNumber = toLong(fieldValue);return TRUE; }
+			if ( fieldName % "blockHash" ) { blockHash = fieldValue; return TRUE; }
+			if ( fieldName % "blockNumber" ) { blockNumber = toLong(fieldValue); return TRUE; }
 			break;
 		case 'c':
-			if ( fieldName % "confirmations" ) { confirmations = toLong(fieldValue);return TRUE; }
-			else if ( fieldName % "contractAddress" ) { contractAddress = fieldValue;return TRUE; }
-			else if ( fieldName % "cumulativeGasUsed" ) { cumulativeGasUsed = fieldValue;return TRUE; }
+			if ( fieldName % "confirmations" ) { confirmations = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "contractAddress" ) { contractAddress = fieldValue; return TRUE; }
+			if ( fieldName % "cumulativeGasUsed" ) { cumulativeGasUsed = fieldValue; return TRUE; }
 			break;
 		case 'f':
 			if ( fieldName % "from" ) { from = toLower(fieldValue);return TRUE; }
 			break;
 		case 'g':
-			if ( fieldName % "gas" ) { gas  = fieldValue;return TRUE; }
-			else if ( fieldName % "gasPrice" ) { gasPrice = fieldValue;return TRUE; }
-			else if ( fieldName % "gasUsed" ) { gasUsed = fieldValue;return TRUE; }
+			if ( fieldName % "gas" ) { gas = fieldValue; return TRUE; }
+			if ( fieldName % "gasPrice" ) { gasPrice = fieldValue; return TRUE; }
+			if ( fieldName % "gasUsed" ) { gasUsed = fieldValue; return TRUE; }
 			break;
 		case 'h':
-			if ( fieldName % "handle" ) { handle = toLong(fieldValue);return TRUE; }
-			else if ( fieldName % "hash" ) { hash = fieldValue;return TRUE; }
+			if ( fieldName % "handle" ) { handle = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "hash" ) { hash = fieldValue; return TRUE; }
 			break;
 		case 'i':
-			if ( fieldName % "input" ) { input = fieldValue;return TRUE; }
-			if ( fieldName % "isInternalTx" ) { isInternalTx = toLong(fieldValue);return TRUE; }
-			if ( fieldName % "isError" ) { isError = toLong(fieldValue);return TRUE; }
+			if ( fieldName % "input" ) { input = fieldValue; return TRUE; }
+			if ( fieldName % "isInternalTx" ) { isInternalTx = toBool(fieldValue); return TRUE; }
+			if ( fieldName % "isError" ) { isError = toBool(fieldValue); return TRUE; }
 			break;
 		case 'n':
-			if ( fieldName % "nonce" ) { nonce = fieldValue;return TRUE; }
+			if ( fieldName % "nonce" ) { nonce = fieldValue; return TRUE; }
 			break;
 		case 't':
-			if ( fieldName % "timeStamp" ) { timeStamp = toLong(fieldValue);return TRUE; }
-			else if ( fieldName % "to" ) { to = toLower(fieldValue);return TRUE; }
-			else if ( fieldName % "transactionIndex" ) { transactionIndex = toLong(fieldValue);return TRUE; }
+			if ( fieldName % "timeStamp" ) { timeStamp = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "to" ) { to = toLower(fieldValue); return TRUE; }
+			if ( fieldName % "transactionIndex" ) { transactionIndex = toLong(fieldValue); return TRUE; }
 			break;
 		case 'v':
-			if ( fieldName % "value" ) { value = fieldValue;return TRUE; }
+			if ( fieldName % "value" ) { value = fieldValue; return TRUE; }
+			break;
+		default:
 			break;
 	}
-
-	SFString msg = "Unknown field: " + fieldName + " encountered.\n";
-	fprintf(stderr, "%s", (const char*)msg);
 	return FALSE;
 }
 
@@ -228,6 +226,12 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "value", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "isInternalTx", T_RADIO, ++fieldNum);
 	ADD_FIELD(CTransaction, "isError", T_RADIO, ++fieldNum);
+
+	// Hide our internal fields, user can turn them on if they like
+	HIDE_FIELD(CTransaction, "schema");
+	HIDE_FIELD(CTransaction, "deleted");
+	HIDE_FIELD(CTransaction, "handle");
+
 	// EXISTING_CODE
 	ADD_FIELD(CTransaction, "date", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "ether", T_NUMBER, ++fieldNum);
@@ -236,15 +240,12 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "function", T_TEXT, ++fieldNum);
 
 	// Hide fields we don't want to show by default
-	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "schema"        ); if(f) f->setHidden(TRUE); }
-	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "deleted"       ); if(f) f->setHidden(TRUE); }
-	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "handle"        ); if(f) f->setHidden(TRUE); }
-	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "confirmations" ); if(f) f->setHidden(TRUE); }
-//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "hitLimit"      ); if(f) f->setHidden(TRUE); }
-//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "inputLen"      ); if(f) f->setHidden(TRUE); }
-	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "function"      ); if(f) f->setHidden(TRUE); }
-//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "isInternalTx"  ); if(f) f->setHidden(TRUE); }
-//	{ CFieldData *f = GETRUNTIME_CLASS(CTransaction)->FindField( "isError"       ); if(f) f->setHidden(TRUE); }
+	HIDE_FIELD(CTransaction, "confirmations");
+	//HIDE_FIELD(CTransaction, "hitLimit");
+	//HIDE_FIELD(CTransaction, "inputLen");
+	HIDE_FIELD(CTransaction, "function");
+	//HIDE_FIELD(CTransaction, "isInternalTx");
+	//HIDE_FIELD(CTransaction, "isError");
 	// EXISTING_CODE
 }
 

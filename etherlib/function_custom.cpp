@@ -1,5 +1,3 @@
-#ifndef _SLURP_CUSTOM_H_
-#define _SLURP_CUSTOM_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -23,11 +21,60 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  --------------------------------------------------------------------------------*/
+#include "function.h"
+
 // EXISTING_CODE
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
-extern SFString nextSlurpChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
-extern void     finishParse(CSlurp *slurp);
+void finishParse(CFunction *function)
+{
+	// EXISTING_CODE
+	// EXISTING_CODE
+}
 
-#endif
+//---------------------------------------------------------------------------
+SFString nextFunctionChunk_custom(const SFString& fieldIn, SFBool& force, const void *data)
+{
+	CFunctionNotify *fu = (CFunctionNotify*)data;
+	const CFunction *fun = fu->getDataPtr();
+	switch (tolower(fieldIn[0]))
+	{
+		// EXISTING_CODE
+		// EXISTING_CODE
+		default:
+			break;
+	}
+	
+#pragma unused(fu)
+#pragma unused(fun)
+
+	return EMPTY;
+}
+
+//---------------------------------------------------------------------------
+SFBool CFunction::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data) const
+{
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return FALSE;
+}
+
+// EXISTING_CODE
+void CFunction::parseParams(SFBool input, const SFString& contents)
+{
+	char *p = (char *)(const char*)contents;
+	while (p && *p)
+	{
+		CParameter param;SFInt32 nFields=0;
+		p = param.parseJson(p,nFields);
+		if (nFields)
+		{
+			if (input)
+				inputs[inputs.getCount()+1] = param;
+			else
+				outputs[outputs.getCount()+1] = param;
+		}
+	}
+}
+// EXISTING_CODE

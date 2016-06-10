@@ -103,7 +103,6 @@ public: \
 	static  CBaseNode      *CreateObject   (void); \
 	virtual ghRuntimeClass *getRuntimeClass(void) const;
 
-
 //------------------------------------------------------------
 #define DECLARE_NODE(CLASS_NAME) \
 	        DECLARE_NODE_BASE          (CLASS_NAME) \
@@ -112,8 +111,8 @@ public: \
 	virtual SFBool   setValueByName    (const SFString& fieldName, const SFString& fieldValue); \
 	virtual void     Serialize         (SFArchive& archive); \
     virtual SFBool   handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
-    virtual void     Format_base       (CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
-    virtual SFString Format            (const SFString& fmtIn) const { CStringExportContext ctx;Format_base(ctx, fmtIn, NULL);return ctx.str;} \
+    virtual void     Format            (CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
+    virtual SFString Format            (const SFString& fmtIn=nullString) const { CStringExportContext ctx;Format(ctx, fmtIn, NULL);return ctx.str;} \
 	        SFString getClassName      (void) const; \
 	static  void     registerClass     (void);
 
@@ -163,6 +162,10 @@ public: \
 //------------------------------------------------------------
 #define ADD_FIELD(CLASS_NAME, FIELD_NAME, FIELD_TYPE, FIELD_ID) \
 	GETRUNTIME_CLASS(CLASS_NAME)->AddField(FIELD_NAME, FIELD_TYPE, FIELD_ID);
+
+//------------------------------------------------------------
+#define HIDE_FIELD(CLASS_NAME, FIELD_NAME) \
+	{ CFieldData *f = GETRUNTIME_CLASS(CLASS_NAME)->FindField(FIELD_NAME); if(f) f->setHidden(TRUE); }
 
 //------------------------------------------------------------
 // Archive array containers

@@ -39,20 +39,22 @@ private:
 
 public:
 
-	                CBaseNode       (void);
-	virtual        ~CBaseNode       (void);
+	                 CBaseNode       (void);
+	virtual         ~CBaseNode       (void);
 
-	        void    Reference       (void);
-	        SFInt32 Dereference     (void);
-	        SFBool  isReferenced    (void) const;
-			SFBool  isDeleted       (void) const;
-			void    setDeleted      (SFBool val);
-			SFInt32 getSchema       (void) const;
-			void    setSchema       (SFInt32 val);
-			SFBool  isShowing       (void) const;
-			void    setShowing      (SFInt32 val);
-
-	virtual SFBool  isKindOf        (const ghRuntimeClass* pClass) const;
+	        void     Reference       (void);
+	        SFInt32  Dereference     (void);
+	        SFBool   isReferenced    (void) const;
+			SFBool   isDeleted       (void) const;
+			void     setDeleted      (SFBool val);
+			SFInt32  getSchema       (void) const;
+			void     setSchema       (SFInt32 val);
+			SFBool   isShowing       (void) const;
+			void     setShowing      (SFInt32 val);
+	
+	virtual SFBool   isKindOf        (const ghRuntimeClass* pClass) const;
+	virtual char    *parseJson       (char *s, SFInt32& nFields);
+	virtual SFString defaultFormat   (void) const;
 
 	DECLARE_NODE_BASE(CBaseNode)
 
@@ -60,7 +62,7 @@ public:
 	virtual SFString getValueByName (const SFString& fieldName) const = 0;
 	virtual SFBool   setValueByName (const SFString& fieldName, const SFString& fieldValue) = 0;
 	virtual void     Serialize      (SFArchive& archive) = 0;
-	virtual SFString Format         (const SFString& fmtIn) const = 0;
+	virtual SFString Format         (const SFString& fmtIn=nullString) const = 0;
 
 protected:
 			void	 Init      		(void);

@@ -1,5 +1,3 @@
-#ifndef _SLURP_CUSTOM_H_
-#define _SLURP_CUSTOM_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -23,11 +21,44 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  --------------------------------------------------------------------------------*/
+#include "parameter.h"
+
 // EXISTING_CODE
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
-extern SFString nextSlurpChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
-extern void     finishParse(CSlurp *slurp);
+void finishParse(CParameter *parameter)
+{
+	// EXISTING_CODE
+	// EXISTING_CODE
+}
 
-#endif
+//---------------------------------------------------------------------------
+SFString nextParameterChunk_custom(const SFString& fieldIn, SFBool& force, const void *data)
+{
+	CParameterNotify *pa = (CParameterNotify*)data;
+	const CParameter *par = pa->getDataPtr();
+	switch (tolower(fieldIn[0]))
+	{
+		// EXISTING_CODE
+		// EXISTING_CODE
+		default:
+			break;
+	}
+	
+#pragma unused(pa)
+#pragma unused(par)
+
+	return EMPTY;
+}
+
+//---------------------------------------------------------------------------
+SFBool CParameter::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data) const
+{
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return FALSE;
+}
+
+// EXISTING_CODE
+// EXISTING_CODE

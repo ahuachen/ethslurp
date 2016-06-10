@@ -34,12 +34,8 @@ fmt_custom_field=fmt_html_field
 timeStamp=date
 Processing: -t -r -f:custom 
 	Slurping 0x682e426ea761db77bacd5acdce33ca122175daea
-	Reading from cache...record 5 of 15
 	Reading from cache...record 10 of 15
-	Reading from cache...record 15 of 15
-	Filtering...5 records passed.
 	Filtering...10 records passed.
-	Filtering...15 records passed.
 <!DOCTYPE html>
 <html>
   <head>
@@ -185,7 +181,6 @@ Processing: -t -r -f:custom
 		<td>TRUE</td>
 		<td>2</td>
 </tr>
-	Exporting record 5 of 15 records
 <tr>
 		<td>0x0c01f973ccbbcd7768694f9c16ef1c6e8bb93722375f38d9d7a7abbf7e7ac6c6</td>
 		<td>1491752</td>
@@ -417,7 +412,6 @@ Processing: -t -r -f:custom
 		<td>FALSE</td>
 		<td>2</td>
 </tr>
-	Exporting record 15 of 15 records
 <tr>
 		<td>0x7de625ea2f73392ae934c6effa8b231fd2799000b1925befb5eb618eba53669e</td>
 		<td>1598704</td>
