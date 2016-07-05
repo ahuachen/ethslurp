@@ -24,6 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --------------------------------------------------------------------------------*/
 #include "list.h"
+#include "html.h"
+#include "permission.h"
 
 class CConfig;
 
@@ -76,6 +78,7 @@ private:
 	SFBool   m_showHidden;
 	SFInt32  m_extraInt;
 	SFString m_extraStr;
+	SELFUNC  m_selFunc;
 	void    *m_dataPtr;
 
 public:
@@ -169,6 +172,7 @@ public:
 	SFInt32  getFieldID   (void) const { return m_fieldID;   }
 	SFBool   isResolved   (void) const { return m_resolved;  }
 	SFString getScript    (void) const { return m_script;    }
+	SELFUNC  getSelFunc   (void) const { return m_selFunc;   }
 	void    *getDataPtr   (void) const { return m_dataPtr;   }
 	SFBool   getNoRow     (void) const { return m_noRow;     }
 	SFBool   getShowHidden(void) const { return m_showHidden;}
@@ -193,6 +197,7 @@ public:
 	void     setResolved  (SFBool on)                 { m_resolved  = on;           }
 	void     setDisabled  (SFBool disable)            { m_disabled  = disable;      }
 	void     setHidden    (SFBool hide)               { m_hidden    = hide;         }
+	void     setSelFunc   (SELFUNC func)              { m_selFunc   = func;         }
 	void     setDataPtr   (void *data)                { m_dataPtr   = data;         }
 	void     setNoRow     (SFBool noRow)              { m_noRow     = noRow;        }
 	void     setShowHidden(SFBool showHidden)         { m_showHidden= showHidden;   }
@@ -251,6 +256,7 @@ private:
 			m_hidden     = FALSE;
 //	SFString m_script;
 //  SFString m_problem;
+			m_selFunc    = NULL;
 			m_dataPtr    = NULL;
 			m_noRow      = FALSE;
 			m_showHidden = TRUE;
@@ -280,6 +286,7 @@ private:
 			m_disabled  = data.m_disabled;
 			m_problem   = data.m_problem;
 			m_hidden    = data.m_hidden;
+			m_selFunc   = data.m_selFunc;
 			m_dataPtr   = data.m_dataPtr;
 			m_noRow     = data.m_noRow;
 			m_showHidden= data.m_showHidden;
@@ -441,6 +448,38 @@ inline SFBool isSelection(SFInt32 type)
 #define OWNERCHANGE_ANYONE        SFString("anyone")
 #define OWNERCHANGE_ADMINS        SFString("admins")
 #define OWNERCHANGE_SUPER         SFString("super")
+
+//--------------------------------------------------------
+extern SFString getSelectString     (CSelectionData *data);
+extern SFString getSelectString     (SELFUNC func, const SFString& name, const SFString& selected, SFInt32 disabled, const SFString& onChange, const void *dataPtr, SFInt32 extraInt);
+
+extern SFString getRadioString      (const SFString& name, const SFString& label, SFInt32 val, SFBool checked, SFInt32 disabled=FALSE, const SFString& onChange=nullString);
+extern SFString getCheckboxString   (const SFString& name, SFBool val, const SFString& prompt=nullString, const SFString& onClickStr=nullString, SFBool disabled=FALSE);
+
+extern SFBool   onOffChoose         (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   sortOrderChoose     (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+
+extern SFBool   alignChoose         (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   relSizeChoose       (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   borderChoose        (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   colorChoose         (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   allowChangeChoose   (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+
+extern SFBool   fontChoose          (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   iconChoose          (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   reminderChoose      (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   permChoose          (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   specPermChoose      (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   durationChooseNoMax (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   durationChooseMax   (SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   prefixChoose		(SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   suffixChoose		(SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   regionChoose		(SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   countryChoose		(SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+extern SFBool   genderChoose		(SFInt32& nVals, SFAttribute *attrs, CSelectionData *data);
+
+extern SFString getReminderString   (SFInt32 minutes);
+extern SFString getTimeSelectString (const SFString& name, const SFTime& date, SFBool disabled, SFInt32 step);
 
 //-------------------------------------------------------------------------
 extern SFString ALTERNATE_FIELDMAP;

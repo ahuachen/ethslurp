@@ -28,142 +28,116 @@ SOFTWARE.
 ///////////////////////////////////////////////////////////////////
 SFArchive& SFArchive::operator<<(char c)
 {
-	if (isWriting())
-		*m_writeFile << c << m_fieldEnd;
+	Write(c);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(long dw)
 {
-	if (isWriting())
-		*m_writeFile << dw << m_fieldEnd;
+	Write(dw);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(float f)
 {
-	if (isWriting())
-		*m_writeFile << f << m_fieldEnd;
+	Write(f);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(double f)
 {
-	if (isWriting())
-		*m_writeFile << f << m_fieldEnd;
+	Write(f);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(const char *str)
 {
-	if (isWriting())
-		*m_writeFile << str << m_fieldEnd;
+	Write(str);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(const SFString& str)
 {
-	if (isWriting())
-		*m_writeFile << str << m_fieldEnd;
+	Write(str);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(const SFTime& tm)
 {
-	if (isWriting())
-		*m_writeFile << tm << m_fieldEnd;
+	Write(tm);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(const SFAttribute& attr)
 {
-	if (isWriting())
-		*m_writeFile << attr << m_fieldEnd;
+	Write(attr);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(const CDoublePoint& pt)
 {
-	if (isWriting())
-		*m_writeFile << pt << m_fieldEnd;
+	Write(pt);
 	return *this;
 }
 
 SFArchive& SFArchive::operator<<(const CDoubleRect& rect)
 {
-	if (isWriting())
-		*m_writeFile << rect << m_fieldEnd;
+	Write(rect);
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////
 SFArchive& SFArchive::operator>>(char& c)
 {
-	if (isReading())
-		*m_readFile >> c;
+	Read(c);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(long& dw)
 {
-	if (isReading())
-		*m_readFile >> dw;
+	Read(dw);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(float& f)
 {
-	if (isReading())
-		*m_readFile >> f;
+	Read(f);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(double& f)
 {
-	if (isReading())
-		*m_readFile >> f;
-	return *this;
-}
-
-SFArchive& SFArchive::operator>>(char* &str)
-{
-	if (isReading())
-		*m_readFile >> str;
+	Read(f);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(SFString& str)
 {
-	if (isReading())
-		*m_readFile >> str;
+	Read(str);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(SFTime& tm)
 {
-	if (isReading())
-		*m_readFile >> tm;
+	Read(tm);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(SFAttribute& attr)
 {
-	if (isReading())
-		*m_readFile >> attr;
+	Read(attr);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(CDoublePoint& pt)
 {
-	if (isReading())
-		*m_readFile >> pt;
+	Read(pt);
 	return *this;
 }
 
 SFArchive& SFArchive::operator>>(CDoubleRect& rect)
 {
-	if (isReading())
-		*m_readFile >> rect;
+	Read(rect);
 	return *this;
 }
 

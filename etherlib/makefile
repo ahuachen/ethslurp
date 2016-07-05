@@ -1,16 +1,22 @@
-cflags=-Wall -O2 -DLINUX -I../utillib -I../ -I./
+cflags=-Wall -O2 -DLINUX -I../utillib -I../ -I./ -I../../ethslurp
 
 product=etherlib.a
 
 src= \
-slurp.cpp \
-slurp_custom.cpp \
-transaction.cpp \
-transaction_custom.cpp \
+account.cpp \
+account_custom.cpp \
 function.cpp \
 function_custom.cpp \
 parameter.cpp \
 parameter_custom.cpp \
+proposal.cpp \
+proposal_custom.cpp \
+slurp.cpp \
+slurp_custom.cpp \
+transaction.cpp \
+transaction_custom.cpp \
+vote.cpp \
+vote_custom.cpp \
 webapi.cpp
 
 #-------------------------------------------------

@@ -160,12 +160,6 @@ public:
 
 	SFInt32  Tell(void) const;
 	void     Seek        (SFInt32 offset, SFInt32 whence) const;
-	SFInt32  Write       (const void *buff, SFInt32 size, SFInt32 cnt) const;
-	SFInt32  Write       (const SFString& str) const;
-	SFInt32  Write       (SFInt32 val) const;
-	SFInt32  Read        (void *buff, SFInt32 cnt, SFInt32 size);
-	SFInt32  Read        (SFString& str);
-	SFInt32  Read        (SFInt32& val);
 	SFBool   Eof         (void) const;
 	char    *ReadLine    (char *buff, SFInt32 maxBuff);
 	void     WriteLine   (const SFString& str);
@@ -187,16 +181,42 @@ public:
 			return m_isascii;
 		}
 
+public:
+	SFInt32  Read          (long&         val);
+	SFInt32  Read          (char&         val);
+	SFInt32  Read          (float&        val);
+	SFInt32  Read          (double&       val);
+	SFInt32  Read          (SFString&     val);
+	SFInt32  Read          (SFTime&       val);
+	SFInt32  Read          (SFAttribute&  val);
+	SFInt32  Read          (CDoublePoint& val);
+	SFInt32  Read          (CDoubleRect&  val);
+
+	SFInt32  Write         (      char          val) const;
+	SFInt32  Write         (      long          val) const;
+	SFInt32  Write         (      float         val) const;
+	SFInt32  Write         (      double        val) const;
+	SFInt32  Write         (const SFString&     val) const;
+	SFInt32  Write         (const SFTime&       val) const;
+	SFInt32  Write         (const SFAttribute&  val) const;
+	SFInt32  Write         (const CDoublePoint& val) const;
+	SFInt32  Write         (const CDoubleRect&  val) const;
+
 private:
-	SFBool waitOnLock     (SFBool deleteOnFail) const;
-	SFBool createLockFile (const SFString& lockfilename);
-	SFBool createLock     (SFBool createOnFail);
+	SFInt32  Read          (void *buff, SFInt32 cnt, SFInt32 size);
+	SFInt32  Write         (const void *buff, SFInt32 size, SFInt32 cnt) const;
+
+	SFBool   waitOnLock    (SFBool deleteOnFail) const;
+	SFBool   createLockFile(const SFString& lockfilename);
+	SFBool   createLock    (SFBool createOnFail);
 
 	                 CSharedResource (const CSharedResource& l);
 	CSharedResource& operator=       (const CSharedResource& l);
 
 	// Turns on and off file locking for machines that do not allow file delete such as my ISP
 	static SFBool g_locking; // = TRUE;
+	
+	friend SFBool binaryFileToBuffer(const SFString& filename, SFInt32& nChars, char *buffer);
 };
 
 //----------------------------------------------------------------------

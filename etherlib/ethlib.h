@@ -26,5 +26,11 @@ SOFTWARE.
 #include "webapi.h"
 #include "slurp.h"
 #include "transaction.h"
+#include "account.h"
+#include "proposal.h"
+#include "vote.h"
+
+#define REP_FREQ   11
+#define REP_INFREQ 563
 
 #endif

@@ -48,7 +48,7 @@ SFBool CConfig::getVersion(CVersion& version) const
 	SFGroup *group = findGroup("CONFIGFILE");
 	if (group)
 	{
-		// newer versions of this file have the 'file version= line as does the user.dat file
+		// newer versions of this file have the 'file version= line 
 		LISTPOS kPos = group->m_keys.GetHeadPosition();
 		while (kPos)
 		{
@@ -420,30 +420,6 @@ SFString CConfig::GetProfileStringGH(const SFString& group, const SFString& key,
 		if (k && !k->isCommented())
 			ret = k->getValue();
 	}
-
-//DEBUG_ALL_CONFIG_CALLS
-//#define DEBUG_ALL_CONFIG_CALLS 1
-#undef DEBUG_ALL_CONFIG_CALLS
-#ifdef DEBUG_ALL_CONFIG_CALLS
-	static CSharedResource allCalls;
-	if (!allCalls.isOpen())
-	{
-		allCalls.Lock("/allcalls.txt", asciiWriteCreate, LOCK_NOWAIT);
-		allCalls.WriteLine("Filename\tGroup\tKey\tDefault\tValue\n");
-	}
-	if (allCalls.isOpen())
-	{
-		SFString file = m_filename;
-		if (m_filename.Contains("calweb.ini"))    file = "c";
-		if (m_filename.Contains("eventedit.dat")) file = "e";
-		if (m_filename.Contains("todoedit.dat"))  file = "t";
-		SFString deff = def;
-		deff.ReplaceAny("\r\n", EMPTY);
-		SFString rett = ret;
-		rett.ReplaceAny("\r\n", EMPTY);
-		allCalls.WriteLine(file + "\t" + group + "\t" + key + "\t" + deff + "\t" + rett + "\n");
-	}
-#endif
 
 	return ret;
 }

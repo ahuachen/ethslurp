@@ -21,13 +21,13 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  --------------------------------------------------------------------------------*/
-#include "slurp.h"
+#include "account.h"
 
 //---------------------------------------------------------------------------
-IMPLEMENT_NODE(CSlurp, CBaseNode, NO_SCHEMA);
+IMPLEMENT_NODE(CAccount, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-void CSlurp::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
+void CAccount::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
 {
 	if (!isShowing())
 		return;
@@ -36,57 +36,51 @@ void CSlurp::Format(CExportContext& ctx, const SFString& fmtIn, void *data) cons
 	if (handleCustomFormat(ctx, fmt, data))
 		return;
 
-	CSlurpNotify dn(this);
+	CAccountNotify dn(this);
 	while (!fmt.IsEmpty())
-		ctx << getNextChunk(fmt, nextSlurpChunk, &dn);
+		ctx << getNextChunk(fmt, nextAccountChunk, &dn);
 }
 
 //---------------------------------------------------------------------------
-SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data)
+SFString nextAccountChunk(const SFString& fieldIn, SFBool& force, const void *data)
 {
-	CSlurpNotify *sl = (CSlurpNotify*)data;
-	const CSlurp *slu = sl->getDataPtr();
+	CAccountNotify *ac = (CAccountNotify*)data;
+	const CAccount *acc = ac->getDataPtr();
 
 	// Give common (edit, delete, etc.) code a chance to override
-	SFString ret = nextChunk_common(fieldIn, getString("cmd"), slu);
+	SFString ret = nextChunk_common(fieldIn, getString("cmd"), acc);
 	if (!ret.IsEmpty())
 		return ret;
 	
 	// Now give customized code a chance to override
-	ret = nextSlurpChunk_custom(fieldIn, force, data);
+	ret = nextAccountChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())
 		return ret;
 	
 	switch (tolower(fieldIn[0]))
 	{
 		case 'a':
-			if ( fieldIn % "addr" ) return slu->addr;
-			break;
-		case 'd':
-			if ( fieldIn % "displayString" ) return slu->displayString;
+			if ( fieldIn % "addr" ) return acc->addr;
 			break;
 		case 'h':
-			if ( fieldIn % "handle" ) return asString(slu->handle);
-			if ( fieldIn % "header" ) return slu->header;
-			break;
-		case 'l':
-			if ( fieldIn % "lastPage" ) return asString(slu->lastPage);
-			if ( fieldIn % "lastBlock" ) return asString(slu->lastBlock);
+			if ( fieldIn % "handle" ) return asString(acc->handle);
 			break;
 		case 'n':
-			if ( fieldIn % "nVisible" ) return asString(slu->nVisible);
+			if ( fieldIn % "nVotes" ) return asString(acc->nVotes);
+			if ( fieldIn % "nProposals" ) return asString(acc->nProposals);
+			if ( fieldIn % "nTransactions" ) return asString(acc->nTransactions);
 			break;
 		case 'p':
-			if ( fieldIn % "pageSize" ) return asString(slu->pageSize);
+			return EMPTY;
+//			if ( fieldIn % "proposals" ) return acc->proposals;
 			break;
 		case 't':
-			if ( fieldIn % "transactions" )
-			{
-				SFString ret = "\n";
-				for (int i=0;i<slu->transactions.getCount();i++)
-					ret += slu->transactions[i].Format();
-				return ret;
-			}
+			return EMPTY;
+//			if ( fieldIn % "transactions" ) return acc->transactions;
+			break;
+		case 'v':
+			return EMPTY;
+//			if ( fieldIn % "votes" ) return acc->votes;
 			break;
 	}
 	
@@ -94,32 +88,32 @@ SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data
 }
 
 //---------------------------------------------------------------------------------------------------
-SFBool CSlurp::setValueByName(const SFString& fieldName, const SFString& fieldValue)
+SFBool CAccount::setValueByName(const SFString& fieldName, const SFString& fieldValue)
 {
 	switch (tolower(fieldName[0]))
 	{
 		case 'a':
 			if ( fieldName % "addr" ) { addr = fieldValue; return TRUE; }
 			break;
-		case 'd':
-			if ( fieldName % "displayString" ) { displayString = fieldValue; return TRUE; }
-			break;
 		case 'h':
 			if ( fieldName % "handle" ) { handle = toLong(fieldValue); return TRUE; }
-			if ( fieldName % "header" ) { header = fieldValue; return TRUE; }
-			break;
-		case 'l':
-			if ( fieldName % "lastPage" ) { lastPage = toLong(fieldValue); return TRUE; }
-			if ( fieldName % "lastBlock" ) { lastBlock = toLong(fieldValue); return TRUE; }
 			break;
 		case 'n':
-			if ( fieldName % "nVisible" ) { nVisible = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "nVotes" ) { nVotes = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "nProposals" ) { nProposals = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "nTransactions" ) { nTransactions = toLong(fieldValue); return TRUE; }
 			break;
 		case 'p':
-			if ( fieldName % "pageSize" ) { pageSize = toBool(fieldValue); return TRUE; }
+			return TRUE;
+//			if ( fieldName % "proposals" ) { proposals = fieldValue; return TRUE; }
 			break;
 		case 't':
-			if ( fieldName % "transactions" ) return TRUE;
+			return TRUE;
+//			if ( fieldName % "transactions" ) { transactions = fieldValue; return TRUE; }
+			break;
+		case 'v':
+			return TRUE;
+//			if ( fieldName % "votes" ) { votes = fieldValue; return TRUE; }
 			break;
 		default:
 			break;
@@ -128,14 +122,14 @@ SFBool CSlurp::setValueByName(const SFString& fieldName, const SFString& fieldVa
 }
 
 //---------------------------------------------------------------------------------------------------
-void CSlurp::finishParse()
+void CAccount::finishParse()
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //---------------------------------------------------------------------------------------------------
-void CSlurp::Serialize(SFArchive& archive)
+void CAccount::Serialize(SFArchive& archive)
 {
 	if (!SerializeHeader(archive))
 		return;
@@ -144,59 +138,56 @@ void CSlurp::Serialize(SFArchive& archive)
 	{
 		archive >> handle;
 		archive >> addr;
-		archive >> header;
-		archive >> displayString;
-		archive >> pageSize;
-		archive >> lastPage;
-		archive >> lastBlock;
-//		archive >> nVisible;
-		archive >> transactions;
+		archive >> nVotes;
+//		archive >> votes;
+		archive >> nProposals;
+//		archive >> proposals;
+		archive >> nTransactions;
+//		archive >> transactions;
 
 	} else
 	{
 		archive << handle;
 		archive << addr;
-		archive << header;
-		archive << displayString;
-		archive << pageSize;
-		archive << lastPage;
-		archive << lastBlock;
-//		archive << nVisible;
-		archive << transactions;
+		archive << nVotes;
+//		archive << votes;
+		archive << nProposals;
+//		archive << proposals;
+		archive << nTransactions;
+//		archive << transactions;
 
 	}
 }
 
 //---------------------------------------------------------------------------
-void CSlurp::registerClass(void)
+void CAccount::registerClass(void)
 {
 	SFInt32 fieldNum=1000;
-	ADD_FIELD(CSlurp, "schema",  T_NUMBER|TS_LABEL, ++fieldNum);
-	ADD_FIELD(CSlurp, "deleted", T_RADIO|TS_LABEL,  ++fieldNum);
-	ADD_FIELD(CSlurp, "handle", T_NUMBER|TS_LABEL,  ++fieldNum);
-	ADD_FIELD(CSlurp, "addr", T_TEXT, ++fieldNum);
-	ADD_FIELD(CSlurp, "header", T_TEXT, ++fieldNum);
-	ADD_FIELD(CSlurp, "displayString", T_TEXT, ++fieldNum);
-	ADD_FIELD(CSlurp, "pageSize", T_RADIO, ++fieldNum);
-	ADD_FIELD(CSlurp, "lastPage", T_NUMBER, ++fieldNum);
-	ADD_FIELD(CSlurp, "lastBlock", T_NUMBER, ++fieldNum);
-	ADD_FIELD(CSlurp, "nVisible", T_NUMBER, ++fieldNum);
-	ADD_FIELD(CSlurp, "transactions", T_TEXT|TS_ARRAY, ++fieldNum);
+	ADD_FIELD(CAccount, "schema",  T_NUMBER|TS_LABEL, ++fieldNum);
+	ADD_FIELD(CAccount, "deleted", T_RADIO|TS_LABEL,  ++fieldNum);
+	ADD_FIELD(CAccount, "handle", T_NUMBER|TS_LABEL,  ++fieldNum);
+	ADD_FIELD(CAccount, "addr", T_TEXT, ++fieldNum);
+	ADD_FIELD(CAccount, "nVotes", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CAccount, "votes", T_NONE, ++fieldNum);
+	ADD_FIELD(CAccount, "nProposals", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CAccount, "proposals", T_NONE, ++fieldNum);
+	ADD_FIELD(CAccount, "nTransactions", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CAccount, "transactions", T_NONE, ++fieldNum);
 
 	// Hide our internal fields, user can turn them on if they like
-	HIDE_FIELD(CSlurp, "schema");
-	HIDE_FIELD(CSlurp, "deleted");
-	HIDE_FIELD(CSlurp, "handle");
+	HIDE_FIELD(CAccount, "schema");
+	HIDE_FIELD(CAccount, "deleted");
+	HIDE_FIELD(CAccount, "handle");
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //---------------------------------------------------------------------------
-int sortSlurp(const SFString& f1, const SFString& f2, const void *rr1, const void *rr2)
+int sortAccount(const SFString& f1, const SFString& f2, const void *rr1, const void *rr2)
 {
-	CSlurp *g1 = (CSlurp*)rr1;
-	CSlurp *g2 = (CSlurp*)rr2;
+	CAccount *g1 = (CAccount*)rr1;
+	CAccount *g2 = (CAccount*)rr2;
 
 	SFString v1 = g1->getValueByName(f1);
 	SFString v2 = g2->getValueByName(f1);
@@ -208,5 +199,5 @@ int sortSlurp(const SFString& f1, const SFString& f2, const void *rr1, const voi
 	v2 = g2->getValueByName(f2);
 	return (int)v1.Compare(v2);
 }
-int sortSlurpByName(const void *rr1, const void *rr2) { return sortSlurp("sl_Name", "", rr1, rr2); }
-int sortSlurpByID  (const void *rr1, const void *rr2) { return sortSlurp("slurpID", "", rr1, rr2); }
+int sortAccountByName(const void *rr1, const void *rr2) { return sortAccount("ac_Name", "", rr1, rr2); }
+int sortAccountByID  (const void *rr1, const void *rr2) { return sortAccount("accountID", "", rr1, rr2); }

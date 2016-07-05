@@ -1,5 +1,5 @@
-#ifndef _PARAMETER_CUSTOM_H_
-#define _PARAMETER_CUSTOM_H_
+#ifndef _VOTE_CUSTOM_H_
+#define _VOTE_CUSTOM_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -27,6 +27,6 @@
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
-extern SFString nextParameterChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
+extern SFString nextVoteChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
 
 #endif

@@ -90,8 +90,6 @@ public:
 		}
 };
 
-#define asHTML() getRuntimeClass()->getHTML(getString("subCmd"), FALSE); //getSimpleServer()->isLoggedIn())
-
 //------------------------------------------------------------
 #define GETRUNTIME_CLASS(CLASS_NAME) \
 	(&CLASS_NAME::class##CLASS_NAME)
@@ -110,46 +108,12 @@ public: \
 	virtual SFString getValueByName    (const SFString& fieldName) const; \
 	virtual SFBool   setValueByName    (const SFString& fieldName, const SFString& fieldValue); \
 	virtual void     Serialize         (SFArchive& archive); \
+	virtual void     finishParse       (void); \
     virtual SFBool   handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
     virtual void     Format            (CExportContext& ctx, const SFString& fmtIn, void *data=NULL) const; \
     virtual SFString Format            (const SFString& fmtIn=nullString) const { CStringExportContext ctx;Format(ctx, fmtIn, NULL);return ctx.str;} \
 	        SFString getClassName      (void) const; \
 	static  void     registerClass     (void);
-
-//---------------------------------------------------------------------------
-#define SERIALIZE_START() \
-	SFInt32 fileVersion = -1; \
-	if (archive.isReading()) \
-	{ \
-		archive.m_readFile->refreshBuffer(); \
-		SFBool del; archive >> del; setDeleted(del); \
-		archive >> fileVersion; \
-		if (fileVersion != archive.getSchema()) \
-			fprintf(stderr, "'%ld' data version found. Expected '%ld.'\n", fileVersion, archive.getSchema()); \
-		setSchema(fileVersion); \
-		SFBool show; archive >> show; setShowing(show); \
-		SFString className; archive >> className; \
-		if (className != getClassName()) \
-			fprintf(stderr, "'%s' data type found. Expected '%s.'\n", (const char*)className, (const char*)getClassName()); \
-	} else \
-	{ \
-		if (isDeleted() && !archive.writeDeleted()) \
-			return; \
-		archive << isDeleted(); \
-		archive << getSchema(); \
-		archive << isShowing(); \
-		archive << getClassName(); \
-	}
-
-//---------------------------------------------------------------------------
-#define SERIALIZE_END() \
-	if (archive.isReading()) { \
-		char wasteRecordEnd; \
-		archive >> wasteRecordEnd; \
-		finishParse(this); \
-	} else { \
-		archive << archive.m_recordEnd; \
-	}
 
 //------------------------------------------------------------
 #define IMPLEMENT_NODE(CLASS_NAME, BASECLASS_NAME, SCHEMA) \
@@ -190,6 +154,7 @@ inline SFArchive& operator>>(SFArchive& archive, ARRAY_CLASS& array) \
 { \
 	SFInt32 count; \
 	archive >> count; \
+	array.Grow(count+1); \
 	for (int i=0;i<count;i++) \
 		array[i].Serialize(archive); \
 	return archive; \

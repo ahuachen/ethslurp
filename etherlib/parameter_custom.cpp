@@ -27,13 +27,6 @@
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
-void finishParse(CParameter *parameter)
-{
-	// EXISTING_CODE
-	// EXISTING_CODE
-}
-
-//---------------------------------------------------------------------------
 SFString nextParameterChunk_custom(const SFString& fieldIn, SFBool& force, const void *data)
 {
 	CParameterNotify *pa = (CParameterNotify*)data;

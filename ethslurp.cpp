@@ -83,8 +83,8 @@ int main(int argc, const char * argv[])
 	// the sluper, then read from either cache or the blockchain, then display the results.
 	while (!commandList.IsEmpty())
 	{
-		SFString command = nextTokenClear(commandList, '\n');
-		if (!command.startsWith(";")) // ignore comments
+		SFString command = StripAny(nextTokenClear(commandList, '\n'),"\t\r\n ");
+		if (!command.IsEmpty() && !command.startsWith(";")) // ignore comments
 		{
 			outErr << "Processing: " << command << "\n";
 
@@ -100,7 +100,7 @@ int main(int argc, const char * argv[])
 			SFString message;
 
 			// Parse the command line
-			COptions options;
+			COptions options; options.cmdFile=!cmdFile.IsEmpty();
 			if (!options.parseArguments(nArgs, args))
 				return FALSE;
 
@@ -162,17 +162,42 @@ SFBool CSlurperApp::Initialize(COptions& options, SFString& message)
 		return FALSE;
 	}
 
-	// Save the address for rerun
+	if (options.wantsArchive)
+	{
+		if (options.archiveFile.IsEmpty() && options.name.IsEmpty())
+			return usage("-a and -n may not both be empty. Specify either an archive file or a name. Quitting...");
+
+		SFString fn = (options.name.Contains("/") ? options.name : options.exportFormat + "/" + options.name) + (options.name.Contains(".")?"":"." + options.exportFormat);
+		SFFile file(fn);
+		if (options.archiveFile.IsEmpty())
+			options.archiveFile = file.getFullPath();
+		ASSERT(options.output==NULL);
+		options.output = fopen((const char*)options.archiveFile, asciiWriteCreate);
+		if (!options.output)
+			return usage("file '" + options.archiveFile + "' could not be opened. Quitting.");
+		outScreen.setOutput(options.output);
+	}
+	
+	// Save the address and name for later
 	config.SetProfileString("SETTINGS", "rerun", addr);
 	config.writeFile(version.toString());
 
 	// Load per address configurations if any
-	SFString customConfig = configPath(addr+".dat");
-	if (SFos::fileExists(customConfig))
+	SFString customConfig = configPath("configs/"+addr+".conf");
+	if (SFos::fileExists(customConfig) || !options.name.IsEmpty())
 	{
 		CConfig perAddr(NULL);
-		perAddr.loadFile(customConfig);
-		config.mergeConfig(&perAddr);
+		perAddr.setFilename(customConfig);
+		if (SFos::fileExists(customConfig))
+		{
+			perAddr.loadFile(customConfig);
+			config.mergeConfig(&perAddr);
+		}
+		if (!options.name.IsEmpty())
+		{
+			perAddr.SetProfileString("SETTINGS", "name", options.name);
+			perAddr.writeFile(version.toString());
+		}
 	}
 
     // Rerun will not reload the cache if it's already in memory
@@ -183,6 +208,7 @@ SFBool CSlurperApp::Initialize(COptions& options, SFString& message)
 	if (!options.rerun)
 	{
 		theAccount.transactions.Clear();
+		theAccount = CSlurp();
 		nFunctions=0;
 	}
 
@@ -211,14 +237,14 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 		// Once a transaction is on the blockchain, it will never change
 		// therefore, we can store them in a binary cache. Here we read
 		// from a previously stored cache.
-		CSharedResource file;
-		if (!file.Lock(cacheFilename, binaryReadOnly, LOCK_NOWAIT))
+		SFArchive archive(TRUE, NO_SCHEMA);
+		if (!archive.Lock(cacheFilename, binaryReadOnly, LOCK_NOWAIT))
 		{
 			message = "Could not open file: '" + cacheFilename + "'\n";
-			return FALSE;
+			return options.cmdFile;
 		}
-		theAccount.readFromFile(file);
-		file.Close();
+		theAccount.Serialize(archive);
+		archive.Close();
 	}
 
 	SFTime now = Now();
@@ -235,7 +261,6 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 		SFInt32 nextRecord = origCount;
 
 		outErr << "\tSlurping new transactions from blockchain...\n";
-
 		SFInt32  nRequests = 0, nRead = 0;
 
 		// We already have 'page' pages, so start there.
@@ -257,7 +282,7 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 			{
 				if (message.Contains("{\"status\":\"0\",\"message\":\"No transactions found\",\"result\":"))
 					message = "No transactions were found for address '" + theAccount.addr + "'. Is it correct?";
-				return FALSE;
+				return options.cmdFile;
 			}
 
 			contents += thisPage;
@@ -291,13 +316,11 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 		theAccount.lastPage = page;
 		theAccount.pageSize = options.pageSize;
 
-		outErr << "\tSearching transactions";
-		if (theAccount.lastBlock>0)
-			outErr << " after block " << theAccount.lastBlock;
-		outErr << "\n";
+		// pre allocate the array
+		theAccount.transactions.Grow(nRead);
 
 		SFInt32 lastBlock=0;
-		char *p = (char *)(const char*)contents;
+		char *p = cleanUpJson((char *)(const char*)contents);
 		while (p && *p)
 		{
 			CTransaction trans;SFInt32 nFields=0;
@@ -309,7 +332,7 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 				{
 					theAccount.transactions[nextRecord++] = trans;
 					lastBlock = transBlock;
-					if (!(++nNewBlocks%10))
+					if (!(++nNewBlocks%REP_FREQ))
 					{
 						outErr << "\tFound new transaction at block " << transBlock << ". Importing..." << (isTesting?"\n":"\r");
 						outErr.Flush();
@@ -325,16 +348,17 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 		if (newRecords)
 		{
 			outErr << "\tWriting " << newRecords << " new records to cache\n";
-			CSharedResource file;
-			if (file.Lock(cacheFilename, binaryWriteCreate, LOCK_CREATE))
+			SFArchive archive(FALSE, NO_SCHEMA);
+			if (archive.Lock(cacheFilename, binaryWriteCreate, LOCK_CREATE))
 			{
-				theAccount.writeToFile(file);
-				file.Close();
+				theAccount.transactions.Sort(sortTransactionsForWrite);
+				theAccount.Serialize(archive);
+				archive.Close();
 
 			} else
 			{
 				message = "Could not open file: '" + cacheFilename + "'\n";
-				return FALSE;
+				return options.cmdFile;
 			}
 		}
 	}
@@ -347,13 +371,19 @@ SFBool CSlurperApp::Slurp(COptions& options, SFString& message)
 		fflush(stderr);
 	}
 
-	return (theAccount.transactions.getCount()>0);
+	return (options.cmdFile || theAccount.transactions.getCount()>0);
 }
 
 //--------------------------------------------------------------------------------
 SFBool CSlurperApp::Filter(COptions& options, SFString& message)
 {
 	double start = vrNow();
+
+	SFInt32 nFuncFilts=0;
+	SFString funcFilts[20];
+	SFString filtList = options.funcFilter;
+	while (!filtList.IsEmpty())
+		funcFilts[nFuncFilts++] = nextTokenClear(filtList, ',');
 
 	theAccount.nVisible=0;
 	for (int i=0;i<theAccount.transactions.getCount();i++)
@@ -392,9 +422,17 @@ SFBool CSlurperApp::Filter(COptions& options, SFString& message)
 			trans->setShowing(FALSE);
 		}
 
+		if (!options.funcFilter.IsEmpty())
+		{
+			SFBool show = FALSE;
+			for (int i=0;i<nFuncFilts;i++)
+				show = (show || trans->isFunction(funcFilts[i]));
+			trans->setShowing(show);
+		}
+		
 		theAccount.nVisible += trans->isShowing();
 		SFInt32 nFiltered = (theAccount.nVisible+1);
-		if (!(nFiltered%10)) { outErr << "\t" << "Filtering..." << nFiltered << " records passed." << (isTesting?"\n":"\r"); outErr.Flush(); }
+		if (!(nFiltered%REP_INFREQ)) { outErr << "\t" << "Filtering..." << nFiltered << " records passed." << (isTesting?"\n":"\r"); outErr.Flush(); }
 	}
 
 	if (!isTesting)
@@ -510,6 +548,8 @@ void CSlurperApp::buildDisplayStrings(COptions& options)
 			theAccount.header        += fmtForFields.Substitute("{FIELD}", resolved).Substitute("[",EMPTY).Substitute("]",EMPTY).Substitute("<td ","<th ");
 		}
 	}
+	theAccount.displayString = StripAny(theAccount.displayString, "\t ");
+	theAccount.header = StripAny(theAccount.header, "\t ");
 
 	// This is what we're really after
 	const SFString fmtForRecords = getFormatString(options, "record");
@@ -558,7 +598,7 @@ void findBlockRange(const SFString& json, SFInt32& minBlock, SFInt32& maxBlock)
 // Make sure our data folder exist, if not establish it
 SFBool establishFolders(CConfig& config, const SFString& vers)
 {
-	SFString configFilename = configPath("config.dat");
+	SFString configFilename = configPath("ethslurp.conf");
 
 	config.setFilename(configFilename);
 	if (SFos::folderExists(cachePath()) && SFos::fileExists(configFilename))

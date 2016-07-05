@@ -1,5 +1,5 @@
-#ifndef _SLURP_H_
-#define _SLURP_H_
+#ifndef _PROPOSAL_H_
+#define _PROPOSAL_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -24,64 +24,55 @@
  SOFTWARE.
  --------------------------------------------------------------------------------*/
 #include "utillib.h"
-#include "transaction.h"
-#include "function.h"
 
 //--------------------------------------------------------------------------
-class CSlurp;
-typedef SFArrayBase<CSlurp>         CSlurpArray;
-typedef SFList<CSlurp*>             CSlurpList;
-typedef CNotifyClass<const CSlurp*> CSlurpNotify;
-typedef SFUniqueList<CSlurp*>       CSlurpListU;
+class CProposal;
+typedef SFArrayBase<CProposal>         CProposalArray;
+typedef SFList<CProposal*>             CProposalList;
+typedef CNotifyClass<const CProposal*> CProposalNotify;
+typedef SFUniqueList<CProposal*>       CProposalListU;
 
 //---------------------------------------------------------------------------
-extern int sortSlurp        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
-extern int sortSlurpByName  (const void *rr1, const void *rr2);
-extern int sortSlurpByID    (const void *rr1, const void *rr2);
-extern int isDuplicateSlurp (const void *rr1, const void *rr2);
+extern int sortProposal        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
+extern int sortProposalByName  (const void *rr1, const void *rr2);
+extern int sortProposalByID    (const void *rr1, const void *rr2);
+extern int isDuplicateProposal (const void *rr1, const void *rr2);
 
 // EXISTING_CODE
-extern CFunction funcTable[];
-extern SFInt32 nFunctions;
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-class CSlurp : public CBaseNode
+class CProposal : public CBaseNode
 {
 public:
 	SFInt32 handle;
-	SFString addr;
-	SFString header;
-	SFString displayString;
-	SFBool pageSize;
-	SFInt32 lastPage;
-	SFInt32 lastBlock;
-	SFInt32 nVisible;
-	CTransactionArray transactions;
+	SFInt32 proposalID;
+	SFTime closingDate;
+	SFInt32 nYes;
+	SFInt32 nNo;
 
 public:
-					CSlurp  (void);
-					CSlurp  (const CSlurp& sl);
-				   ~CSlurp  (void);
-	CSlurp&	operator= 		(const CSlurp& sl);
+					CProposal  (void);
+					CProposal  (const CProposal& pr);
+				   ~CProposal  (void);
+	CProposal&	operator= 		(const CProposal& pr);
 
-	DECLARE_NODE (CSlurp);
+	DECLARE_NODE (CProposal);
 
 	// EXISTING_CODE
-	void    loadABI      (void);
 	// EXISTING_CODE
 
 private:
 	void			Clear      		(void);
 	void			Init      		(void);
-	void			Copy      		(const CSlurp& sl);
+	void			Copy      		(const CProposal& pr);
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 };
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(void)
+inline CProposal::CProposal(void)
 {
 	Init();
 	// EXISTING_CODE
@@ -89,18 +80,18 @@ inline CSlurp::CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(const CSlurp& sl)
+inline CProposal::CProposal(const CProposal& pr)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
-	Copy(sl);
+	Copy(pr);
 }
 
 // EXISTING_CODE
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-inline CSlurp::~CSlurp(void)
+inline CProposal::~CProposal(void)
 {
 	Clear();
 	// EXISTING_CODE
@@ -108,62 +99,54 @@ inline CSlurp::~CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Clear(void)
+inline void CProposal::Clear(void)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Init(void)
+inline void CProposal::Init(void)
 {
 	CBaseNode::Init();
 
 	handle = 0;
-	addr = EMPTY;
-	header = EMPTY;
-	displayString = EMPTY;
-	pageSize = 0;
-	lastPage = 0;
-	lastBlock = 0;
-	nVisible = 0;
-//	transactions = ??; /* unknown type: CTransactionArray */
+	proposalID = 0;
+	closingDate = earliestDate;
+	nYes = 0;
+	nNo = 0;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Copy(const CSlurp& sl)
+inline void CProposal::Copy(const CProposal& pr)
 {
 	Clear();
 
-	CBaseNode::Copy(sl);
-	handle = sl.handle;
-	addr = sl.addr;
-	header = sl.header;
-	displayString = sl.displayString;
-	pageSize = sl.pageSize;
-	lastPage = sl.lastPage;
-	lastBlock = sl.lastBlock;
-	nVisible = sl.nVisible;
-	transactions = sl.transactions;
+	CBaseNode::Copy(pr);
+	handle = pr.handle;
+	proposalID = pr.proposalID;
+	closingDate = pr.closingDate;
+	nYes = pr.nYes;
+	nNo = pr.nNo;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp& CSlurp::operator=(const CSlurp& sl)
+inline CProposal& CProposal::operator=(const CProposal& pr)
 {
-	Copy(sl);
+	Copy(pr);
 	// EXISTING_CODE
 	// EXISTING_CODE
 	return *this;
 }
 
 //---------------------------------------------------------------------------
-inline SFString CSlurp::getValueByName(const SFString& fieldName) const
+inline SFString CProposal::getValueByName(const SFString& fieldName) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -171,7 +154,7 @@ inline SFString CSlurp::getValueByName(const SFString& fieldName) const
 }
 
 //---------------------------------------------------------------------------
-inline SFInt32 CSlurp::getHandle(void) const
+inline SFInt32 CProposal::getHandle(void) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -179,14 +162,14 @@ inline SFInt32 CSlurp::getHandle(void) const
 }
 
 //---------------------------------------------------------------------------
-extern SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data);
+extern SFString nextProposalChunk(const SFString& fieldIn, SFBool& force, const void *data);
 
 //---------------------------------------------------------------------------
-IMPLEMENT_ARCHIVE_ARRAY(CSlurpArray);
-IMPLEMENT_ARCHIVE_LIST(CSlurpList);
+IMPLEMENT_ARCHIVE_ARRAY(CProposalArray);
+IMPLEMENT_ARCHIVE_LIST(CProposalList);
 
 //---------------------------------------------------------------------------
-#include "slurp_custom.h"
+#include "proposal_custom.h"
 
 // EXISTING_CODE
 // EXISTING_CODE

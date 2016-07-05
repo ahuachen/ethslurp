@@ -14,12 +14,30 @@ options.cpp
 objects = $(patsubst %.cpp,objs/%.o,$(src))
 
 all:
-	cd utillib; make; cd ..
-	cd etherlib; make; cd ..
+	@cd utillib; make; cd ..
+	@cd etherlib; make; cd ..
 	@echo "$(product) build started"
 	@echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	@make $(product)
 	@echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+hack: all
+	@cd theHack; make; cd ..
+	@make -B back
+
+test: all
+	@cd theData/tests; make; cd ..
+	@cd theData/data; make; cd ..
+	@cd theData/funcs; make; cd ..
+	@cd theData/ghc; make; cd ..
+	@cd theData/otherContracts; make; cd ..
+	@cd theData/whales; make; cd ..
+	@make -B back
+
+back:
+	@rm -fR theData/backup
+	@cp -pR ~/.ethslurp theData/backup
+	@rm -fR theData/backup/slurps
 
 $(product): $(objects) $(libs)
 	g++ -o $(product) $(objects) $(libs)
@@ -34,7 +52,7 @@ objs/%.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(cflags) -c $< -o $@
 
 cleanall:
-	clean
+	@make clean
 
 clean:
 	@cd utillib; make clean; cd ..

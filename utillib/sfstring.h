@@ -1183,5 +1183,4 @@ extern SFString whichBadChar(const SFString& checkStr, const SFString& disallowS
 extern int sortByStringValue(const void *rr1, const void *rr2);
 extern int compareStringValue(const void *rr1, const void *rr2);
 #define getString(a) EMPTY
-
 #endif

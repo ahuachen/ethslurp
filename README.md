@@ -7,7 +7,7 @@ Check out Great Hill Corporation on <a href="https://www.facebook.com/GreatHillC
 
 ### ethslurp
 
-    Usage:   ../ethslurp [-b|-c|-d|-e|-f|-i|-l|-m|-o|-r|-s|-t|-v|-h] addr
+    Usage:   ../ethslurp [-b|-c|-d|-e|-f|-i|-l|-m|-n|-o|-r|-s|-t|-v|-h] addr
 
     Purpose: Fetches data off the Ethereum blockchain for an arbitrary
              account or smart contract. Optionally formats the output
@@ -24,9 +24,26 @@ Check out Great Hill Corporation on <a href="https://www.facebook.com/GreatHillC
     -i  (or -income)     include income transactions only
     -l  (or -list)       list previously slurped addresses in cache
     -m  (or -max)        maximum transactions to slurp (:100000)
+	-n  (or -name)       name this address
     -o  (or -open)       open the configuration file for editing
     -r  (or -rerun)      re-run the most recent slurp
     -s  (or -slurp)      force EthSlurp to take a slurp (ignore cached data)
     -t  (or -test)       generate intermediary files but do not execute the commands
     -v  (or -verbose)    set verbose level. Follow with a number to set level (-v0 for silent)
     -h  (or -help)       display this help screen
+
+### Building from source
+
+Currently we have no binaries to download, therefore you must build from source. We think there is only a single dependency in our code for the 'curl' libraries.
+
+On Ubuntu you may run this command to get 'curl':
+
+```
+apt-get install libcurl4-gnutls-dev
+```
+
+On the Mac, this may be a good start:
+
+```
+http://macappstore.org/curl/
+```

@@ -1,3 +1,4 @@
+#if 1
 #ifndef _OPTIONS_H_
 #define _OPTIONS_H_
 /*--------------------------------------------------------------------------------
@@ -34,12 +35,17 @@ public:
 	SFInt32  firstBlock2Read;
 	SFInt32  lastBlock2Read;
 	SFTime   firstDate;
+	SFString funcFilter;
 	SFTime   lastDate;
 	SFBool   openFile;
+	SFBool   cmdFile;
 	SFString addr;
 	SFInt32  maxTransactions;
 	SFInt32  pageSize;
 	SFString exportFormat;
+	SFString name;
+	SFString archiveFile;
+	SFBool   wantsArchive;
 	FILE    *output; // for use when -a is on
 
 	        COptions       (void);
@@ -72,3 +78,41 @@ extern CParams params[];
 extern SFInt32 nParams;
 
 #endif
+#else
+#ifndef _OPTIONS_H_
+#define _OPTIONS_H_
+class COptions
+{
+public:
+	SFBool   count;
+	SFBool   sum;
+	SFString file;
+
+	        COptions       (void);
+	       ~COptions       (void);
+	SFInt32 parseArguments (SFInt32 nArgs, const SFString *args);
+};
+
+//--------------------------------------------------------------------------------
+class CParams
+{
+public:
+	SFString  shortName;
+	SFString  longName;
+	SFString  description;
+	CParams( const SFString& name, const SFString& descr );
+};
+
+//--------------------------------------------------------------------------------
+extern int      usage        (const SFString& errMsg=nullString);
+extern SFString options     (void);
+extern SFString descriptions(void);
+extern SFString purpose     (void);
+
+//--------------------------------------------------------------------------------
+extern CParams params[];
+extern SFInt32 nParams;
+
+#endif
+#endif
+

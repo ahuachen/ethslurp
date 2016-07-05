@@ -21,56 +21,55 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  --------------------------------------------------------------------------------*/
-#include "parameter.h"
+#include "vote.h"
 
 //---------------------------------------------------------------------------
-IMPLEMENT_NODE(CParameter, CBaseNode, NO_SCHEMA);
+IMPLEMENT_NODE(CVote, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-void CParameter::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
+void CVote::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
 {
 	if (!isShowing())
 		return;
 
-	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn); //.Substitute("\n","\t");
+	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn);;
 	if (handleCustomFormat(ctx, fmt, data))
 		return;
 
-	CParameterNotify dn(this);
+	CVoteNotify dn(this);
 	while (!fmt.IsEmpty())
-		ctx << getNextChunk(fmt, nextParameterChunk, &dn);
+		ctx << getNextChunk(fmt, nextVoteChunk, &dn);
 }
 
 //---------------------------------------------------------------------------
-SFString nextParameterChunk(const SFString& fieldIn, SFBool& force, const void *data)
+SFString nextVoteChunk(const SFString& fieldIn, SFBool& force, const void *data)
 {
-	CParameterNotify *pa = (CParameterNotify*)data;
-	const CParameter *par = pa->getDataPtr();
+	CVoteNotify *vo = (CVoteNotify*)data;
+	const CVote *vot = vo->getDataPtr();
 
 	// Give common (edit, delete, etc.) code a chance to override
-	SFString ret = nextChunk_common(fieldIn, getString("cmd"), par);
+	SFString ret = nextChunk_common(fieldIn, getString("cmd"), vot);
 	if (!ret.IsEmpty())
 		return ret;
 	
 	// Now give customized code a chance to override
-	ret = nextParameterChunk_custom(fieldIn, force, data);
+	ret = nextVoteChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())
 		return ret;
 	
 	switch (tolower(fieldIn[0]))
 	{
 		case 'f':
-			return EMPTY;
-//			if ( fieldIn % "func" ) return par->func;
+			if ( fieldIn % "from" ) return vot->from;
 			break;
 		case 'h':
-			if ( fieldIn % "handle" ) return asString(par->handle);
+			if ( fieldIn % "handle" ) return asString(vot->handle);
 			break;
-		case 'n':
-			if ( fieldIn % "name" ) return par->name;
+		case 'p':
+			if ( fieldIn % "proposalID" ) return padNum3(vot->proposalID);
 			break;
-		case 't':
-			if ( fieldIn % "type" ) return par->type;
+		case 'v':
+			if ( fieldIn % "votedYes" ) return asString(vot->votedYes);
 			break;
 	}
 	
@@ -78,22 +77,30 @@ SFString nextParameterChunk(const SFString& fieldIn, SFBool& force, const void *
 }
 
 //---------------------------------------------------------------------------------------------------
-SFBool CParameter::setValueByName(const SFString& fieldName, const SFString& fieldValue)
+SFBool CVote::setValueByName(const SFString& fieldName, const SFString& fieldValue)
 {
 	switch (tolower(fieldName[0]))
 	{
 		case 'f':
-			return TRUE;
-//			if ( fieldName % "func" ) { func = fieldValue; return TRUE; }
+			if ( fieldName % "from" ) { from = fieldValue; return TRUE; }
+			else if ( fieldName % "function" ) {
+				SFString val = fieldValue;
+				SFString func = nextTokenClear(val,'|'); // skip
+				SFString prop = nextTokenClear(val,'|');
+				SFString vote = nextTokenClear(val,'|');
+				setValueByName("proposalID", prop);
+				setValueByName("votedYes",   vote == "Yea" ? "1" : "0");
+				return TRUE;
+			}
 			break;
 		case 'h':
 			if ( fieldName % "handle" ) { handle = toLong(fieldValue); return TRUE; }
 			break;
-		case 'n':
-			if ( fieldName % "name" ) { name = fieldValue; return TRUE; }
+		case 'p':
+			if ( fieldName % "proposalID" ) { proposalID = toLong(fieldValue); return TRUE; }
 			break;
-		case 't':
-			if ( fieldName % "type" ) { type = fieldValue; return TRUE; }
+		case 'v':
+			if ( fieldName % "votedYes" ) { votedYes = toBool(fieldValue); return TRUE; }
 			break;
 		default:
 			break;
@@ -102,14 +109,14 @@ SFBool CParameter::setValueByName(const SFString& fieldName, const SFString& fie
 }
 
 //---------------------------------------------------------------------------------------------------
-void CParameter::finishParse()
+void CVote::finishParse()
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //---------------------------------------------------------------------------------------------------
-void CParameter::Serialize(SFArchive& archive)
+void CVote::Serialize(SFArchive& archive)
 {
 	if (!SerializeHeader(archive))
 		return;
@@ -117,45 +124,45 @@ void CParameter::Serialize(SFArchive& archive)
 	if (archive.isReading())
 	{
 		archive >> handle;
-		archive >> name;
-		archive >> type;
-//		archive >> func;
+		archive >> from;
+		archive >> proposalID;
+		archive >> votedYes;
 
 	} else
 	{
 		archive << handle;
-		archive << name;
-		archive << type;
-//		archive << func;
+		archive << from;
+		archive << proposalID;
+		archive << votedYes;
 
 	}
 }
 
 //---------------------------------------------------------------------------
-void CParameter::registerClass(void)
+void CVote::registerClass(void)
 {
 	SFInt32 fieldNum=1000;
-	ADD_FIELD(CParameter, "schema",  T_NUMBER|TS_LABEL, ++fieldNum);
-	ADD_FIELD(CParameter, "deleted", T_RADIO|TS_LABEL,  ++fieldNum);
-	ADD_FIELD(CParameter, "handle", T_NUMBER|TS_LABEL,  ++fieldNum);
-	ADD_FIELD(CParameter, "name", T_TEXT, ++fieldNum);
-	ADD_FIELD(CParameter, "type", T_TEXT, ++fieldNum);
-	ADD_FIELD(CParameter, "func", T_NONE, ++fieldNum);
+	ADD_FIELD(CVote, "schema",  T_NUMBER|TS_LABEL, ++fieldNum);
+	ADD_FIELD(CVote, "deleted", T_RADIO|TS_LABEL,  ++fieldNum);
+	ADD_FIELD(CVote, "handle", T_NUMBER|TS_LABEL,  ++fieldNum);
+	ADD_FIELD(CVote, "from", T_TEXT, ++fieldNum);
+	ADD_FIELD(CVote, "proposalID", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CVote, "votedYes", T_RADIO, ++fieldNum);
 
 	// Hide our internal fields, user can turn them on if they like
-	HIDE_FIELD(CParameter, "schema");
-	HIDE_FIELD(CParameter, "deleted");
-	HIDE_FIELD(CParameter, "handle");
+	HIDE_FIELD(CVote, "schema");
+	HIDE_FIELD(CVote, "deleted");
+	HIDE_FIELD(CVote, "handle");
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //---------------------------------------------------------------------------
-int sortParameter(const SFString& f1, const SFString& f2, const void *rr1, const void *rr2)
+int sortVote(const SFString& f1, const SFString& f2, const void *rr1, const void *rr2)
 {
-	CParameter *g1 = (CParameter*)rr1;
-	CParameter *g2 = (CParameter*)rr2;
+	CVote *g1 = (CVote*)rr1;
+	CVote *g2 = (CVote*)rr2;
 
 	SFString v1 = g1->getValueByName(f1);
 	SFString v2 = g2->getValueByName(f1);
@@ -167,5 +174,5 @@ int sortParameter(const SFString& f1, const SFString& f2, const void *rr1, const
 	v2 = g2->getValueByName(f2);
 	return (int)v1.Compare(v2);
 }
-int sortParameterByName(const void *rr1, const void *rr2) { return sortParameter("pa_Name", "", rr1, rr2); }
-int sortParameterByID  (const void *rr1, const void *rr2) { return sortParameter("parameterID", "", rr1, rr2); }
+int sortVoteByName(const void *rr1, const void *rr2) { return sortVote("vo_Name", "", rr1, rr2); }
+int sortVoteByID  (const void *rr1, const void *rr2) { return sortVote("voteID", "", rr1, rr2); }

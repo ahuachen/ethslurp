@@ -23,53 +23,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --------------------------------------------------------------------------------*/
-#define DEF_DELIMITER ((char)0x5)
-
 #include "exportcontext.h"
 #include "importcontext.h"
 #include "database.h"
 
-#define ARCHIVE_READ_ONLY  (100)
-#define ARCHIVE_WRITE_ONLY (200)
-
 //-----------------------------------------------------------------------------------------
-class SFArchive
+class SFArchive : public CSharedResource
 {
 public:
-	char                m_fieldEnd;
-	char                m_recordEnd;
 	SFBool              m_writeDeleted;
 	SFInt32             m_schema;
-	CFileExportContext *m_writeFile;
-	CFileImportContext *m_readFile;
+	SFBool              m_isReading;
 
-	SFArchive(const SFString& filename, SFBool storing, SFInt32 schema, SFBool writeDeleted)
+	SFArchive(SFBool isReading, SFInt32 schema, SFBool writeDeleted=TRUE)
 		{
-			m_writeDeleted = writeDeleted;
+			m_isReading    = isReading;
 			m_schema       = schema;
-			m_fieldEnd     = DEF_DELIMITER;
-			m_recordEnd    = ((char)0x6);
-			// open it for writing if we are told to
-			if (storing == ARCHIVE_WRITE_ONLY)
-			{
-				m_writeFile = new CFileExportContext(filename, asciiWriteCreate);
-				m_readFile = NULL;
-
-			} else
-			{
-				m_readFile = new CFileImportContext(filename, asciiReadOnly);
-				m_writeFile = NULL;
-			}
+			m_writeDeleted = writeDeleted;
 		}
-
-	void Close(void)
-		{
-			if (m_writeFile) m_writeFile->Close();
-			if (m_readFile)  m_readFile->Close();
-			m_writeFile = NULL;
-			m_readFile  = NULL;
-		}
-
 	SFBool  writeDeleted(void) const
 		{
 			return (m_writeDeleted);
@@ -80,29 +51,28 @@ public:
 		}
 	SFBool isWriting(void) const
 		{
-			return (m_writeFile != NULL);
+			return !m_isReading;
 		}
 	SFBool isReading(void) const
 		{
-			return (m_readFile != NULL);
+			return m_isReading;
 		}
 
 	SFArchive& operator<<(char c);
 	SFArchive& operator<<(long dw);
 	SFArchive& operator<<(float f);
 	SFArchive& operator<<(double f);
-	SFArchive& operator<<(const char *str);
 	SFArchive& operator<<(const SFString& str);
 	SFArchive& operator<<(const SFTime& tm);
 	SFArchive& operator<<(const SFAttribute& attr);
 	SFArchive& operator<<(const CDoublePoint& pt);
 	SFArchive& operator<<(const CDoubleRect& rect);
+	SFArchive& operator<<(const char *str);
 
 	SFArchive& operator>>(char& c);
 	SFArchive& operator>>(long& dw);
 	SFArchive& operator>>(float& f);
 	SFArchive& operator>>(double& f);
-	SFArchive& operator>>(char* &str);
 	SFArchive& operator>>(SFString& str);
 	SFArchive& operator>>(SFTime& tm);
 	SFArchive& operator>>(SFAttribute& attr);

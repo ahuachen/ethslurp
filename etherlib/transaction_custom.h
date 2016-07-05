@@ -28,6 +28,5 @@
 
 //---------------------------------------------------------------------------
 extern SFString nextTransactionChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
-extern void     finishParse(CTransaction *transaction);
 
 #endif

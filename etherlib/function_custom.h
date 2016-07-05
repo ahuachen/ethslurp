@@ -28,6 +28,5 @@
 
 //---------------------------------------------------------------------------
 extern SFString nextFunctionChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
-extern void     finishParse(CFunction *function);
 
 #endif

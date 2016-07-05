@@ -32,7 +32,7 @@ void CTransaction::Format(CExportContext& ctx, const SFString& fmtIn, void *data
 	if (!isShowing())
 		return;
 
-	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn);;
+	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn); //.Substitute("\n","\t");
 	if (handleCustomFormat(ctx, fmt, data))
 		return;
 
@@ -82,8 +82,8 @@ SFString nextTransactionChunk(const SFString& fieldIn, SFBool& force, const void
 			break;
 		case 'i':
 			if ( fieldIn % "input" ) return tra->input;
-			if ( fieldIn % "isInternalTx" ) return asString(tra->isInternalTx);
 			if ( fieldIn % "isError" ) return asString(tra->isError);
+			if ( fieldIn % "isInternalTx" ) return asString(tra->isInternalTx);
 			break;
 		case 'n':
 			if ( fieldIn % "nonce" ) return tra->nonce;
@@ -129,8 +129,8 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 			break;
 		case 'i':
 			if ( fieldName % "input" ) { input = fieldValue; return TRUE; }
-			if ( fieldName % "isInternalTx" ) { isInternalTx = toBool(fieldValue); return TRUE; }
 			if ( fieldName % "isError" ) { isError = toBool(fieldValue); return TRUE; }
+			if ( fieldName % "isInternalTx" ) { isInternalTx = toBool(fieldValue); return TRUE; }
 			break;
 		case 'n':
 			if ( fieldName % "nonce" ) { nonce = fieldValue; return TRUE; }
@@ -150,9 +150,18 @@ SFBool CTransaction::setValueByName(const SFString& fieldName, const SFString& f
 }
 
 //---------------------------------------------------------------------------------------------------
+void CTransaction::finishParse()
+{
+	// EXISTING_CODE
+	// EXISTING_CODE
+}
+
+//---------------------------------------------------------------------------------------------------
 void CTransaction::Serialize(SFArchive& archive)
 {
-	SERIALIZE_START();
+	if (!SerializeHeader(archive))
+		return;
+	
 	if (archive.isReading())
 	{
 		archive >> handle;
@@ -167,13 +176,13 @@ void CTransaction::Serialize(SFArchive& archive)
 		archive >> gasUsed;
 		archive >> hash;
 		archive >> input;
+		archive >> isError;
+		archive >> isInternalTx;
 		archive >> nonce;
 		archive >> timeStamp;
 		archive >> to;
 		archive >> transactionIndex;
 		archive >> value;
-		archive >> isInternalTx;
-		archive >> isError;
 
 	} else
 	{
@@ -189,16 +198,15 @@ void CTransaction::Serialize(SFArchive& archive)
 		archive << gasUsed;
 		archive << hash;
 		archive << input;
+		archive << isError;
+		archive << isInternalTx;
 		archive << nonce;
 		archive << timeStamp;
 		archive << to;
 		archive << transactionIndex;
 		archive << value;
-		archive << isInternalTx;
-		archive << isError;
 
 	}
-	SERIALIZE_END();
 }
 
 //---------------------------------------------------------------------------
@@ -219,13 +227,13 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "gasUsed", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "hash", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "input", T_TEXT, ++fieldNum);
+	ADD_FIELD(CTransaction, "isError", T_RADIO, ++fieldNum);
+	ADD_FIELD(CTransaction, "isInternalTx", T_RADIO, ++fieldNum);
 	ADD_FIELD(CTransaction, "nonce", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "timeStamp", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CTransaction, "to", T_TEXT, ++fieldNum);
 	ADD_FIELD(CTransaction, "transactionIndex", T_NUMBER, ++fieldNum);
 	ADD_FIELD(CTransaction, "value", T_TEXT, ++fieldNum);
-	ADD_FIELD(CTransaction, "isInternalTx", T_RADIO, ++fieldNum);
-	ADD_FIELD(CTransaction, "isError", T_RADIO, ++fieldNum);
 
 	// Hide our internal fields, user can turn them on if they like
 	HIDE_FIELD(CTransaction, "schema");
@@ -240,12 +248,14 @@ void CTransaction::registerClass(void)
 	ADD_FIELD(CTransaction, "function", T_TEXT, ++fieldNum);
 
 	// Hide fields we don't want to show by default
+//	HIDE_FIELD(CTransaction, "date");
+//	HIDE_FIELD(CTransaction, "ether");
 	HIDE_FIELD(CTransaction, "confirmations");
-	//HIDE_FIELD(CTransaction, "hitLimit");
-	//HIDE_FIELD(CTransaction, "inputLen");
+//	HIDE_FIELD(CTransaction, "hitLimit");
+//	HIDE_FIELD(CTransaction, "inputLen");
 	HIDE_FIELD(CTransaction, "function");
-	//HIDE_FIELD(CTransaction, "isInternalTx");
-	//HIDE_FIELD(CTransaction, "isError");
+//	HIDE_FIELD(CTransaction, "isInternalTx");
+//	HIDE_FIELD(CTransaction, "isError");
 	// EXISTING_CODE
 }
 

@@ -48,7 +48,7 @@ SFBool CWebAPI::checkKey(CConfig& config)
 	char buffer[256];
 	cerr
 		<< conRed << "\n  ***Warning***" << conOff << "\n"
-		<< "  " << conYellow << "ethslurp" << conOff << " needs an api_key from " + provider + " in order to work. You may get one at\n"
+		<< "  " << conYellow << "This program" << conOff << " needs an api_key from " + provider + " in order to work. You may get one at\n"
 		<< "  " + url + ". See our online help file for more information.\n"
 		<< "  Please provide an API key or type 'exit'\n"
 		<< "  > ";

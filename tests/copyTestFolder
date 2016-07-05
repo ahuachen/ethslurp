@@ -1,2 +1,0 @@
-#cp -pR ~/.ethslurp.test/* proposed/files/files_$1
-#rm -fR proposed/files/files_$1/slurps 2>/dev/null

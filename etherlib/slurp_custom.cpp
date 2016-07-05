@@ -24,15 +24,8 @@
 #include "slurp.h"
 
 // EXISTING_CODE
-#include "ethslurp.h"
+#include "/Users/jrush/src.GitHub/ethslurp/ethslurp.h"
 // EXISTING_CODE
-
-//---------------------------------------------------------------------------
-void finishParse(CSlurp *slurp)
-{
-	// EXISTING_CODE
-	// EXISTING_CODE
-}
 
 //---------------------------------------------------------------------------
 SFString nextSlurpChunk_custom(const SFString& fieldIn, SFBool& force, const void *data)
@@ -44,6 +37,9 @@ SFString nextSlurpChunk_custom(const SFString& fieldIn, SFBool& force, const voi
 		// EXISTING_CODE
 		case 'n':
 			if ( fieldIn % "now" ) return (isTesting ? "TESTING_TIME" : Now().Format(FMT_DEFAULT));
+			break;
+		case 'r':
+			if ( fieldIn % "records" ) return (slu->transactions.getCount() == 0 ? "No records" : "");
 			break;
 		// EXISTING_CODE
 		default:
@@ -92,15 +88,14 @@ SFBool CSlurp::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, vo
 		for (int i=0;i<transactions.getCount();i++)
 		{
 			cnt += transactions[i].isShowing();
-			if (cnt && !(cnt%10))
+			if (cnt && !(cnt%REP_INFREQ))
 			{
 				outErr << "\tExporting record " << cnt << " of " << nVisible;
 				outErr << (transactions.getCount()!=nVisible?" visible":"") << " records" << (isTesting?"\n":"\r"); outErr.Flush();
 			}
-			((CSlurp*)this)->transactions[i].slurp = (CSlurp*)this;
 			ctx << transactions[i].Format(displayString);
 			if (cnt>=nVisible)
-				continue; // no need to keep spinning if we've shown them all
+				break; // no need to keep spinning if we've shown them all
 		}
 		ctx << "\n";
 		while (!postFmt.IsEmpty())
@@ -112,117 +107,53 @@ SFBool CSlurp::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, vo
 }
 
 // EXISTING_CODE
-//---------------------------------------------------------------------------
-SFInt32 CSlurp::readFromFile(CSharedResource& file)
-{
-	SFInt32 val=0;SFString str;
-	file.Read( val ); setDeleted(val);
-	file.Read( val ); setSchema(val);
-	file.Read( val ); setShowing(val);
-	file.Read( str ); ASSERT(str == ((CSlurp*)this )->getClassName());
-	file.Read( handle );
-	file.Read( addr );
-	file.Read( header );
-	file.Read( displayString );
-	file.Read( pageSize );
-	file.Read( lastPage );
-	file.Read( lastBlock );
-
-	// Now read the array
-	SFInt32 nRecords;
-	file.Read( nRecords );
-	transactions.Grow(nRecords+1); // resets size of array
-
-	SFInt32 nRead=0, maxBlock=0;
-	for (int i=0;i<nRecords;i++)
-	{
-		transactions[i].readFromFile(file);
-		if (!(++nRead%10)) { outErr << "\tReading from cache...record " << nRead << " of " << nRecords << (isTesting?"\n":"\r"); outErr.Flush(); }
-		SFInt32 curBlock = transactions[i].blockNumber;
-		maxBlock = MAX(maxBlock,curBlock);
-	}
-
-	if (!isTesting)
-		outErr << "\tReading from cache...record " << nRecords << " of " << nRecords << "\n";
-	if (maxBlock != lastBlock)
-		outErr << "Previously stored lastBlock '" << lastBlock << "' not equal to maxBlock '" << maxBlock << "\n";
-	outErr.Flush();
-
-	return TRUE;
-}
-
-//---------------------------------------------------------------------------
-SFInt32 CSlurp::writeToFile(CSharedResource& file) const
-{
-	file.Write( isDeleted() );
-	file.Write( getSchema() );
-	file.Write( isShowing() );
-	file.Write( ((CSlurp*)this )->getClassName());
-	file.Write( handle );
-	file.Write( addr );
-	file.Write( header );
-	file.Write( displayString );
-	file.Write( pageSize );
-	file.Write( lastPage );
-	file.Write( lastBlock );
-	file.Write( transactions.getCount() );
-	for (int i=0;i<transactions.getCount();i++)
-		transactions[i].writeToFile(file);
-
-	return TRUE;
-}
-
 #define MAX_FUNCS 200
-CParameter funcTable[MAX_FUNCS];
-SFInt32 nFunctions;
+CFunction funcTable[MAX_FUNCS];
+SFInt32 nFunctions=0;
 //---------------------------------------------------------------------------
 int sortFuncTable(const void *ob1, const void *ob2)
 {
-	CParameter *p1 = (CParameter*)ob1;
-	CParameter *p2 = (CParameter*)ob2;
-	return (int)p2->func->encoding.Compare(p1->func->encoding);
+	CFunction *p1 = (CFunction*)ob1;
+	CFunction *p2 = (CFunction*)ob2;
+	return (int)p2->encoding.Compare(p1->encoding);
 }
 
 //---------------------------------------------------------------------------
 void CSlurp::loadABI(void)
 {
-
-	// May already be loaded
+	// Already loaded?
 	if (nFunctions)
 		return;
+
+extern SFString configPath(const SFString& part);
+	SFString abiFilename = 	configPath("abis/"+addr+".json");
+	if (!SFos::fileExists(abiFilename))
+		return;
 	
-	SFString abiFile = configPath("abis/"+addr+".json");
-	if (SFos::fileExists(abiFile))
+	outErr << "\tLoading abi file: " << abiFilename << "...\n";
+	SFString contents = asciiFileToString(abiFilename);
+	ASSERT(!contents.IsEmpty());
+
+	char *p = cleanUpJson((char *)(const char*)contents);
+	while (p && *p)
 	{
-		outErr << "\tLoading abi file: " << abiFile << "...\n";
-		SFString contents = asciiFileToString(abiFile);
-		char *p = (char *)(const char*)contents;
-		while (p && *p)
+		CFunction func;SFInt32 nFields=0;
+		p = func.parseJson(p,nFields);
+		if (nFields)
 		{
-			CFunction func;SFInt32 nFields=0;
-			p = func.parseJson(p,nFields);
-			if (nFields)
+			SFString ethabi = "/usr/local/bin/ethabi";
+			if (SFos::fileExists(ethabi) && func.type == "function")
 			{
-				SFString ethabi = "/usr/local/bin/ethabi";
-				if (SFos::fileExists(ethabi) && func.type == "function")
-				{
-					SFString cmd = ethabi + " encode function \"" + abiFile + "\" " + func.name;
-					SFString result = SFos::doCommand(cmd);
-					func.encoding = result;
-					funcTable[nFunctions].func = &functions[nFunctions];
-					funcTable[nFunctions].name = func.name;
-					functions[nFunctions++] = func;
-				}
+				SFString cmd = ethabi + " encode function \"" + abiFilename + "\" " + func.name;
+				SFString result = SFos::doCommand(cmd);
+				func.encoding = result;
+				funcTable[nFunctions++] = func;
 			}
 		}
-		qsort(funcTable, nFunctions, sizeof(CParameter), sortFuncTable);
-		for (int i=0;i<nFunctions;i++)
-			if (functions[i].type == "function")
-				outErr << functions[i].Format("[{ENCODING}:][{NAME}]").Substitute("\n"," ") << "\n";
-
-		if (isTesting)
-		for (int i=0;i<nFunctions;i++)
-			outErr << functions[i].Format() << "\n";
 	}
+	qsort(funcTable, nFunctions, sizeof(CFunction), sortFuncTable);
+	for (int i=0;i<nFunctions;i++)
+		if (funcTable[i].type == "function" && verbose)
+			outErr << funcTable[i].Format().Substitute("\n"," ") << "\n";
 }
 // EXISTING_CODE

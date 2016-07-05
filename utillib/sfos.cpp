@@ -232,7 +232,7 @@ SFString SFos::getOS(void)
 
 //------------------------------------------------------------------
 // this global data makes these date strings a per-installation value - these strings will
-// be the same for all calendars on a machine - the data is stored in the user.dat file?
+// be the same for all calendars on a machine
 // day_names
 //------------------------------------------------------------------
 static SFString monthNames[] =
@@ -645,6 +645,19 @@ static char hex2Ascii(char *str)
 }
 
 //----------------------------------------------------------------------------
+SFString hex2String(const SFString& inHex)
+{
+	SFString ret, in = inHex.startsWith("0x") ? inHex.Mid(2,inHex.GetLength()) : inHex;
+	while (!in.IsEmpty())
+	{
+		SFString nibble = in.Left(2);
+		in = in.Mid(2,in.GetLength());
+		ret += hex2Ascii((char*)(const char*)nibble);
+	}
+	return ret;
+}
+
+//----------------------------------------------------------------------------
 // unescape strings (i.e. convert hex back to chars)
 //----------------------------------------------------------------------------
 SFString unEscapeString(const char *in)
@@ -731,29 +744,11 @@ static SFBool isKnownFiletype(const SFString& filename)
 			filename % DELETEDFILENAME   ||
 			filename % COMPACTFILENAME   ||
 
-			filename % "calweb.ini"      ||
-			filename % "events.dat"      ||
-			filename % "drops.dat"       ||
-			filename % "contacts.dat"    ||
-			filename % "users.dat"       ||
-			filename % "eventedit.dat"   ||
-			filename % "todoedit.dat"    ||
-			filename % "submissions.htm" ||
 			filename % "email.log"       ||
-			filename % "dialogs.dat"     ||
-			filename % "Upgrade.css"     ||
-			filename % "report.txt"      ||
-			filename % "readme.htm"      ||
 
-			filename.Contains("export")  ||
-			filename.Contains("import")  ||
-			filename.Contains(".vcf")    ||
-			filename.Contains(".vcs")    ||
 			filename.Contains(".csv")    ||
 			filename.Contains(".bak")    ||
-			filename.Contains(".lck")    ||
-		   (filename.Contains("notes_") && filename.Contains(".txt")) ||
-		   (filename.Contains("ex_")    && filename.Contains(".txt")));
+			filename.Contains(".lck"));
 }
 
 //--------------------------------------------------------------------------------

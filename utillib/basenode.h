@@ -54,6 +54,7 @@ public:
 	
 	virtual SFBool   isKindOf        (const ghRuntimeClass* pClass) const;
 	virtual char    *parseJson       (char *s, SFInt32& nFields);
+	virtual char    *parseCSV        (char *s, SFInt32& nFields, const SFString *fields);
 	virtual SFString defaultFormat   (void) const;
 
 	DECLARE_NODE_BASE(CBaseNode)
@@ -62,6 +63,8 @@ public:
 	virtual SFString getValueByName (const SFString& fieldName) const = 0;
 	virtual SFBool   setValueByName (const SFString& fieldName, const SFString& fieldValue) = 0;
 	virtual void     Serialize      (SFArchive& archive) = 0;
+	virtual void     finishParse    (void) = 0;
+	        SFBool   SerializeHeader(SFArchive& archive);
 	virtual SFString Format         (const SFString& fmtIn=nullString) const = 0;
 
 protected:
@@ -76,5 +79,7 @@ protected:
 		if ((_nodE)->Dereference()) \
 			delete (_nodE); \
 	(_nodE) = NULL;
+
+extern char *cleanUpJson(char *s);
 
 #endif

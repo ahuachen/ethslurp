@@ -21,13 +21,13 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  --------------------------------------------------------------------------------*/
-#include "parameter.h"
+#include "proposal.h"
 
 //---------------------------------------------------------------------------
-IMPLEMENT_NODE(CParameter, CBaseNode, NO_SCHEMA);
+IMPLEMENT_NODE(CProposal, CBaseNode, NO_SCHEMA);
 
 //---------------------------------------------------------------------------
-void CParameter::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
+void CProposal::Format(CExportContext& ctx, const SFString& fmtIn, void *data) const
 {
 	if (!isShowing())
 		return;
@@ -36,41 +36,41 @@ void CParameter::Format(CExportContext& ctx, const SFString& fmtIn, void *data) 
 	if (handleCustomFormat(ctx, fmt, data))
 		return;
 
-	CParameterNotify dn(this);
+	CProposalNotify dn(this);
 	while (!fmt.IsEmpty())
-		ctx << getNextChunk(fmt, nextParameterChunk, &dn);
+		ctx << getNextChunk(fmt, nextProposalChunk, &dn);
 }
 
 //---------------------------------------------------------------------------
-SFString nextParameterChunk(const SFString& fieldIn, SFBool& force, const void *data)
+SFString nextProposalChunk(const SFString& fieldIn, SFBool& force, const void *data)
 {
-	CParameterNotify *pa = (CParameterNotify*)data;
-	const CParameter *par = pa->getDataPtr();
+	CProposalNotify *pr = (CProposalNotify*)data;
+	const CProposal *pro = pr->getDataPtr();
 
 	// Give common (edit, delete, etc.) code a chance to override
-	SFString ret = nextChunk_common(fieldIn, getString("cmd"), par);
+	SFString ret = nextChunk_common(fieldIn, getString("cmd"), pro);
 	if (!ret.IsEmpty())
 		return ret;
 	
 	// Now give customized code a chance to override
-	ret = nextParameterChunk_custom(fieldIn, force, data);
+	ret = nextProposalChunk_custom(fieldIn, force, data);
 	if (!ret.IsEmpty())
 		return ret;
 	
 	switch (tolower(fieldIn[0]))
 	{
-		case 'f':
-			return EMPTY;
-//			if ( fieldIn % "func" ) return par->func;
+		case 'c':
+			if ( fieldIn % "closingDate" ) return pro->closingDate.Format(FMT_DATE);
 			break;
 		case 'h':
-			if ( fieldIn % "handle" ) return asString(par->handle);
+			if ( fieldIn % "handle" ) return asString(pro->handle);
 			break;
 		case 'n':
-			if ( fieldIn % "name" ) return par->name;
+			if ( fieldIn % "nYes" ) return asString(pro->nYes);
+			if ( fieldIn % "nNo" ) return asString(pro->nNo);
 			break;
-		case 't':
-			if ( fieldIn % "type" ) return par->type;
+		case 'p':
+			if ( fieldIn % "proposalID" ) return asString(pro->proposalID);
 			break;
 	}
 	
@@ -78,22 +78,22 @@ SFString nextParameterChunk(const SFString& fieldIn, SFBool& force, const void *
 }
 
 //---------------------------------------------------------------------------------------------------
-SFBool CParameter::setValueByName(const SFString& fieldName, const SFString& fieldValue)
+SFBool CProposal::setValueByName(const SFString& fieldName, const SFString& fieldValue)
 {
 	switch (tolower(fieldName[0]))
 	{
-		case 'f':
-			return TRUE;
-//			if ( fieldName % "func" ) { func = fieldValue; return TRUE; }
+		case 'c':
+			if ( fieldName % "closingDate" ) { closingDate = snagDate(fieldValue); return TRUE; }
 			break;
 		case 'h':
 			if ( fieldName % "handle" ) { handle = toLong(fieldValue); return TRUE; }
 			break;
 		case 'n':
-			if ( fieldName % "name" ) { name = fieldValue; return TRUE; }
+			if ( fieldName % "nYes" ) { nYes = toLong(fieldValue); return TRUE; }
+			if ( fieldName % "nNo" ) { nNo = toLong(fieldValue); return TRUE; }
 			break;
-		case 't':
-			if ( fieldName % "type" ) { type = fieldValue; return TRUE; }
+		case 'p':
+			if ( fieldName % "proposalID" ) { proposalID = toLong(fieldValue); return TRUE; }
 			break;
 		default:
 			break;
@@ -102,14 +102,14 @@ SFBool CParameter::setValueByName(const SFString& fieldName, const SFString& fie
 }
 
 //---------------------------------------------------------------------------------------------------
-void CParameter::finishParse()
+void CProposal::finishParse()
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //---------------------------------------------------------------------------------------------------
-void CParameter::Serialize(SFArchive& archive)
+void CProposal::Serialize(SFArchive& archive)
 {
 	if (!SerializeHeader(archive))
 		return;
@@ -117,45 +117,48 @@ void CParameter::Serialize(SFArchive& archive)
 	if (archive.isReading())
 	{
 		archive >> handle;
-		archive >> name;
-		archive >> type;
-//		archive >> func;
+		archive >> proposalID;
+		archive >> closingDate;
+		archive >> nYes;
+		archive >> nNo;
 
 	} else
 	{
 		archive << handle;
-		archive << name;
-		archive << type;
-//		archive << func;
+		archive << proposalID;
+		archive << closingDate;
+		archive << nYes;
+		archive << nNo;
 
 	}
 }
 
 //---------------------------------------------------------------------------
-void CParameter::registerClass(void)
+void CProposal::registerClass(void)
 {
 	SFInt32 fieldNum=1000;
-	ADD_FIELD(CParameter, "schema",  T_NUMBER|TS_LABEL, ++fieldNum);
-	ADD_FIELD(CParameter, "deleted", T_RADIO|TS_LABEL,  ++fieldNum);
-	ADD_FIELD(CParameter, "handle", T_NUMBER|TS_LABEL,  ++fieldNum);
-	ADD_FIELD(CParameter, "name", T_TEXT, ++fieldNum);
-	ADD_FIELD(CParameter, "type", T_TEXT, ++fieldNum);
-	ADD_FIELD(CParameter, "func", T_NONE, ++fieldNum);
+	ADD_FIELD(CProposal, "schema",  T_NUMBER|TS_LABEL, ++fieldNum);
+	ADD_FIELD(CProposal, "deleted", T_RADIO|TS_LABEL,  ++fieldNum);
+	ADD_FIELD(CProposal, "handle", T_NUMBER|TS_LABEL,  ++fieldNum);
+	ADD_FIELD(CProposal, "proposalID", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CProposal, "closingDate", T_DATE, ++fieldNum);
+	ADD_FIELD(CProposal, "nYes", T_NUMBER, ++fieldNum);
+	ADD_FIELD(CProposal, "nNo", T_NUMBER, ++fieldNum);
 
 	// Hide our internal fields, user can turn them on if they like
-	HIDE_FIELD(CParameter, "schema");
-	HIDE_FIELD(CParameter, "deleted");
-	HIDE_FIELD(CParameter, "handle");
+	HIDE_FIELD(CProposal, "schema");
+	HIDE_FIELD(CProposal, "deleted");
+	HIDE_FIELD(CProposal, "handle");
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //---------------------------------------------------------------------------
-int sortParameter(const SFString& f1, const SFString& f2, const void *rr1, const void *rr2)
+int sortProposal(const SFString& f1, const SFString& f2, const void *rr1, const void *rr2)
 {
-	CParameter *g1 = (CParameter*)rr1;
-	CParameter *g2 = (CParameter*)rr2;
+	CProposal *g1 = (CProposal*)rr1;
+	CProposal *g2 = (CProposal*)rr2;
 
 	SFString v1 = g1->getValueByName(f1);
 	SFString v2 = g2->getValueByName(f1);
@@ -167,5 +170,5 @@ int sortParameter(const SFString& f1, const SFString& f2, const void *rr1, const
 	v2 = g2->getValueByName(f2);
 	return (int)v1.Compare(v2);
 }
-int sortParameterByName(const void *rr1, const void *rr2) { return sortParameter("pa_Name", "", rr1, rr2); }
-int sortParameterByID  (const void *rr1, const void *rr2) { return sortParameter("parameterID", "", rr1, rr2); }
+int sortProposalByName(const void *rr1, const void *rr2) { return sortProposal("pr_Name", "", rr1, rr2); }
+int sortProposalByID  (const void *rr1, const void *rr2) { return sortProposal("proposalID", "", rr1, rr2); }

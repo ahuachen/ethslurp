@@ -9,16 +9,10 @@
 .DS_Store
 ethslurp
 api_key
-movies
-data_not_published
-timeConvert
-tests/cache
-tests/files
-data
-ghc
 TODO.txt
-curators
 abis
+theData
+theHack
 
 # Precompiled Headers
 *.gch

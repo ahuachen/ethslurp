@@ -28,6 +28,5 @@
 
 //---------------------------------------------------------------------------
 extern SFString nextSlurpChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
-extern void     finishParse(CSlurp *slurp);
 
 #endif

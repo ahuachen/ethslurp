@@ -1,5 +1,3 @@
-#ifndef _PARAMETER_CUSTOM_H_
-#define _PARAMETER_CUSTOM_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -23,10 +21,37 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  --------------------------------------------------------------------------------*/
+#include "vote.h"
+
 // EXISTING_CODE
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
-extern SFString nextParameterChunk_custom(const SFString& fieldIn, SFBool& force, const void *data);
+SFString nextVoteChunk_custom(const SFString& fieldIn, SFBool& force, const void *data)
+{
+	CVoteNotify *vo = (CVoteNotify*)data;
+	const CVote *vot = vo->getDataPtr();
+	switch (tolower(fieldIn[0]))
+	{
+		// EXISTING_CODE
+		// EXISTING_CODE
+		default:
+			break;
+	}
+	
+#pragma unused(vo)
+#pragma unused(vot)
 
-#endif
+	return EMPTY;
+}
+
+//---------------------------------------------------------------------------
+SFBool CVote::handleCustomFormat(CExportContext& ctx, const SFString& fmtIn, void *data) const
+{
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return FALSE;
+}
+
+// EXISTING_CODE
+// EXISTING_CODE

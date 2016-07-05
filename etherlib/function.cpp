@@ -32,7 +32,7 @@ void CFunction::Format(CExportContext& ctx, const SFString& fmtIn, void *data) c
 	if (!isShowing())
 		return;
 
-	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn).Substitute("\n","\t");
+	SFString fmt = (fmtIn.IsEmpty() ? defaultFormat() : fmtIn); //.Substitute("\n","\t");
 	if (handleCustomFormat(ctx, fmt, data))
 		return;
 
@@ -75,11 +75,9 @@ SFString nextFunctionChunk(const SFString& fieldIn, SFBool& force, const void *d
 			if ( fieldIn % "indexed" ) return asString(fun->indexed);
 			if ( fieldIn % "inputs" )
 			{
-				ret = "(";
+				SFString ret = "\n";
 				for (int i=0;i<fun->inputs.getCount();i++)
-					ret += fun->inputs[i].Format("[{TYPE} ][{NAME}, ]");
-				ret += ")";
-				ret.Replace(", )",")");
+					ret += fun->inputs[i].Format();
 				return ret;
 			}
 			break;
@@ -89,11 +87,9 @@ SFString nextFunctionChunk(const SFString& fieldIn, SFBool& force, const void *d
 		case 'o':
 			if ( fieldIn % "outputs" )
 			{
-				ret = "(";
+				SFString ret = "\n";
 				for (int i=0;i<fun->outputs.getCount();i++)
-					ret += fun->outputs[i].Format("[{TYPE} ][{NAME}, ]");
-				ret += ")";
-				ret.Replace(", )",")");
+					ret += fun->outputs[i].Format();
 				return ret;
 			}
 			break;
@@ -142,9 +138,20 @@ SFBool CFunction::setValueByName(const SFString& fieldName, const SFString& fiel
 }
 
 //---------------------------------------------------------------------------------------------------
+void CFunction::finishParse()
+{
+	// EXISTING_CODE
+	HIDE_FIELD(CFunction, "indexed");
+	HIDE_FIELD(CFunction, "anonymous");
+	// EXISTING_CODE
+}
+
+//---------------------------------------------------------------------------------------------------
 void CFunction::Serialize(SFArchive& archive)
 {
-	SERIALIZE_START();
+	if (!SerializeHeader(archive))
+		return;
+	
 	if (archive.isReading())
 	{
 		archive >> handle;
@@ -170,7 +177,6 @@ void CFunction::Serialize(SFArchive& archive)
 		archive << outputs;
 
 	}
-	SERIALIZE_END();
 }
 
 //---------------------------------------------------------------------------
@@ -193,10 +199,10 @@ void CFunction::registerClass(void)
 	HIDE_FIELD(CFunction, "schema");
 	HIDE_FIELD(CFunction, "deleted");
 	HIDE_FIELD(CFunction, "handle");
-	HIDE_FIELD(CFunction, "indexed");
-	HIDE_FIELD(CFunction, "anonymous");
 
 	// EXISTING_CODE
+	HIDE_FIELD(CFunction, "indexed");
+	HIDE_FIELD(CFunction, "anonymous");
 	// EXISTING_CODE
 }
 

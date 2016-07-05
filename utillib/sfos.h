@@ -256,9 +256,10 @@ inline void copyAndWait(const SFString& from, const SFString& to)
 }
 
 //------------------------------------------------------------------------------
-extern void   listItems  (SFInt32& nItems, SFString *items, const SFString& mask, SFBool folders);
-extern SFBool isFileOlder(const SFString& file1, const SFString& file2);
-extern SFBool isFileNewer(const SFString& file1, const SFString& file2);
-extern void   checkFolderDate(const SFString& folderIn, const SFString& fileIn);
+extern void     listItems       (SFInt32& nItems, SFString *items, const SFString& mask, SFBool folders);
+extern SFBool   isFileOlder     (const SFString& file1, const SFString& file2);
+extern SFBool   isFileNewer     (const SFString& file1, const SFString& file2);
+extern void     checkFolderDate (const SFString& folderIn, const SFString& fileIn);
+extern SFString hex2String      (const SFString& inHex);
 
 #endif

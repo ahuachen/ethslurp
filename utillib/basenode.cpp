@@ -160,107 +160,56 @@ SFString CBaseNode::defaultFormat(void) const
 }
 
 //--------------------------------------------------------------------------------
-char *cleanUpJson(char *s)
+char *CBaseNode::parseCSV(char *s, SFInt32& nFields, const SFString *fields)
 {
-        char *l = s, *start = s;
-        while (*s)
-        {
-                if (!isWhiteSpace(*s)&&*s!='\"')
-                {
-                        *l = *s;
-                        l++;
-                }
-                s++;
-        }
-        *l = '\0';
-        return start;
+	nFields = 0;
+
+	typedef enum { OUTSIDE=0, INSIDE } parseState;
+	parseState state = OUTSIDE;
+	
+	char *fieldVal=NULL;
+	while (*s)
+	{
+		switch (state)
+		{
+			case OUTSIDE:
+				if (*s=='\"')
+				{
+					state = INSIDE;
+					fieldVal=s+1;
+					
+				} else if (*s=='\n')
+				{
+					return (s+1);
+				}
+				s++;
+				break;
+				
+			case INSIDE:
+				if (*s == '\"')
+				{
+					*s = '\0';
+					if (!this->setValueByName(fields[nFields++], fieldVal))
+					{
+					//	fprintf(stderr,"Bad field name %s. Quitting...", (const char*)fields[nFields-1]);
+					//	return NULL;
+					}
+					fieldVal = NULL;
+					state = OUTSIDE;
+					
+				}
+				s++;
+				break;
+		}
+	}
+	return NULL;
 }
 
 //--------------------------------------------------------------------------------
 char *CBaseNode::parseJson(char *s, SFInt32& nFields)
 {
-#ifdef OLD_CODE_ERASE
-	typedef enum { IN_ARRAY=0, IN_ITEM, IN_NAME, IN_VALUE } parseState;
-	parseState state = IN_ARRAY;
-
-	char *fieldName=NULL;
-	char *fieldVal=NULL;
-	while (s && *s)
-	{
-		switch (state)
-		{
-		case IN_ARRAY:
-			if (*s=='{')
-				state = IN_ITEM;
-			break;
-
-		case IN_ITEM:
-			if (*s=='\"')
-			{
-				fieldName = s+1; // start of name
-				state = IN_NAME;
-
-			} else if (*s==':')
-			{
-				// find the first non-white-space, non-quote-mark character
-				s++;
-				while (s && *s && (*s==' ' || *s=='\n' || *s=='\t' || *s=='\r'))
-					s++;
-				if (s && *s=='\"')
-					s++;
-				if (!s)
-					return NULL;
-				fieldVal = s; // start of value
-				if (s && *s=='[')
-					while (s && *s && *s!=']') // assummes arrays don't contain arrays
-						s++;
-				state = IN_VALUE;
-
-			} else if (*s=='}')
-			{
-				state = IN_ARRAY;
-			}
-			break;
-
-		case IN_NAME:
-			if (*s=='\"')
-			{
-				*s = '\0'; // end of name
-				state = IN_ITEM;
-
-			}
-			break;
-
-		case IN_VALUE:
-			if (*s=='[') // we found a value that is an array, so grab the entire array
-			{
-				s++;
-				while (s && *s && *s!=']') // assummes arrays don't contain arrays
-					s++;
-				
-			} else if (*s==','||*s=='}')
-			{
-				char which = *s;
-				*s = '\0';
-				SFString val = fieldVal;
-				val.ReplaceAny("\t\r\n\"",EMPTY);
-				this->setValueByName(fieldName, val);
-				fieldName=fieldVal=NULL;
-				if (which=='}')
-					return s+1;
-				state = IN_ITEM;
-				nFields++;
-			}
-			break;
-		}
-		s++;
-	}
-	return NULL;
-#endif
 	typedef enum { OUTSIDE=0, IN_NAME, IN_VALUE } parseState;
 	parseState state = OUTSIDE;
-
-	s = cleanUpJson(s);
 
 	char *fieldName=NULL;
 	char *fieldVal=NULL;
@@ -275,12 +224,16 @@ char *CBaseNode::parseJson(char *s, SFInt32& nFields)
 			break;
 		
 		case IN_NAME:
-			fieldName = s;
-			while (*s!=':')
-				s++;
-			*s = '\0';
-//			printf("fn: %-10.10s fv: %-40.40s ---> %-60.60s\n" , fieldName, fieldVal, (s+1));
-			state = IN_VALUE;
+			if (!fieldName)
+			{
+				fieldName = s;
+
+			} else if (*s == ':')
+			{
+				state = IN_VALUE;
+				*s = '\0';
+				//			printf("fn: %-10.10s fv: %-40.40s ---> %-60.60s\n" , fieldName, fieldVal, (s+1));
+			}
 			s++;
 			break;
 
@@ -289,11 +242,11 @@ char *CBaseNode::parseJson(char *s, SFInt32& nFields)
 			if (*s=='[') // array skip to end of array
 			{
 				fieldVal++;
-				while (*s!=']')
+				while (*s && *s!=']')
 					s++;
 			} else
 			{
-				while (*s!=',' && *s!='}')
+				while (*s && *s!=',' && *s!='}')
 					s++;
 			}
 			*s = '\0';
@@ -303,13 +256,60 @@ char *CBaseNode::parseJson(char *s, SFInt32& nFields)
 			fieldVal = NULL;
 			state = IN_NAME;
 			s++;
-			if (*s==',')
+			if (*s && *s==',')
 				s++;
-			if (*s=='{'||*s==']')
+			if (*s && (*s=='{'||*s==']'))
+			{
+				finishParse();
 				return s;
+			}
 			break;
 		}
 	}
+	finishParse();
 	return NULL;
+}
+
+//--------------------------------------------------------------------------------
+char *cleanUpJson(char *s)
+{
+	if (!s)
+		return s;
+
+	char *l = s, *start = s;
+	while (*s)
+	{
+		if (!isWhiteSpace(*s) && *s != '\"') // zap all the white space and quotes
+		{
+			*l = *s;
+			l++;
+		}
+		s++;
+	}
+	*l = '\0';
+	return start;
+}
+
+#include "sfarchive.h"
+//---------------------------------------------------------------------------
+SFBool CBaseNode::SerializeHeader(SFArchive& archive)
+{
+	if (archive.m_isReading)
+	{
+		SFString str;
+		archive >> m_deleted;
+		archive >> m_schema;
+		archive >> m_showing;
+		archive >> str; ASSERT(str == getRuntimeClass()->getClassNamePtr());
+	} else
+	{
+		if (m_deleted && !archive.writeDeleted())
+			return FALSE;
+		archive << m_deleted;
+		archive << m_schema;
+		archive << m_showing;
+		archive << getRuntimeClass()->getClassNamePtr();
+	}
+	return TRUE;
 }
 

@@ -1,5 +1,5 @@
-#ifndef _SLURP_H_
-#define _SLURP_H_
+#ifndef _VOTE_H_
+#define _VOTE_H_
 /*--------------------------------------------------------------------------------
  The MIT License (MIT)
 
@@ -24,64 +24,54 @@
  SOFTWARE.
  --------------------------------------------------------------------------------*/
 #include "utillib.h"
-#include "transaction.h"
-#include "function.h"
 
 //--------------------------------------------------------------------------
-class CSlurp;
-typedef SFArrayBase<CSlurp>         CSlurpArray;
-typedef SFList<CSlurp*>             CSlurpList;
-typedef CNotifyClass<const CSlurp*> CSlurpNotify;
-typedef SFUniqueList<CSlurp*>       CSlurpListU;
+class CVote;
+typedef SFArrayBase<CVote>         CVoteArray;
+typedef SFList<CVote*>             CVoteList;
+typedef CNotifyClass<const CVote*> CVoteNotify;
+typedef SFUniqueList<CVote*>       CVoteListU;
 
 //---------------------------------------------------------------------------
-extern int sortSlurp        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
-extern int sortSlurpByName  (const void *rr1, const void *rr2);
-extern int sortSlurpByID    (const void *rr1, const void *rr2);
-extern int isDuplicateSlurp (const void *rr1, const void *rr2);
+extern int sortVote        (const SFString& f1, const SFString& f2, const void *rr1, const void *rr2);
+extern int sortVoteByName  (const void *rr1, const void *rr2);
+extern int sortVoteByID    (const void *rr1, const void *rr2);
+extern int isDuplicateVote (const void *rr1, const void *rr2);
 
 // EXISTING_CODE
-extern CFunction funcTable[];
-extern SFInt32 nFunctions;
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-class CSlurp : public CBaseNode
+class CVote : public CBaseNode
 {
 public:
 	SFInt32 handle;
-	SFString addr;
-	SFString header;
-	SFString displayString;
-	SFBool pageSize;
-	SFInt32 lastPage;
-	SFInt32 lastBlock;
-	SFInt32 nVisible;
-	CTransactionArray transactions;
+	SFString from;
+	SFInt32 proposalID;
+	SFBool votedYes;
 
 public:
-					CSlurp  (void);
-					CSlurp  (const CSlurp& sl);
-				   ~CSlurp  (void);
-	CSlurp&	operator= 		(const CSlurp& sl);
+					CVote  (void);
+					CVote  (const CVote& vo);
+				   ~CVote  (void);
+	CVote&	operator= 		(const CVote& vo);
 
-	DECLARE_NODE (CSlurp);
+	DECLARE_NODE (CVote);
 
 	// EXISTING_CODE
-	void    loadABI      (void);
 	// EXISTING_CODE
 
 private:
 	void			Clear      		(void);
 	void			Init      		(void);
-	void			Copy      		(const CSlurp& sl);
+	void			Copy      		(const CVote& vo);
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 };
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(void)
+inline CVote::CVote(void)
 {
 	Init();
 	// EXISTING_CODE
@@ -89,18 +79,18 @@ inline CSlurp::CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp::CSlurp(const CSlurp& sl)
+inline CVote::CVote(const CVote& vo)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
-	Copy(sl);
+	Copy(vo);
 }
 
 // EXISTING_CODE
 // EXISTING_CODE
 
 //--------------------------------------------------------------------------
-inline CSlurp::~CSlurp(void)
+inline CVote::~CVote(void)
 {
 	Clear();
 	// EXISTING_CODE
@@ -108,62 +98,52 @@ inline CSlurp::~CSlurp(void)
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Clear(void)
+inline void CVote::Clear(void)
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Init(void)
+inline void CVote::Init(void)
 {
 	CBaseNode::Init();
 
 	handle = 0;
-	addr = EMPTY;
-	header = EMPTY;
-	displayString = EMPTY;
-	pageSize = 0;
-	lastPage = 0;
-	lastBlock = 0;
-	nVisible = 0;
-//	transactions = ??; /* unknown type: CTransactionArray */
+	from = EMPTY;
+	proposalID = 0;
+	votedYes = 0;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline void CSlurp::Copy(const CSlurp& sl)
+inline void CVote::Copy(const CVote& vo)
 {
 	Clear();
 
-	CBaseNode::Copy(sl);
-	handle = sl.handle;
-	addr = sl.addr;
-	header = sl.header;
-	displayString = sl.displayString;
-	pageSize = sl.pageSize;
-	lastPage = sl.lastPage;
-	lastBlock = sl.lastBlock;
-	nVisible = sl.nVisible;
-	transactions = sl.transactions;
+	CBaseNode::Copy(vo);
+	handle = vo.handle;
+	from = vo.from;
+	proposalID = vo.proposalID;
+	votedYes = vo.votedYes;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
 
 //--------------------------------------------------------------------------
-inline CSlurp& CSlurp::operator=(const CSlurp& sl)
+inline CVote& CVote::operator=(const CVote& vo)
 {
-	Copy(sl);
+	Copy(vo);
 	// EXISTING_CODE
 	// EXISTING_CODE
 	return *this;
 }
 
 //---------------------------------------------------------------------------
-inline SFString CSlurp::getValueByName(const SFString& fieldName) const
+inline SFString CVote::getValueByName(const SFString& fieldName) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -171,7 +151,7 @@ inline SFString CSlurp::getValueByName(const SFString& fieldName) const
 }
 
 //---------------------------------------------------------------------------
-inline SFInt32 CSlurp::getHandle(void) const
+inline SFInt32 CVote::getHandle(void) const
 {
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -179,14 +159,14 @@ inline SFInt32 CSlurp::getHandle(void) const
 }
 
 //---------------------------------------------------------------------------
-extern SFString nextSlurpChunk(const SFString& fieldIn, SFBool& force, const void *data);
+extern SFString nextVoteChunk(const SFString& fieldIn, SFBool& force, const void *data);
 
 //---------------------------------------------------------------------------
-IMPLEMENT_ARCHIVE_ARRAY(CSlurpArray);
-IMPLEMENT_ARCHIVE_LIST(CSlurpList);
+IMPLEMENT_ARCHIVE_ARRAY(CVoteArray);
+IMPLEMENT_ARCHIVE_LIST(CVoteList);
 
 //---------------------------------------------------------------------------
-#include "slurp_custom.h"
+#include "vote_custom.h"
 
 // EXISTING_CODE
 // EXISTING_CODE

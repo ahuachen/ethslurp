@@ -27,13 +27,6 @@
 // EXISTING_CODE
 
 //---------------------------------------------------------------------------
-void finishParse(CFunction *function)
-{
-	// EXISTING_CODE
-	// EXISTING_CODE
-}
-
-//---------------------------------------------------------------------------
 SFString nextFunctionChunk_custom(const SFString& fieldIn, SFBool& force, const void *data)
 {
 	CFunctionNotify *fu = (CFunctionNotify*)data;

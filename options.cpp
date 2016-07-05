@@ -30,7 +30,8 @@ CParams params[] =
 	CParams("-archive",	"filename of output (stdout otherwise)" ),
 	CParams("-blocks",	"export records in block range (:0[:max])" ),
 	CParams("-dates",	"export records in date range (:yyyymmdd[hhmmss][:yyyymmdd[hhmmss]])" ),
-	CParams("-max",		"maximum transactions to slurp (:100000)" ),
+	CParams("-max",		"maximum transactions to slurp (:250000)" ),
+	CParams("-name",	"name this address" ),
 	CParams("-rerun",	"re-run the most recent slurp" ),
 	CParams("-slurp",	"force EthSlurp to take a slurp (ignore cached data)" ),
 	CParams("-fmt",		"pretty print, optionally add ':txt,' ':csv,' or ':html'" ),
@@ -77,6 +78,10 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 			SFString arg = nextTokenClear(exportFormat, ':');
 			if (arg != "-f" && arg != "-fmt")
 				return usage("Unknown parameter: " + arg);
+
+		} else if (arg.startsWith("--func"))
+		{
+			funcFilter = arg.Substitute("--func:",EMPTY);
 
 		} else if (arg == "-l" || arg == "-list")
 		{
@@ -152,6 +157,14 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 				return usage("Unknown parameter: " + arg);
 			maxTransactions = toLong(val);
 
+		} else if (arg.startsWith("-n"))
+		{
+			SFString val = arg;
+			SFString arg = nextTokenClear(val, ':');
+			if (arg != "-n" && arg != "-name")
+				return usage("Unknown parameter: " + arg);
+			name = val;
+
 		} else if (arg == "-s" || arg == "-slurp")
 		{
 			slurp = TRUE;
@@ -159,25 +172,28 @@ SFInt32 COptions::parseArguments(SFInt32 nArgs, const SFString *args)
 		} else if (arg.startsWith("-a"))
 		{
 			SFString fileName = arg.Substitute("-a:",EMPTY).Substitute("-archive:",EMPTY);
-			if (fileName.Contains("-a"))
-				return usage("Invalid option: " + arg);
-			SFFile file(fileName);
-			if (!file.getPath().startsWith('/'))
-				return usage("Archive file '" + arg + "' does not resolve to a full path. Use ./path/filename, ~/path/filename, or a fully qualified path.");
-			ASSERT(output==NULL);
-			output = fopen((const char*)file.getFullPath(), asciiWriteCreate);
-			if (!output)
-				return usage("file '" + file.getFullPath() + "' could not be opened. Quitting.");
-			outScreen.setOutput(output);
+			if (fileName == "-a")
+			{
+				// -a is acceptable but only if we get a -name (or we have only already) checked during slurp since we don't have an address yet
+				wantsArchive = TRUE;
+
+			} else
+			{
+				SFFile file(fileName);
+				if (!file.getPath().startsWith('/'))
+					return usage("Archive file '" + arg + "' does not resolve to a full path. Use ./path/filename, ~/path/filename, or a fully qualified path.");
+				archiveFile = file.getFullPath();
+				wantsArchive = TRUE;
+			}
 
 		} else if (arg == "-o" || arg == "-open")
 		{
 			// open command stuff
 			openFile = TRUE;
 			if (isTesting)
-				outScreen << "Testing only for open command:\n" << asciiFileToString(configPath("config.dat")) << "\n";
+				outScreen << "Testing only for open command:\n" << asciiFileToString(configPath("ethslurp.conf")) << "\n";
 			else
-				system("open ~/.ethslurp/config.dat");
+				system("open ~/.ethslurp/ethslurp.conf");
 			exit(0);
 
 		} else if (arg == "-c" || arg == "-clear")
@@ -217,14 +233,18 @@ COptions::COptions(void)
 	rerun           = FALSE;
 	incomeOnly      = FALSE;
 	expenseOnly     = FALSE;
+	cmdFile         = FALSE;
 	openFile        = FALSE;
+	funcFilter      = EMPTY;
 	firstBlock2Read = 0;
 	lastBlock2Read  = LONG_MAX;
 	firstDate       = earliestDate;
 	lastDate        = latestDate;
-	maxTransactions = 100000;
+	maxTransactions = 250000;
 	pageSize        = 5000;
 	exportFormat    = "json";
+	archiveFile     = EMPTY;
+	wantsArchive    = FALSE;
 	output          = NULL;
 	//addr;
 }

@@ -39,6 +39,7 @@ extern int sortTransactionByID    (const void *rr1, const void *rr2);
 extern int isDuplicateTransaction (const void *rr1, const void *rr2);
 
 // EXISTING_CODE
+extern int sortTransactionsForWrite(const void *rr1, const void *rr2);
 class CSlurp;
 // EXISTING_CODE
 
@@ -58,13 +59,13 @@ public:
 	SFString gasUsed;
 	SFString hash;
 	SFString input;
+	SFBool isError;
+	SFBool isInternalTx;
 	SFString nonce;
 	SFInt32 timeStamp;
 	SFString to;
 	SFInt32 transactionIndex;
 	SFString value;
-	SFBool isInternalTx;
-	SFBool isError;
 
 public:
 					CTransaction  (void);
@@ -75,11 +76,10 @@ public:
 	DECLARE_NODE (CTransaction);
 
 	// EXISTING_CODE
-	SFInt32 writeToFile(CSharedResource& file) const;
-	SFBool  readFromFile(CSharedResource& file);
 	SFTime  getDate(void) const;
 	SFString inputToFunction(void) const;
 	CSlurp *slurp;
+	SFBool isFunction(const SFString& func) const;
 	// EXISTING_CODE
 
 private:
@@ -88,6 +88,7 @@ private:
 	void			Copy      		(const CTransaction& tr);
 
 	// EXISTING_CODE
+	friend int sortTransactionsForWrite(const void *rr1, const void *rr2);
 	// EXISTING_CODE
 };
 
@@ -142,13 +143,13 @@ inline void CTransaction::Init(void)
 	gasUsed = EMPTY;
 	hash = EMPTY;
 	input = EMPTY;
+	isError = 0;
+	isInternalTx = 0;
 	nonce = EMPTY;
 	timeStamp = 0;
 	to = EMPTY;
 	transactionIndex = 0;
 	value = EMPTY;
-	isInternalTx = 0;
-	isError = 0;
 
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -172,13 +173,13 @@ inline void CTransaction::Copy(const CTransaction& tr)
 	gasUsed = tr.gasUsed;
 	hash = tr.hash;
 	input = tr.input;
+	isError = tr.isError;
+	isInternalTx = tr.isInternalTx;
 	nonce = tr.nonce;
 	timeStamp = tr.timeStamp;
 	to = tr.to;
 	transactionIndex = tr.transactionIndex;
 	value = tr.value;
-	isInternalTx = tr.isInternalTx;
-	isError = tr.isError;
 
 	// EXISTING_CODE
 	// EXISTING_CODE

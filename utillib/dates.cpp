@@ -452,7 +452,7 @@ SFString getShortMonthName(SFInt32 month)
 //
 static SFInt32 JulianDay(const SFTime& date)
 {
-	SFInt32 year  = date.GetYear();
+	SFInt32 year;//  = date.GetYear();
 	SFInt32 month = date.GetMonth();
 	SFInt32 day   = date.GetDay();
 

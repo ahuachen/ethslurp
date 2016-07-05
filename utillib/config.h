@@ -323,6 +323,7 @@ public:
 
 	void     mergeConfig(CConfig *configIn);
 	SFBool   writeFile  (const SFString& version);
+	SFBool   writeFile  (void) { CVersion vers; vers.setVersion(VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD); return writeFile(vers.toString()); }
 	SFString ToString   (void) const;
 
 private:

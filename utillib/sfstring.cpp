@@ -1071,6 +1071,69 @@ SFString snagFieldStrip(const SFString& in, const SFString& field, const SFStrin
 	return StripAny(ret, stripWhat);
 }
 
+//---------------------------------------------------------------------------------------
+SFString snagEmail(const SFString& email)
+{
+	if (!IsValidEmail(email))
+		return EMPTY;
+	return "<a href=mailto:" + email + ">" + email + "</a>";
+}
+
+//---------------------------------------------------------------------------------------
+SFString snagURL(const SFString& url)
+{
+	if (!isURL(url))
+		return EMPTY;
+	return "<a target=top href=" + url + ">" + url + "</a>";
+}
+
+//---------------------------------------------------------------------------------------
+static SFBool isURL_base(const SFString& test, SFBool testRel=FALSE)
+{
+	if (test.Find("://")!=-1)
+		return TRUE;
+	if (testRel && test.GetLength() && (test[0] == '.' || test[0] == '/'))
+		return TRUE;
+	return FALSE;
+}
+
+//---------------------------------------------------------------------------------------
+SFBool isURL(const SFString& test)
+{
+	return isURL_base(test, TRUE);
+}
+
+//---------------------------------------------------------------------------------------
+SFBool isAbsolutePath(const SFString& test)
+{
+	if (test.IsEmpty())
+		return FALSE;
+
+	// string either starts with a '/' or.... (mostly linux)
+	if (test[0] == '/' || test[0] == '\\')
+		return TRUE;
+
+    if (test.GetLength() < 2)
+        return FALSE;
+
+	// it starts with a drive letter then a colon (mostly windows)
+	return (test[1] == ':');
+}
+
+//---------------------------------------------------------------------------------------
+SFBool isRelativePath(const SFString& test)
+{
+	return (!isAbsolutePath(test));
+}
+
+//---------------------------------------------------------------------------------------
+SFString toRelativePath(const SFString& root, const SFString& path)
+{
+	SFString ret = path;
+	ret.Replace(root, "./");
+	return ret;
+}
+
 const char* CHR_VALID_NAME  = "\t\n\r()<>[]{}`\\|; " "'!$^*~@" "?&#+%" ",:/=\"";
 const char* CHR_ALLOW_URL   =                              "@" "?&#+%" ",:/=\"";
 const char* CHR_ALLOW_EMAIL =                        "'!$^*~@" "?&#+%";
@@ -1237,4 +1300,30 @@ int compareStringValue(const void *rr1, const void *rr2)
 {
 	// return true of these are the same string
 	return !sortByStringValue(rr1, rr2);
+}
+
+//---------------------------------------------------------------------------------------
+SFBool IsValidEmail(const SFString& email)
+{
+	if (             email.IsEmpty   ()     ) return FALSE;
+	if (             email.GetLength () < 5 ) return FALSE;                      // x@x.x smallest possible email
+	if (            !email.Contains  ("@")  ) return FALSE;                      // '@' symbol is missing
+	if (            !email.Contains  (".")  ) return FALSE;                      // '.' is missing
+	if (countOf('@', email)             > 1 ) return FALSE;                      // no more than one '@' symbol
+	if (             email.startsWith('@') || email.endsWith('@')) return FALSE; // may not start or end with '@'
+	if (             email.startsWith('.') || email.endsWith('.')) return FALSE; // may not start or end with '.'
+	
+	// Check for invalid characters
+	SFString copy = email;
+	SFString repStr = CHR_VALID_NAME; repStr.ReplaceAny(CHR_ALLOW_EMAIL, EMPTY);
+	copy.ReplaceAny(repStr, EMPTY);
+	if (email != copy)
+		return FALSE;
+	
+	// Check length of tld (2 or 3 chars)
+	SFString tld = email.Mid(email.ReverseFind('.')+1);
+	if (tld.GetLength() < 2 && tld.GetLength() > 3)
+		return FALSE;
+	
+	return TRUE;
 }

@@ -315,36 +315,18 @@ SFInt32 CSharedResource::Tell(void) const
 }
 
 //----------------------------------------------------------------------
-SFInt32 CSharedResource::Write(const void *buff, SFInt32 size, SFInt32 cnt) const
-{
-	ASSERT(isOpen());
-	return (SFInt32)fwrite(buff, size, cnt, m_fp);
-}
-
-//----------------------------------------------------------------------
-SFInt32 CSharedResource::Write(const SFString& val) const
-{
-	ASSERT(isOpen());
-	ASSERT(!isAscii());
-
-	SFInt32 len = val.GetLength();
-
-	SFInt32 ret = Write(&len, sizeof(SFInt32), 1);
-	return Write((const char *)val, sizeof(char), len) + ret;
-}
-
-//----------------------------------------------------------------------
-SFInt32 CSharedResource::Write(SFInt32 val) const
-{
-	return Write(&val, sizeof(SFInt32), 1);
-}
-
-//----------------------------------------------------------------------
 SFInt32 CSharedResource::Read(void *buff, SFInt32 size, SFInt32 cnt)
 {
 	ASSERT(isOpen());
 	return (SFInt32)fread(buff, cnt, size, m_fp);
 }
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Read(char&   val) { return Read(&val, sizeof(char),   1); }
+SFInt32 CSharedResource::Read(long&   val) { return Read(&val, sizeof(long),   1); }
+SFInt32 CSharedResource::Read(float&  val) { return Read(&val, sizeof(float),  1); }
+SFInt32 CSharedResource::Read(double& val) { return Read(&val, sizeof(double), 1); }
+SFInt32 CSharedResource::Read(SFTime& val) { return Read(&val.m_nSeconds, sizeof(SFInt64), 1); }
 
 //----------------------------------------------------------------------
 SFInt32 CSharedResource::Read(SFString& str)
@@ -374,9 +356,43 @@ SFInt32 CSharedResource::Read(SFString& str)
 }
 
 //----------------------------------------------------------------------
-SFInt32 CSharedResource::Read(SFInt32& val)
+SFInt32 CSharedResource::Read(SFAttribute&  val)
 {
-	return Read(&val, sizeof(SFInt32), 1);
+	SFString name, value;
+	if (Read(name) && Read(value))
+	{
+		val.set(name, value);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Read(CDoublePoint& val)
+{
+	double arr[2];
+	SFInt32 ret = Read(&arr, sizeof(double), 2);
+	if (ret)
+	{
+		val.x   = arr[0];
+		val.y    = arr[1];
+	}
+	return ret;
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Read(CDoubleRect& val)
+{
+	double arr[4];
+	SFInt32 ret = Read(&arr, sizeof(double), 4);
+	if (ret)
+	{
+		val.left   = arr[0];
+		val.top    = arr[1];
+		val.right  = arr[2];
+		val.bottom = arr[3];
+	}
+	return ret;
 }
 
 //----------------------------------------------------------------------
@@ -385,6 +401,53 @@ char *CSharedResource::ReadLine(char *buff, SFInt32 maxBuff)
 	ASSERT(isOpen());
 	ASSERT(isAscii());
 	return fgets(buff, (int)maxBuff, m_fp);
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Write(const void *buff, SFInt32 size, SFInt32 cnt) const
+{
+	ASSERT(isOpen());
+	return (SFInt32)fwrite(buff, size, cnt, m_fp);
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Write(char          val) const { return Write(&val, sizeof(char), 1); }
+SFInt32 CSharedResource::Write(long          val) const { return Write(&val, sizeof(long), 1); }
+SFInt32 CSharedResource::Write(float         val) const { return Write(&val, sizeof(float), 1); }
+SFInt32 CSharedResource::Write(double        val) const { return Write(&val, sizeof(double), 1); }
+SFInt32 CSharedResource::Write(const SFTime& val) const { return Write(&val.m_nSeconds, sizeof(SFInt64), 1); }
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Write(const SFString& val) const
+{
+	ASSERT(isOpen());
+	ASSERT(!isAscii());
+
+	SFInt32 len = val.GetLength();
+
+	SFInt32 ret = Write(&len, sizeof(SFInt32), 1);
+	return Write((const char *)val, sizeof(char), len) + ret;
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Write(const SFAttribute& val) const
+{
+	SFInt32 ret = Write(val.getName());
+	return Write(val.getValue()) + ret;
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Write(const CDoublePoint& val) const
+{
+	double arr[] = { val.x, val.y };
+	return Write(arr, sizeof(double), 2);
+}
+
+//----------------------------------------------------------------------
+SFInt32 CSharedResource::Write(const CDoubleRect&  val) const
+{
+	double arr[] = { val.left, val.top, val.right, val.bottom };
+	return Write(arr, sizeof(double), 4);
 }
 
 //----------------------------------------------------------------------

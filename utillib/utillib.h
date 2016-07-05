@@ -43,6 +43,7 @@ SOFTWARE.
 #include "editableobject.h"
 #include "protectedobject.h"
 #include "colors.h"
+#include "sfarchive.h"
 #include "performance.h"
 #include "sffile.h"
 
